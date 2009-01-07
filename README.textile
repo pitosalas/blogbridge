@@ -13,11 +13,16 @@ h1. DOWNLOADS
 
 h2. SOURCE CODE
 
-GitHub.com is really the place where we host our source code. Check our master repository and get the source code from there. You are free to fork the project and play with it. Should you come with something you think fits the idea of the project, let us know.
+GitHub.com is really the place where we host our source code. Check our "master repository":http://github.com/pitosalas/blogbridge/tree/master and get the source code from there. You are free to fork the project and play with it. Should you come with something you think fits the idea of the project, let us know.
 
 h2. BINARY
 
 There's the page in our blog with the "up-to-date list of binary downloads":http://www.blogbridge.com/downloads/blogbridge/.
+
+
+h1. TRANSLATION
+
+BlogBridge always welcomes new translations. If you want to translate it into your native language, please let us know. There's more info on "translation process and tools":http://www.blogbridge.com/2006/06/09/how-do-i-translate-blogbridge/ you will need. It's not that complex; have a look.
 
 
 h1. GPL LICENSE

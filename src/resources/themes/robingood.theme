@@ -1,0 +1,14 @@
+# =============================================================================
+# Style definition.
+#
+# $Revision: 1.5 $
+# =============================================================================
+
+name=robingood
+title=Robin Good Theme
+
+# Fonts
+
+font=Verdana-11
+article.title.font.sizedelta=3
+articlegroup.font.sizedelta=1

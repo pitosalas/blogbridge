@@ -1,0 +1,6 @@
+simple.theme
+big.theme
+robingood.theme
+modern.theme
+seventies.theme
+verdalex.theme

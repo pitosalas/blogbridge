@@ -1,0 +1,82 @@
+<?xml version="1.0" ?>
+<?xml-stylesheet href="/style/rdf-news.css" type="text/css" ?>
+<rss version="1.0">
+<channel>
+<title>GIMP News</title>
+<link>http://www.gimp.org</link>
+<description>Recent gimp.org news-current</description>
+<pubDate>Mon, 24 Sep 2007 06:17:35 GMT</pubDate>
+<item><title>GIMP 2.2.17 Released</title><description>Due to a regression in the PSD loader that was introduced with the 2.2.16 release, we had to roll out another release in the stable 2.2 series. The source code for version 2.2.17 of the &lt;strong&gt;GNU Image Manipulation Program&lt;/strong&gt; is available from &lt;a href="http://gimp.org/downloads#mirrors"&gt;ftp.gimp.org&lt;/a&gt;.  Please see the &lt;a href="http://developer.gimp.org/NEWS-2.2"&gt;NEWS&lt;/a&gt; file for a detailed list of changes.
+
+
+</description>
+<link>http://www.gimp.org</link>
+<pubDate>Fri, 13 Jul 2007 11:28:16 GMT</pubDate></item><item><title>GIMP 2.3.19 Development Release</title><description>&lt;p&gt;
+We are getting ready for the GIMP 2.4 release. Most of the outstanding issues have been resolved or will be resolved soon. You can get a snapshot of current development by downloading the source code for GIMP 2.3.19 from the &lt;a href="http://gimp.org/downloads#mirrors"&gt;usual places&lt;/a&gt;. Check the &lt;a href="http://developer.gimp.org/NEWS"&gt;NEWS&lt;/a&gt; file for an overview of the changes in this release.
+&lt;/p&gt;
+&lt;p&gt;If you want to try any of the unstable development snapshots, please read the &lt;a href="http://gimp.org/release-notes/gimp-2.3.html"&gt;release notes for the development releases&lt;/a&gt;.
+&lt;/p&gt;
+
+
+
+
+</description>
+<link>http://www.gimp.org</link>
+<pubDate>Wed, 25 Jul 2007 16:35:32 GMT</pubDate></item><item><title>GIMP User Manual 0.13 Released</title><description>&lt;p&gt;
+After four months of hard work we are proud to announce a new release of the user manual for GIMP 2.2.
+
+&lt;ul&gt;
+ &lt;li&gt;
+    new content, spelling and grammar fixes for  German, French, Italian, Norwegian, Russian, Spanish, Korean and Dutch
+ &lt;/li&gt;
+  &lt;li&gt;
+ support for creating ODF files (you need to have &lt;a href="http://open.comsultia.com/docbook2odf/" title="Docbook2ODF"&gt;docbook2odf&lt;/a&gt; installed.)
+ &lt;/li&gt;
+ &lt;li&gt;
+    lots of bug fixes
+ &lt;/li&gt;
+&lt;li&gt;
+  new tutorials from gimp.org
+&lt;/li&gt;
+&lt;li&gt;
+ Quickreference sheet export to SVG
+&lt;/li&gt;
+&lt;li&gt;
+and more technically: a new build system.
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+The source files of &lt;b&gt;gimp-help-2-0.13&lt;/b&gt; can be downloaded from &lt;a
+href="ftp://ftp.gimp.org/pub/gimp/help/"&gt;ftp.gimp.org&lt;/a&gt;. Users should wait until this release has been packaged in a pre-compiled form that is easier to install. Find more information about our goals and how you can help at &lt;a href="http://docs.gimp.org" title="Project page"&gt;http://docs.gimp.org&lt;/a&gt;.
+&lt;/p&gt;
+
+</description>
+<link>http://www.gimp.org</link>
+<pubDate>Fri, 03 Aug 2007 13:35:01 GMT</pubDate></item><item><title>GIMP Animation Package  2.2.2 Released</title><description>Version 2.2.2 of &lt;i&gt;gimp-gap&lt;/i&gt;, the &lt;strong&gt;GIMP Animation Package&lt;/strong&gt;, is now available. This release fixes some bugs, updates translations and prepares &lt;i&gt;gimp-gap&lt;/i&gt; for the update to GIMP 2.4. The source code can be downloaded from &lt;a href="ftp://ftp.gimp.org/pub/gimp/plug-ins/v2.2/gap"&gt;ftp.gimp.org&lt;/a&gt;; binary packages should become available soon.
+
+
+</description>
+<link>http://www.gimp.org</link>
+<pubDate>Mon, 06 Aug 2007 06:40:30 GMT</pubDate></item><item><title>First Release Candidate for GIMP 2.4.0</title><description>&lt;p&gt;
+The next stable GIMP release is close. The developers made available a first release candidate for GIMP 2.4.0. This marks the end of the development cycle towards GIMP 2.4. All new features should be complete and the &lt;a href="http://developer.gimp.org/api/2.0/index.html"&gt;API&lt;/a&gt; is now frozen. There are however still a few bugs to fix and some minor changes pending in some places.
+&lt;/p&gt;
+&lt;p&gt;
+If you want to help by testing this release candidate, you can grab the source code from &lt;a href="http://gimp.org/downloads#mirrors"&gt;ftp.gimp.org&lt;/a&gt;. The &lt;a href="http://gimp.org/release-notes/gimp-2.3.html"&gt;release notes for the development releases&lt;/a&gt; still apply.
+&lt;/p&gt;
+
+
+
+</description>
+<link>http://www.gimp.org</link>
+<pubDate>Thu, 16 Aug 2007 09:03:17 GMT</pubDate></item><item><title>Second Release Candidate for GIMP 2.4</title><description>GIMP 2.4.0-RC2 is finally there. The developers have fixed quite some bugs since RC1 but it's not the final thing yet. Have a look at the &lt;a href="http://developer.gimp.org/NEWS"&gt;NEWS&lt;/a&gt; file for the changes made in this release.&lt;br/&gt;
+&lt;br/&gt;
+If you want to help by testing this release candidate, you can grab the source code from &lt;a href="http://gimp.org/downloads#mirrors"&gt;ftp.gimp.org&lt;/a&gt;. The &lt;a href="http://gimp.org/release-notes/gimp-2.3.html"&gt;release notes for the development releases&lt;/a&gt; still apply.
+
+</description>
+<link>http://www.gimp.org</link>
+<pubDate>Thu, 06 Sep 2007 09:31:23 GMT</pubDate></item><item><title>Third Release Candidate for GIMP 2.4</title><description>If you</description>
+<link>http://www.gimp.org</link>
+<pubDate>Mon, 24 Sep 2007 01:24:18 GMT</pubDate></item></channel>
+</rss>

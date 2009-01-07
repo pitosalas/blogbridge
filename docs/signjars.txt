@@ -1,0 +1,6 @@
+keytool -genkey -keystore keys -alias myself
+keytool -selfcert -alias myself -keystore keys
+jarsigner -keystore keys -storepass daniel blogbridge.jar myself
+cd lib
+for %i in (*.jar) do jarsigner -keystore ..\keys -storepass daniel %i myself
+

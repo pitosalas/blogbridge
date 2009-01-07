@@ -1,0 +1,42 @@
+When it's necessary to add another key to the Theme definition the following steps should be
+taken.
+
+* ADDING NEW PROPERTY OF EXISTING TYPE -------------------------------------------------------------
+
+1. Add appropriate key to the existing type (for example, ThemeKey.Font or ThemeKey.Color).
+   The notation is simple:
+
+    CATEGORY_SUBCATEGORY_..._TYPE
+
+    like
+
+    ARTICLELIST_FEEDNAME_FG
+
+2. Make sure LAFTheme will return a value for your new key (run TestLAFTheme test for that).
+
+3. Add method to get your property from ChannelRenderingSettings (only getter required).
+   See getSelectedArticleBackground() for example.
+
+4. Add the co-named method to RenderingManager. See getArticleListFeedNameFont() for example.
+
+5. Use your new property in code:
+
+    RenderingManager.getYouPropertyValue()
+
+6. Subscribe the components accessing the property to RenderingManager's event about Theme change:
+
+    RenderingManager.addPropertyChangeListener(RenderingSettingsNames.THEME, somelistener);
+
+   When the theme changes RenderingManager emits the propertyChange event. The name of changed
+   property is: RenderingSettingsNames.THEME. So, you can catch this change and see if the value
+   of your new property has changed and if you require the repainting.
+   (see ArticlePanel.propertyChange() for example).
+
+
+* ADDING NEW TYPE OF PROPERTIES --------------------------------------------------------------------
+
+1. Add an appropriate sub-type to ThemeKey (see ThemeKey.Font and ThemeKey.Color)
+
+2. Add method to ITheme to return values for your new keys type.
+
+3. Add test to TestLAFTheme.

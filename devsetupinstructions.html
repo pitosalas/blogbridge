@@ -1,0 +1,212 @@
+<html>
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=Generator content="Microsoft Word 11 (filtered)">
+<title>Instructions for setting up a BlogBridge</title>
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:Verdana;
+	panose-1:2 11 6 4 3 5 4 4 2 4;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:10.0pt;
+	font-family:Verdana;}
+h1
+	{margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:0in;
+	page-break-after:avoid;
+	font-size:16.0pt;
+	font-family:Arial;}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;}
+div.Section1
+	{page:Section1;}
+ /* List Definitions */
+ ol
+	{margin-bottom:0in;}
+ul
+	{margin-bottom:0in;}
+-->
+</style>
+
+</head>
+
+<body lang=EN-US link=blue vlink=purple>
+
+<div class=Section1>
+
+<p class=MsoNormal align=center style='text-align:center'><b>Instructions for
+setting up a BlogBridge<br>
+development environment under Windows</b></p>
+
+<p class=MsoNormal><u>Document History</u></p>
+
+<p class=MsoNormal>9/13/04�������� Original, David Coletta, <a
+href="mailto:david@colettas.org" title="mailto:david@colettas.org">david@colettas.org</a></p>
+
+<p class=MsoNormal>8/5/05��������� Misc updates, Paul Kleppner, <a
+href="mailto:david@colettas.org" title="mailto:david@colettas.org">pkleppner@gmail.com</a></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<h1>Download and Install Eclipse</h1>
+
+<ol start=1 type=1>
+ <li class=MsoNormal>Visit <a href="http://www.eclipse.org/downloads/index.php"
+     title="http://www.eclipse.org/downloads/index.php">http://www.eclipse.org/downloads/index.php</a>
+     and pick one of the download locations to obtain the&nbsp;&nbsp;Eclipse
+     3.1 SDK. </li>
+ <li class=MsoNormal>Unzip the zip file into a directory. </li>
+ <li class=MsoNormal>To launch Eclipse, just run eclipse.exe in the top level
+     directory. </li>
+</ol>
+
+<h1>Download and Install Java2 SDK</h1>
+
+<ol start=1 type=1>
+ <li class=MsoNormal>Visit <a
+     href="http://java.sun.com/j2se/1.4.2/download.html"
+     title="http://java.sun.com/j2se/1.4.2/download.html">http://java.sun.com/j2se/1.4.2/download.html</a>
+     and click on the link to download the J2SE SDK. </li>
+ <li class=MsoNormal>Download and install the J2SE.&nbsp; (Current version as
+     of Sept 2004: 1.4.2_05) </li>
+</ol>
+
+<p class=MsoNormal><em><span style='font-size:9.0pt;font-family:Verdana'>Note:
+it's not clear to me which Java2 SDK version to recommend.&nbsp; It's probably
+best to avoid the 1.5 version, because we don't want to depend on users having
+that installed. But it might be better to use an earlier version of 1.4 in
+order to avoid depending on bug fixes from later 1.4 versions that users may
+not have installed.&nbsp; </span></em></p>
+
+<h1>Download and Install the BlogBridge Tree</h1>
+
+<ol style='margin-top:0in' start=1 type=1>
+ <li class=MsoNormal>In Eclipse, switch to the CVS Repository
+     perspective.&nbsp; (Windows <span style='font-family:Arial'>&#8594;</span>
+     Open Perspective; choose CVS Repository Exploring)</li>
+ <li class=MsoNormal>Right-click in blank CVS Repositories pane, and click New<span
+     style='font-family:Arial'>&#8594;</span>Repository Location</li>
+ <li class=MsoNormal>For configuration, enter:</li>
+</ol>
+
+<p class=MsoNormal style='margin-left:.5in'>&nbsp;&nbsp; <b>hostname</b>: �������� <span
+style='font-family:"Courier New"'>cvs.sourceforge.net</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'>&nbsp;&nbsp; <b>repository</b> <b>path</b>:
+<span style='font-family:"Courier New"'>/cvsroot/blogbridge</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'>&nbsp;&nbsp; <b>user</b>: ���������������� <span
+style='font-family:"Courier New"'>anonymous</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'>&nbsp;&nbsp; <b>password</b>: ��������� &lt;<em><span
+style='font-family:Verdana'>leave blank</span></em>&gt;</p>
+
+<p class=MsoNormal style='margin-left:.5in'>&nbsp;&nbsp; <b>connection</b> <b>type</b>:
+<span style='font-family:"Courier New"'>pserver</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'>&nbsp;&nbsp; use default port���������� </p>
+
+<ol style='margin-top:0in' start=4 type=1>
+ <li class=MsoNormal>Navigate to HEAD/BlogBridge</li>
+ <li class=MsoNormal>Right-click blogbridge and choose &quot;Check Out&quot;</li>
+</ol>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<h1><em><span style='font-family:Arial;font-style:normal'>Configure Eclipse</span></em></h1>
+
+<ol style='margin-top:0in' start=1 type=1>
+ <li class=MsoNormal>Under Windows<span style='font-family:Arial'>&#8594;</span>Preferences,
+     go to the element &quot;Java/Installed JRE's&quot; and make sure that the
+     1.4.x JRE is checked as default.&nbsp; If not there, add it: click Add,
+     navigate to the JRE directory (e.g. c:\program files\Java\j2re1.xxxx; give
+     JRE a name).</li>
+</ol>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal style='margin-left:.5in'><em><span style='font-size:9.0pt;
+font-family:Verdana'>Note: I later switched to an SourceForge account for which
+I was given BlogBridge source read/write privileges. At that time I needed to
+switch the protocol to to </span></em><strong><span style='font-size:9.0pt;
+font-family:Verdana'>extssh</span></strong><span style='font-size:9.0pt'>, <em><span
+style='font-family:Verdana'>and of course change the user name and
+password.&nbsp; - Paul.</span></em></span></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<ol style='margin-top:0in' start=2 type=1>
+ <li class=MsoNormal>Install the BlogBridge standard Java format.&nbsp; You'll
+     need &quot;bbstyle.xml&quot;, which is available from Pito. (<em><span
+     style='font-family:Verdana'>Checked into CVS somewhere yet?).&nbsp; </span></em>To
+     install: go to Windows<span style='font-family:Arial'>&#8594;</span>Preferences,
+     select Java/Code Style/Formatter, and import bbstyle.xml.</li>
+</ol>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<h1>Build BlogBridge </h1>
+
+<p class=MsoNormal>Click Project<span style='font-family:Arial'>&#8594;</span>Clean...
+to force a build.</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><em><span style='font-size:9.0pt;font-family:Verdana'>Note:
+I've had various problems in getting the initial build going.&nbsp; Another way
+to run a build is to right-click on build.xml in the top level of the package
+explorer tree, and choose Run As</span></em><em><span style='font-size:9.0pt;
+font-family:Arial'>&#8594;</span></em><em><span style='font-size:9.0pt;
+font-family:Verdana'>Ant Build . You should see �BUILD SUCCESSFUL� in the
+Console window. -&nbsp; Paul.</span></em></p>
+
+<h1>Debug BlogBridge</h1>
+
+<p class=MsoNormal>1. Choose Run<span style='font-family:Arial'>&#8594;</span>Debug...
+menu </p>
+
+<p class=MsoNormal>2. In the �Create, manage and run configurations� window:</p>
+
+<p class=MsoNormal>&nbsp; -&nbsp; click �New�</p>
+
+<p class=MsoNormal>&nbsp; -&nbsp; set: Name= BlogBridge</p>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Project=blogbridge</p>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Main class = com.salas.bb.core.ApplicationLauncher</p>
+
+<p class=MsoNormal>3. Click Debug button</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>You should see the BlogBridge splash screen and first dialog.</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>For future debugging, click the F11 key or choose the Debug
+icon in the Eclipse toolbar.</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+</div>
+
+</body>
+
+</html>

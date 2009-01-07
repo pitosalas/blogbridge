@@ -1,0 +1,43 @@
+<p>This package contains different classes related to HTML support.</p>
+
+<h1>Unblocked images loading support</h1>
+
+<p>Why the GUI was getting blocked with the images loading? The answer is quite simple -- in the
+very beginning of the image loading process the Toolbox looks into its cache of images for the
+cached image instance. URL is a key. You know that regular caches use <code>hashCode()</code> /
+<code>equals()</code> combination to match the keys. <code>equals()</code> and
+<code>hashCode()</code> methods of URL class do nothing, but call co-named methods of
+<code>UrlStreamHandler</code> implementations, corresponding to the protocol of
+URL (http, ftp, file ....). In case of http, ftp and some other protocols assigned handler tries
+to resolve server part of the URL into valid IP using DNS. The process is very-very slow on slow
+connections. Taking this in account and the fact that displaying of images (painting) is processed
+by EDT we end with watching GUI freezes for a long time (proportional to the number of images
+in channel) while EDT is busy with resolving URL's.</p>
+
+<p>To solve the problem I made an assumption that it's very unlikely that we will have two
+different URL's in the articles pointing to the same image. It's really very unlikely. Having this
+in mind, let's get to implementation.</p>
+
+<p>The heart of all is <code>CustomHtmlUrlStreamHandler</code> class. It's a custom implementation
+of the handler for URL's with HTTP protocol. It implements URL-comparison methods basing on the
+underlying string representation of these URL's and does not use the DNS to resolve them. So the
+blocking time is equal to the time of comparing the strings now. Pretty good speed boost!</p>
+
+<p>Next step is to tell URL of image (only images within articles) that it should use our handler.
+For this purpose we need to create our own <code>ImageView</code> (<code>CustomImageView</code>).
+When asked (<code>getImageURL()</code>) it will return the URL with appropriate handler set.</p>
+
+Next, we need to force <code>HTMLEditorKit</code> to use our new <code>CustomImageView</code> when
+it finds &lt;img&gt; tag in the source HTML. <code>HTMLEditorKit</code> uses
+<code>HTMLFactory</code> (<code>create()</code> method) to get views for the elements. All we need
+to do is create our own factory (<code>CustomHTMLFactory</code>) aware of our
+<code>CustomImageView</code>. It returns <code>CustomImageView</code> for &lt;img&gt; tags and
+delegates the selection of appropriate view for the other elements to the regular
+<code>HTMLEditorKit.HTMLFactory</code> factory class.</p>
+
+<p>To register our new factory we create <code>CustomHTMLEditorKit</code>. We override the method
+<code>getViewFactory()</code> to return correct (our) <code>HTMLFactory</code>.</p>
+
+<p>All we need to do in order to use our advanced image-loading functionality is to replace
+<code>HTMLEditor</code> kit with <code>CustomHTMLEditorKit</code> in our <code>ArticlePanel</code>
+class.</p> 

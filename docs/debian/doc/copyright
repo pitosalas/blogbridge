@@ -1,0 +1,54 @@
+This package was debianized by BlogBridge Team <support@blogbridge.com> on
+Fri,  4 May 2007 13:38:00 +0200.
+
+It was downloaded from http://www.blogbridge.com/
+
+Copyright:
+
+(c) 2007 Salas and Associates Inc. <rps@salas.com>
+
+License:
+
+BlogBridge is free open source software, distributed under the GNU General
+Public Licence. See the enclosed text file 'gpl.txt', or the About
+dialog, for details about the GPL.
+
+	On Debian GNU/Linux systems, the complete text of the GNU General
+	Public License can be found in `/usr/share/common-licenses/GPL'.
+
+BlogBridge also uses libraries distributed by other parties; see the About
+box for details.
+
+Third-party software used:
+
+JGoodies Looks, JGoodies Forms, and JGoodies Binding
+distributed by JGoodies (http://www.jgoodies.com/) under the terms of the
+BSD License (see http://www.opensource.org/licenses/bsd-license.html for
+details).
+
+Commons Collections, Commons Lang, Commons Logging
+distributed by Apache (http://jakarta.apache.org/commons/) under the terms 
+of the Apache License (see http://jakarta.apache.org/commons/license.html for
+details).
+
+HyperSQL DB
+distributed by Hypersonic (http://www.hsqldb.org/) under the terms of the
+Hypersonic Original License (see http://hsqldb.org/web/hsqlLicense.html for 
+details).
+
+JCalendar
+distributed by Kai Toedter (http://www.toedter.com/en/jcalendar/) under the
+terms of the Lesser General Public License.
+
+Selected Quaqua components
+distributed by Randel Shofer (http://www.randelshofer.ch/quaqua/download.html)
+under the terms of the BSD or Lesser General Public Licenses.
+
+Rome Feed Parser
+distributed by Sun Microsystems (https://rome.dev.java.net/) under the terms
+of the terms of the Apache License (see http://www.apache.org/licenses/LICENSE-2.0
+for details);
+
+The majority of icons are from the Crystal Clear icon set by Everaldo
+(http://www.everaldo.com/), which is distributed under the terms of the
+Lesser General Public License.

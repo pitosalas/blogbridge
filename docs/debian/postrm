@@ -1,0 +1,18 @@
+#!/bin/sh
+set -e
+# Automatically added by dh_installmenu
+if [ -x "`which update-menus 2>/dev/null`" ]; then update-menus ; fi
+# End automatically added section
+# Automatically added by dh_desktop
+if [ "$1" = "remove" ] && which update-desktop-database >/dev/null 2>&1 ; then
+	update-desktop-database -q
+fi
+# End automatically added section
+# Automatically added by dh_installmime
+if which update-mime >/dev/null 2>&1; then update-mime; fi
+# End automatically added section
+# Automatically added by dh_installmime
+if [ -x "`which update-mime-database 2>/dev/null`" ]; then
+	update-mime-database /usr/share/mime
+fi
+# End automatically added section

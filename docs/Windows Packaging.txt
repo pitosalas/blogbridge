@@ -1,0 +1,79 @@
+﻿Windows Package Building Instructions
+
+1. Goals and Prerequisites
+
+We build Windows package with Advanced Installer. At the moment of writing I
+have version 3.1.1 at my workbench. The goal of this procedure is to build
+the distributable BlogBridge application installation package. The package
+should be presented as single EXE file.
+
+2. Package naming conventions
+
+Installation package should always be named in the following way:
+
+blogbridge-x.y.exe
+
+where 'x' and 'y' are major and minor version numbers correspondently. This
+naming requirement is imposed by updates architecture assumptions.
+
+3. Package building procedure
+
+1. Create complete BlogBridge release deployment through 'deploy.release'
+Ant task.
+
+2. Start Advanced Installer
+
+3. Create new 'Java Application' project
+
+4. Enter Product Details:
+	Product Name: BlogBridge
+	Product Version: current version (for example, 2.1)
+	Company Name: Salas Associates Inc.
+	Product URL: http://www.blogbridge.com/
+	Update URL: http://www.blogbridge.com/releases/
+	Technical Support URL: http://www.blogbridge.com/
+	Comments: Ultimate Info-Junkie System
+	Icon File: select blogbridge.ico
+
+5. Enter Install Parameters
+	Application Folder: [ProgramFilesFolder][ProductName]
+	Application Shortcut Folder: [ProgramMenuFolder][ProductName]
+	Leave the rest as is.
+
+6. Enter Files and Folders options
+6.1. Select 'Application Folder'
+6.2. Add blogbridge.jar from blogbridge/target/deploy to this folder
+6.3. Add lib folder with all JAR's in it from blogbridge/target/deploy to
+     the 'Application Folder'
+6.4. Create folder under Start Menu -> Programs and name it 'BlogBridge'
+6.5. Add new shortcut.
+	a. At Choose Installation File dialog select BlogBridge.exe.
+	b. At New File Shortcut dialog set Name to BlogBridge
+	c. Description set to "Ultimate Info-Junkie System"
+	d. Set Arguments to bb/final
+6.6. Create the same shortcut but for Desktop folder
+6.7. Add uninstall shortcut (Choose "Uninstall..." in shortcuts drop-down
+     in toolbar) to Start Menu -> Programs -> BlogBridge
+	a. Change Name to 'Uninstall BlogBridge...'
+
+7. Continue to Java Products
+7.1. Create new product 'BlogBridge'
+7.2. Add all JAR's (blogbridge.jar and every jar from
+     Application Folder -> lib)
+7.3. Make sure that Main Class points to "com.salas.bb.core.ApplicationLauncher"
+7.4. Set minimum JRE version to 1.4
+7.8. Tick "Single Instance"
+7.9. Select "blogbridge.ico" for Icon Path.
+
+8. On the Media options page tick "Create EXE setup file" and select
+   "Include MSI and install files in EXE" option.
+8.1. Again select "blogbridge.ico" as Icon File.
+
+9. Select Organization options.
+9.1. Rename MainFeature into BlogBridge Core (do not pay attention to the
+     list of corresponding JAR's)
+9.2. Set description to "Ultimate Info-Junkie System"
+
+10. Save project
+
+11. Build project

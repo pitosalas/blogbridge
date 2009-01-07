@@ -1,0 +1,21 @@
+#!/bin/sh
+
+if [ -z $JAVA_HOME ]
+then
+t=/usr/lib/jvm/java-1.5.0-sun && test -d $t && JAVA_HOME=$t
+t=/usr/lib/jvm/java-6-sun && test -d $t && JAVA_HOME=$t
+JAVA=${JAVA_HOME}/jre/bin/java
+fi
+
+export JAVA_HOME
+export PATH="$JAVA_HOME/bin":$PATH
+
+java -cp /usr/share/java/BlogBridge.jar \
+    -Dsun.net.client.defaultConnectTimeout=30000 \
+    -Dsun.net.client.defaultReadTimeout=60000 \
+    -Dworking.folder=final \
+    -Drelease.type=final \
+    -Dreport.errors=true \
+    -Xms64M -Xmx128M \
+    com.salas.bb.core.ApplicationLauncher $1 $2 $3 $4
+	

@@ -1,0 +1,14 @@
+# =============================================================================
+# Style definition.
+#
+# $Revision: 1.1 $
+# =============================================================================
+
+name=modern
+title=Modern
+
+# Fonts
+
+font=Arial-14
+article.text.font.sizedelta=-2
+article.date.font.sizedelta=-2

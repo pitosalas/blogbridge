@@ -1,0 +1,67 @@
+// BlogBridge -- RSS feed reader, manager, and web based service
+// Copyright (C) 2002-2006 by R. Pito Salas
+//
+// This program is free software; you can redistribute it and/or modify it under
+// the terms of the GNU General Public License as published by the Free Software Foundation;
+// either version 2 of the License, or (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+// See the GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License along with this program;
+// if not, write to the Free Software Foundation, Inc., 59 Temple Place,
+// Suite 330, Boston, MA 02111-1307 USA
+//
+// Contact: R. Pito Salas
+// mailto:pitosalas@users.sourceforge.net
+// More information: about BlogBridge
+// http://www.blogbridge.com
+// http://sourceforge.net/projects/blogbridge
+//
+// $Id: TestHighlightsCalculator.java,v 1.9 2006/01/08 05:28:16 kyank Exp $
+//
+
+package com.salas.bb.core;
+
+import junit.framework.TestCase;
+import com.salas.bb.utils.StringUtils;
+
+/**
+ * @see HighlightsCalculator
+ */
+public class TestHighlightsCalculator extends TestCase
+{
+    private static final String TEXT = "a b a a";
+
+    private HighlightsCalculator calc = new HighlightsCalculator();
+
+    /**
+     * Tests caching of highlights.
+     *
+     * @see HighlightsCalculator#getHighlights
+     */
+    public void testGetHighlights()
+    {
+        // initial setting
+        calc.keywordsChanged("a");
+        assertEquals(3, calc.getHighlights(TEXT).length);
+        assertEquals(3, calc.getHighlights(TEXT).length);
+
+        calc.keywordsChanged("b");
+        assertEquals(1, calc.getHighlights(TEXT).length);
+    }
+
+    /**
+     * @see HighlightsCalculator#getHighlightsCount
+     */
+    public void testGetHighlightsCount()
+    {
+        calc.keywordsChanged("a");
+        assertEquals(3, calc.getHighlightsCount(TEXT));
+        assertEquals(3, calc.getHighlightsCount(TEXT));
+
+        calc.keywordsChanged("b");
+        assertEquals(1, calc.getHighlightsCount(TEXT));
+    }
+}

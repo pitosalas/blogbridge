@@ -1,0 +1,15 @@
+# =============================================================================
+# Style definition.
+#
+# $Revision: 1.1 $
+# =============================================================================
+
+name=Seventies
+title=Seventies
+
+font=Courier-12
+
+# Font
+
+article.title.font.sizedelta=2
+articlegroup.font.sizedelta=2

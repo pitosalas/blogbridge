@@ -1,0 +1,37 @@
+# =============================================================================
+# Style definition.
+#
+# $Revision: 1.6 $
+# =============================================================================
+
+name=sample
+title=Sample Theme
+
+font=Arial-10
+
+article.selected.background=#FF8080
+article.unselected.background=#FFFFFF
+article.text.selected.foreground=#00FF00
+article.text.unselected.foreground=#000000
+article.title.selected.foreground=#00FF00
+article.title.unselected.foreground=#FF0000
+article.title.font.sizedelta=+2
+article.date.selected.foreground=#00FF00
+article.date.unselected.foreground=#000000
+article.date.font.sizedelta=-2
+
+articlegroup.background=#4040FF
+articlegroup.foreground=#FF40FF
+articlegroup.font.sizedelta=4
+
+articlelist.background=#FFFFFF
+articlelist.feedname.foreground=#FFFF88
+
+feedslist.background=#FFA0A0
+feedslist.alt.background=#A0FFA0
+feedslist.sel.background=#A0A0FF
+
+bloglink.discovered.background=#FFFFFF
+bloglink.undiscovered.background=#FF00FF
+
+keyword.background=#FFFF80

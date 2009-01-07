@@ -1,0 +1,37 @@
+# DEFAULT CACHE REGION   
+jcs.default=DC
+jcs.default.cacheattributes=org.apache.jcs.engine.CompositeCacheAttributes
+jcs.default.cacheattributes.MaxObjects=1000
+jcs.default.cacheattributes.MemoryCacheName=org.apache.jcs.engine.memory.lru.LRUMemoryCache
+jcs.default.cacheattributes.UseMemoryShrinker=false
+jcs.default.cacheattributes.MaxMemoryIdleTimeSeconds=3600
+jcs.default.cacheattributes.ShrinkerIntervalSeconds=60
+jcs.default.elementattributes=org.apache.jcs.engine.ElementAttributes
+jcs.default.elementattributes.IsEternal=false
+jcs.default.elementattributes.MaxLifeSeconds=21600
+jcs.default.elementattributes.IdleTime=1800
+jcs.default.elementattributes.IsSpool=true
+jcs.default.elementattributes.IsRemote=true
+jcs.default.elementattributes.IsLateral=true
+
+# PRE-DEFINED CACHE REGIONS   
+jcs.region.PlainText=DC
+jcs.region.PlainText.cacheattributes=org.apache.jcs.engine.CompositeCacheAttributes
+jcs.region.PlainText.cacheattributes.MaxObjects=1000
+jcs.region.PlainText.cacheattributes.MemoryCacheName=org.apache.jcs.engine.memory.lru.LRUMemoryCache
+jcs.region.PlainText.cacheattributes.UseMemoryShrinker=false
+jcs.region.PlainText.cacheattributes.MaxMemoryIdleTimeSeconds=3600
+jcs.region.PlainText.cacheattributes.ShrinkerIntervalSeconds=60
+jcs.region.PlainText.cacheattributes.MaxSpoolPerRun=500
+jcs.region.PlainText.elementattributes=org.apache.jcs.engine.ElementAttributes
+jcs.region.PlainText.elementattributes.IsEternal=false
+
+# AVAILABLE AUXILIARY CACHES   
+jcs.auxiliary.DC=org.apache.jcs.auxiliary.disk.indexed.IndexedDiskCacheFactory
+jcs.auxiliary.DC.attributes=org.apache.jcs.auxiliary.disk.indexed.IndexedDiskCacheAttributes
+jcs.auxiliary.DC.attributes.DiskPath=${user.dir}/jcs_swap
+jcs.auxiliary.DC.attributes.MaxPurgatorySize=10000
+jcs.auxiliary.DC.attributes.MaxKeySize=10000
+jcs.auxiliary.DC.attributes.MaxRecycleBinSize=5000
+jcs.auxiliary.DC.attributes.OptimizeAtRemoveCount=300000
+jcs.auxiliary.DC.attributes.ShutdownSpoolTimeLimit=60

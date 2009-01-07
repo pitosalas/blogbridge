@@ -1,0 +1,7 @@
+?package(blogbridge):needs="x11"  \
+section="Apps/Net" \
+title="BlogBridge" \
+command="blogbridge" \
+icon="/usr/share/pixmaps/blogbridge32.xpm" \
+icon32x32="/usr/share/pixmaps/blogbridge32.xpm" \
+icon16x16="/usr/share/pixmaps/blogbridge16.xpm"

@@ -1,0 +1,20 @@
+<html>
+    <head>
+        <title>{article.title}</title>
+        {stylesheet.tag}
+    </head>
+    <body>
+        <div id="asa-page">
+            <h1 id="asa-head">{article.title}</h1>
+            <div id="asa-meta">
+                <p>Feed: <a href="{feed.link}">{feed.title}</a> by {feed.author}</p>
+                <p>Author: {article.author}</p>
+                <p>Link: <a href="{article.link}">{article.link}</a></p>
+                <p>Archived on: {current.date,yyyy-MM-dd}</p>
+            </div>
+            <div id="pa-text">
+                {article.text}
+            </div>
+        </div>
+    </body>
+</html>

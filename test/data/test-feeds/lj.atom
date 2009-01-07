@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- If you are running a bot please visit this policy page outlining rules you must respect. http://www.livejournal.com/bots/ -->
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <id>urn:lj:livejournal.com:atom1:cc</id>
+  <title>the misadventures of reshop girl</title>
+  <subtitle>Andrea</subtitle>
+  <author>
+    <name>Andrea</name>
+  </author>
+  <link rel="alternate" type="text/html" href="http://cc.livejournal.com/"/>
+  <link rel="self" type="text/xml" href="http://cc.livejournal.com/data/atom"/>
+  <updated>2007-10-01T15:45:56Z</updated>
+  <lj:journal username="cc" type="personal"/>
+  <link rel="service.feed" type="application/x.atom+xml" href="http://cc.livejournal.com/data/atom" title="the misadventures of reshop girl"/>
+  <entry>
+    <id>urn:lj:livejournal.com:atom1:cc:22326</id>
+    <link rel="alternate" type="text/html" href="http://cc.livejournal.com/22326.html"/>
+    <title>cc @ 2007-10-02T01:45:00</title>
+    <published>2007-10-01T15:45:56Z</published>
+    <updated>2007-10-01T15:45:56Z</updated>
+    <content type="html">i think my ex boyfriend was the biggest mistake of my life. =\</content>
+  </entry>
+</feed>

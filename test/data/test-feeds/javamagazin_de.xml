@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+<?xml-stylesheet 
+  href="http://www.w3.org/2000/08/w3c-synd/style.css" type="text/css"
+?>
+
+<rss version="2.0"
+  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:admin="http://webns.net/mvcb/"
+  xmlns:dc="http://purl.org/dc/elements/1.1/"
+  xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+  xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+  xmlns:content="http://purl.org/rss/1.0/modules/content/"
+>
+  <channel>
+    <title>Java Magazin</title>
+    <link>http://www.javamagazin.de/</link>
+    <description>Internet &amp; Enterprise Technology</description>
+    <dc:language>de</dc:language>
+    <admin:errorReportsTo rdf:resource="mailto:webmaster@entwickler.com" />
+    <generator>PowerSlave 4.4.1pl3 - http://www.fdog.de/</generator>
+    <pubDate>Sat, 29 Sep 2007 14:00:02 +0200</pubDate>
+    <image>
+      <title>RSS: Java Magazin</title>
+      <link>http://www.javamagazin.de/</link>
+      <url>http://www.javamagazin.de/itr/entwickler.com/images/rss/jm.png</url>
+      <width>205</width>
+      <height>50</height>
+    </image>
+    <item>
+      <title>IBM will Unternehmen stärker bei Positionierung im Wettbewerb unterstützen</title>
+      <link>http://www.javamagazin.de/itr/news/psecom,id,37656,nodeid,10.html</link>
+      <author>(Anke Anlauf)</author>
+      <content:encoded>Das IT-Unternehmen IBM hat neue branchenspezifische Software und Dienste angekündigt, um Unternehmen aus Sparten, wie Finanzdienstleistungen, &#8230;</content:encoded>
+      <pubDate>Fri, 28 Sep 2007 08:00:00 +0200</pubDate>
+      <guid>http://www.javamagazin.de/itr/news/psecom,id,37656,nodeid,10.html</guid>
+    </item>
+    <item>
+      <title>Borland-Studie über Entwicklungsgewohnheiten</title>
+      <link>http://www.javamagazin.de/itr/news/psecom,id,37654,nodeid,10.html</link>
+      <author>(Anke Anlauf)</author>
+      <content:encoded>Die Mehrheit von Unternehmen entwickelt und liefert Software für sehr heterogene Systemumgebungen, fand die Borland Software Corporation, &#8230;</content:encoded>
+      <pubDate>Fri, 28 Sep 2007 08:00:00 +0200</pubDate>
+      <guid>http://www.javamagazin.de/itr/news/psecom,id,37654,nodeid,10.html</guid>
+    </item>
+    <item>
+      <title>SAT-Engine setzt Meilenstein bei Software-Codeanalyse</title>
+      <link>http://www.javamagazin.de/itr/news/psecom,id,37653,nodeid,10.html</link>
+      <author>(Claudia Schaumlöffel)</author>
+      <content:encoded>Coverity hat eine auf Boolescher Satisfiability (SAT) basierende Software-Analyse-Engine angekündigt. Wesentlicher Bestandteil der &#8230;</content:encoded>
+      <pubDate>Fri, 28 Sep 2007 08:00:00 +0200</pubDate>
+      <guid>http://www.javamagazin.de/itr/news/psecom,id,37653,nodeid,10.html</guid>
+    </item>
+    <item>
+      <title>Intalio bringt neue Version seiner BPM-Suite</title>
+      <link>http://www.javamagazin.de/itr/news/psecom,id,37652,nodeid,10.html</link>
+      <author>(Claudia Schaumlöffel)</author>
+      <content:encoded>Intalio hat das GA-Release von BPMS 5.0, seiner open source verfügbaren BPM-Suite, verkündet. Das Produkt unterstützt die Standards &#8230;</content:encoded>
+      <pubDate>Fri, 28 Sep 2007 08:00:00 +0200</pubDate>
+      <guid>http://www.javamagazin.de/itr/news/psecom,id,37652,nodeid,10.html</guid>
+    </item>
+    <item>
+      <title>Backbase bringt Enterprise Ajax 4</title>
+      <link>http://www.javamagazin.de/itr/news/psecom,id,37651,nodeid,10.html</link>
+      <author>(Claudia Schaumlöffel)</author>
+      <content:encoded>Backbase hat Enterprise Ajax 4, einen Browser-basiertes Anwendungsframework entwickelt, das u.a. Entwickler von den Browserabhängigkeiten &#8230;</content:encoded>
+      <pubDate>Fri, 28 Sep 2007 08:00:00 +0200</pubDate>
+      <guid>http://www.javamagazin.de/itr/news/psecom,id,37651,nodeid,10.html</guid>
+    </item>
+    <item>
+      <title>Nexaweb bringt neue Web-2.0-Suite</title>
+      <link>http://www.javamagazin.de/itr/news/psecom,id,37650,nodeid,10.html</link>
+      <author>(Claudia Schaumlöffel)</author>
+      <content:encoded>Nexaweb hat seine neueste Webanwendungsplattform, Nexaweb Enterprise Web 2.0 Suite, veröffentlicht. Die Enterprise Suite kann u.a. &#8230;</content:encoded>
+      <pubDate>Fri, 28 Sep 2007 08:00:00 +0200</pubDate>
+      <guid>http://www.javamagazin.de/itr/news/psecom,id,37650,nodeid,10.html</guid>
+    </item>
+    <item>
+      <title>extend8 mit plattformunabhängiger User Interface Engine erweitert</title>
+      <link>http://www.javamagazin.de/itr/news/psecom,id,37649,nodeid,10.html</link>
+      <author>(Claudia Schaumlöffel)</author>
+      <content:encoded>Das Entwicklungssystem für COBOL-Applikation, Acucorp extend8, wurde von Micro Focus erweitert und nun in neuer Version herausgegeben. &#8230;</content:encoded>
+      <pubDate>Fri, 28 Sep 2007 08:00:00 +0200</pubDate>
+      <guid>http://www.javamagazin.de/itr/news/psecom,id,37649,nodeid,10.html</guid>
+    </item>
+    <item>
+      <title>Lotus Symphony mit 100.000 Downloads</title>
+      <link>http://www.javamagazin.de/itr/news/psecom,id,37648,nodeid,10.html</link>
+      <author>(Claudia Schaumlöffel)</author>
+      <content:encoded>Die neue frei verfügbare Office-Software Lotus Symphony wurde laut IBM in der ersten Woche bereits von 100.000 registrierten, geschäftlichen &#8230;</content:encoded>
+      <pubDate>Fri, 28 Sep 2007 08:00:00 +0200</pubDate>
+      <guid>http://www.javamagazin.de/itr/news/psecom,id,37648,nodeid,10.html</guid>
+    </item>
+    <item>
+      <title>Xing stellt neues Nutzerprofil vor</title>
+      <link>http://www.javamagazin.de/itr/news/psecom,id,37647,nodeid,10.html</link>
+      <author>(Claudia Schaumlöffel)</author>
+      <content:encoded>Die Business-Networking-Plattform Xing hat erweiterte Funktionen für die Nutzerprofile angekündigt: Demnächst sollen Xing-Mitglieder &#8230;</content:encoded>
+      <pubDate>Fri, 28 Sep 2007 08:00:00 +0200</pubDate>
+      <guid>http://www.javamagazin.de/itr/news/psecom,id,37647,nodeid,10.html</guid>
+    </item>
+    <item>
+      <title>Frühbuchertermin W-JAX &amp; SOACON nur noch bis 28.9.2007!</title>
+      <link>http://www.javamagazin.de/itr/news/psecom,id,37626,nodeid,10.html</link>
+      <author>(Claudia Schaumlöffel)</author>
+      <content:encoded>Wer sich noch heute oder spätestens morgen für die W-JAX 2007 oder die SOACON anmeldet, kann die Frühbucherpreise der Konferenz nutzen &#8230;</content:encoded>
+      <pubDate>Thu, 27 Sep 2007 12:00:00 +0200</pubDate>
+      <guid>http://www.javamagazin.de/itr/news/psecom,id,37626,nodeid,10.html</guid>
+    </item>
+    <item>
+      <title>BIRT - Interview mit Nobby Akiha, Senior Vice President Marketing bei Actuate</title>
+      <link>http://www.javamagazin.de/itr/news/psecom,id,37630,nodeid,10.html</link>
+      <author>(Carolle Müller)</author>
+      <content:encoded>Die letzten Monate waren für Actuate ereignisreich. Erst veröffentlichte die Eclipse Foundation das neue Europa Release mit der neuesten &#8230;</content:encoded>
+      <pubDate>Thu, 27 Sep 2007 08:00:00 +0200</pubDate>
+      <guid>http://www.javamagazin.de/itr/news/psecom,id,37630,nodeid,10.html</guid>
+    </item>
+    <item>
+      <title>DocFlex/Javadoc 1.5.3 verfügbar</title>
+      <link>http://www.javamagazin.de/itr/news/psecom,id,37624,nodeid,10.html</link>
+      <author>(Carolle Müller)</author>
+      <content:encoded>Die neue Version des Rapid Doclet Development Tools DocFlex/Javadoc steht jetzt zum Download bereit. Das Multi-Format Javadoc Doclet &#8230;</content:encoded>
+      <pubDate>Thu, 27 Sep 2007 08:00:00 +0200</pubDate>
+      <guid>http://www.javamagazin.de/itr/news/psecom,id,37624,nodeid,10.html</guid>
+    </item>
+    <item>
+      <title>GUI Testing mit FEST 0.6.1</title>
+      <link>http://www.javamagazin.de/itr/news/psecom,id,37622,nodeid,10.html</link>
+      <author>(Carolle Müller)</author>
+      <content:encoded>Version 0.6.1 des Testing Tools FEST wurde veröffentlicht. Mit FEST soll das Testen von GUIs vereinfacht werden. Es liefert neue Features, &#8230;</content:encoded>
+      <pubDate>Thu, 27 Sep 2007 08:00:00 +0200</pubDate>
+      <guid>http://www.javamagazin.de/itr/news/psecom,id,37622,nodeid,10.html</guid>
+    </item>
+    <item>
+      <title>Neue Version von DbWrench veröffentlicht</title>
+      <link>http://www.javamagazin.de/itr/news/psecom,id,37621,nodeid,10.html</link>
+      <author>(Carolle Müller)</author>
+      <content:encoded>Die neue Version 1.4.4 von DbWrench, einer Cross-Plattform Datenbank-Design und Round-Trip Engineering Software, wurde veröffentlicht. &#8230;</content:encoded>
+      <pubDate>Thu, 27 Sep 2007 08:00:00 +0200</pubDate>
+      <guid>http://www.javamagazin.de/itr/news/psecom,id,37621,nodeid,10.html</guid>
+    </item>
+    <item>
+      <title>Iona aktualisiert SOA-Produktreihe Fuse</title>
+      <link>http://www.javamagazin.de/itr/news/psecom,id,37612,nodeid,10.html</link>
+      <author>(Claudia Schaumlöffel)</author>
+      <content:encoded>Iona Technologies hat eine neue Version seiner open source verfügbaren SOA-Produktreihe, Fuse, bekannt gegeben, die auf Projekten der &#8230;</content:encoded>
+      <pubDate>Thu, 27 Sep 2007 08:00:00 +0200</pubDate>
+      <guid>http://www.javamagazin.de/itr/news/psecom,id,37612,nodeid,10.html</guid>
+    </item>
+  </channel>
+</rss>

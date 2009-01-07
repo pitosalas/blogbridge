@@ -1,0 +1,62 @@
+#compiler to use (see javac task for options)
+#build.compiler=jikes
+
+#directories
+src.dir=src
+resources.dir=${basedir}
+classes.dir=buildresult/classes
+jars.dir=build/jars
+lib.dir=lib
+    
+#properties used for signing
+sign.alias=team
+sign.storepass=
+
+# FTP properties
+#
+# ftp.common.http.dir - root dir of HTTP server.
+#
+# Names of properties are formed using the following pattern:
+#
+# ftp.XXXX.YYYY
+#
+# where XXXX - one of the destination classificators
+#              'common'     - default value of property for all destinations
+#              'devel'      - DEVELOPMENT destination
+#              'weekly'     - WEEKLY destination
+#              'stable'     - STABLE destination
+#              'final'      - FINAL destination
+#
+#       YYYY - name of the property
+#              'server'     - URL to FTP server
+#              'user'       - username
+#              'password'   - password
+#              'remote.dir' - suffix for ftp.common.http.dir
+#              'http.dir'   - FTP path to documents root of HTTP server
+#                             (currently available for 'common' destination only)
+#
+# Using all this you may define common properties and override
+# some of them as appropriate. As example, following config tunes all
+# destinations to use the same server, but different directories.
+#
+# ftp.common.server=ftp.some.com
+# ftp.common.user=aleks
+# ftp.common.password=mypassword
+# fto.common.http.dir=/public_html
+# ftp.common.remote.dir=install
+#
+# ftp.devel.remote.dir=bb
+# ftp.weekly.remote.dir=install/weekly
+# ftp.stable.remote.dir=install/stable
+# ftp.final.remote.dir=install/final
+
+ftp.common.server=f7.net
+ftp.common.user=pitosalas
+ftp.common.password=
+ftp.common.http.dir=/blogbridge.com/www
+ftp.common.remote.dir=install
+
+ftp.devel.remote.dir=bb
+ftp.weekly.remote.dir=install/weekly
+ftp.stable.remote.dir=install/stable
+ftp.final.remote.dir=install/final

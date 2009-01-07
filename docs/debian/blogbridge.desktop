@@ -1,0 +1,11 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=BlogBridge _version_
+Comment=Ultimate Info-Junkie System
+Exec=/usr/bin/blogbridge
+Icon=/usr/share/pixmaps/blogbridge32.xpm
+Terminal=false
+Type=Application
+Categories=GNOME;Application;Network
+StartupNotify=true
+

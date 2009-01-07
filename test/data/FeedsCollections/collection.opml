@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<opml version="1.1">
+  <head>
+    <title>Computer Industry</title>
+  </head>
+  <body>
+    <outline type="rss" title="A" xmlUrl="B" htmlUrl="C"/>
+    <outline type="rss" title="D" xmlUrl="E" htmlUrl="F"/>
+  </body>
+</opml>

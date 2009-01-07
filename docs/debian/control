@@ -1,0 +1,22 @@
+Package: blogbridge
+Version: _version_
+Section: web
+Priority: optional
+Architecture: all
+Depends: sun-java6-jre | sun-java5-jre
+Maintainer: BlogBridge Team <support@blogbridge.com>
+Description: RSS reader and simply info-junkie system for any
+ window manager (including Gnome and KDE). This application is
+ designed to help deal with great amount of subscriptions and
+ explore the blogging universe more effectively. It supports
+ all known kinds of feeds (RDF, RSS 2.0, Atom), has OPML import
+ feature to exchange your subscriptions with other applications,
+ Smart Guides to look for information on del.icio.us, pictures
+ on Flickr, articles on Feedster and more.
+ .
+ This package is final production release which hardly tested
+ and proved to be stable.
+ .
+ You can find more information about this project at
+ http://www.blogbridge.com/
+ 

@@ -1,0 +1,100 @@
+# =============================================================================
+# Style definition.
+#
+# The values in this definiton override the values in current LAF theme. They
+# are default to each and every specific theme.
+#
+# Each theme should have a unique 'name'.
+# Each theme should have a 'title'.
+# Theme can be suppressed in some OS'es by adding 'hidden' property with
+# comma-delimetered list of OS'es this shouldn't appear. Currently supported
+# OS'es: linux, mac, windows.
+#
+# $Revision: 1.20 $
+#
+# =============================================================================
+
+name=default
+title=Default Theme
+
+font=Tahoma-11
+
+# =============================================================================
+# Definition of article rendering styles
+#
+# article.(un)selected.background       - basic background colors of article.
+# article.text.(un)selected.foreground  - colors of text in both modes.
+# article.title.(un)selected.foreground - colors of title in both modes.
+# article.date.(un)selected.foreground  - colors of date in both modes.
+# article.text.font.sizedelta           - font size delta for the article text.
+# article.title.font.sizedelta          - font size delta for the article title.
+# article.date.font.sizedelta           - font size delta for the date.
+# =============================================================================
+
+article.unselected.background=#FFFFFF
+article.selected.background=#E0E0E0
+article.text.unselected.foreground=#000000
+article.text.selected.foreground=#000000
+article.title.unselected.foreground=#000000
+article.title.selected.foreground=#000000
+article.date.unselected.foreground=#000000
+article.date.selected.foreground=#000000
+
+# =============================================================================
+# Definition of article groups divider rendering styles
+#
+# articlegroup.background               - background color of divider.
+# articlegroup.foreground               - foreground color of divider.
+# articlegroup.font.sizedelta           - font size delta for divider.
+# =============================================================================
+
+articlegroup.background=#FFFFFF
+articlegroup.foreground=#000000
+
+# =============================================================================
+# Definition of articles list rendering styles
+#
+# articlelist.background                - background color of the list.
+# articlelist.feedname.font.sizedelta   - font size delta for the feed name in
+#                                         the header.
+# articlelist.feedname.foreground       - color of the feed name in the header.
+# =============================================================================
+
+articlelist.background=#FFFFFF
+
+# =============================================================================
+# Definition of feeds list rendering styles
+#
+# feedslist.background                  - background color of the feeds list.
+# feedslist.foreground                  - foreground color of the feeds list.
+# feedslist.alt.background              - alternating background color of list.
+# feedslist.sel.background              - selected background color of list.
+# feedslist.sel.foreground              - selected foreground color of list.
+# =============================================================================
+
+feedslist.foreground=#000000
+feedslist.background=#FFFFFF
+feedslist.alt.background=#F8F8F8
+
+feedslist.sel.background=#E0E0E0
+feedslist.sel.foreground=#000000
+
+# =============================================================================
+# Definition of blog links in articles
+#
+# bloglink.(un)discovered.background    - background colors of blog links.
+# =============================================================================
+
+bloglink.undiscovered.background=#F38192
+#bloglink.undiscovered.background.mac=#AB3462
+bloglink.discovered.background=#91D580
+#bloglink.discovered.background.mac=#98DA95
+
+# =============================================================================
+# Definition of keyword highlights in articles
+#
+# keyword.background                    - background color of highlight.
+# =============================================================================
+
+keyword.background=#97B1FF
+keyword.background.mac=#B4C0E4

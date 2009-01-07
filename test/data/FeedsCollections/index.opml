@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<opml version="1.1">
+  <head>
+    <title>Starting Points</title>
+  </head>
+  <body>
+    <outline title="A" text="B" url="C"/>
+    <outline title="D" text="E" url="F"/>
+  </body>
+</opml>

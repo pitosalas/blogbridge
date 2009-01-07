@@ -1,0 +1,981 @@
+<?xml version="1.0" ?> 
+
+<project name="blogbridge" default="usage">
+
+    <!-- =============================================================== -->
+    <!-- Properties                                                      -->
+    <!-- =============================================================== -->
+
+    <!--
+        First check the blogbridge-ant.properties file, where all properties
+        can be overridden. To override java compiler, specify build.compiler
+        property.
+     -->
+    <property file="blogbridge-ant.properties"/>
+
+    <property name="base.url" value="http://www.blogbridge.com"/>
+    <property name="base.devel.url" value="http://localhost"/>
+
+    <property name="version" value="6.6"/>
+
+    <property name="main.class" value="com.salas.bb.core.ApplicationLauncher"/>
+
+    <!-- directories used by the build -->
+    <property name="src.dir" value="src"/>
+    <property name="tests.dir" value="test"/>
+    <property name="resources.dir" value="${basedir}"/>
+    <property name="lib.dir" value="lib"/>
+    <property name="supplementary.lib.dir" value="suplib"/>
+
+    <property name="build.dir" value="target"/>
+    <property name="build.classes.dir" value="${build.dir}/classes"/>
+    <property name="build.tests.classes.dir" value="${build.dir}/tests-classes"/>
+    <property name="build.jars.dir" value="${build.dir}/lib"/>
+    <property name="build.style.errors.dir" value="${build.dir}/style"/>
+    <property name="build.tests.data" value="${build.dir}/tests-data"/>
+    <property name="build.tests.reports" value="${build.dir}/tests-reports"/>
+
+    <property name="deploy.dir" value="${build.dir}/deploy"/>
+    <property name="deploy.lib.dir" value="${deploy.dir}/lib"/>
+
+    <property name="release.dir" value="${build.dir}/release"/>
+    <property name="packages.dir" value="${build.dir}/packages"/>
+
+    <property name="javadoc.dir" value="${build.dir}/javadoc"/>
+    <property name="repack.temp.dir" value="${build.dir}/temp"/>
+
+    <!-- files aliases -->
+    <property name="main.jar.file" value="blogbridge.jar"/>
+
+    <!-- properties used for signing -->
+    <property name="sign.keystore" value="keys"/>
+    <property name="sign.storepass" value="daniel"/>
+    <property name="sign.alias" value="myself"/>
+
+    <!-- properties used for FTP -->
+    <property name="ftp.common.server" value="f7.net"/>
+    <property name="ftp.common.user" value="anonymous"/>
+    <property name="ftp.common.password" value=""/>
+    <property name="ftp.common.http.dir" value="/blogbridge.com/www/"/>
+    <property name="ftp.common.remote.dir" value="install"/>
+
+    <property name="ftp.weekly.server" value="${ftp.common.server}"/>
+    <property name="ftp.weekly.user" value="${ftp.common.user}"/>
+    <property name="ftp.weekly.password" value="${ftp.common.password}"/>
+    <property name="ftp.weekly.remote.dir" value="${ftp.common.remote.dir}"/>
+
+    <property name="ftp.stable.server" value="${ftp.common.server}"/>
+    <property name="ftp.stable.user" value="${ftp.common.user}"/>
+    <property name="ftp.stable.password" value="${ftp.common.password}"/>
+    <property name="ftp.stable.remote.dir" value="${ftp.common.remote.dir}"/>
+
+    <property name="ftp.final.server" value="${ftp.common.server}"/>
+    <property name="ftp.final.user" value="${ftp.common.user}"/>
+    <property name="ftp.final.password" value="${ftp.common.password}"/>
+    <property name="ftp.final.remote.dir" value="${ftp.common.remote.dir}"/>
+
+    <property name="ai.script" value="blogbridge-${version}.aip"/>
+    <property name="ai.script.path" value="${packages.dir}/${ai.script}"/>
+    <property name="ai.path" value="C:\\Program Files\\Caphyon\\Advanced Installer"/>
+
+    <!-- =============================================================== -->
+    <!-- Optional Tasks                                                  -->
+    <!-- =============================================================== -->
+<!--
+    <taskdef name="ftp"
+        classname="org.apache.tools.ant.taskdefs.optional.net.FTP"/>
+-->
+    <taskdef resource="net/sf/antcontrib/antlib.xml">
+        <classpath>
+            <pathelement location="${supplementary.lib.dir}/ant-contrib.jar"/>
+        </classpath>
+    </taskdef>
+
+    <taskdef resource="checkstyletask.properties"
+        classpath="${supplementary.lib.dir}/checkstyle-all.jar"/>
+
+    <!-- =============================================================== -->
+    <!-- Paths                                                           -->
+    <!-- =============================================================== -->
+
+    <path id="compile.classpath">
+        <fileset dir="${lib.dir}" includes="*.jar"/>
+    </path>
+
+    <!-- Classpath when compiling tests -->
+    <path id="compile.tests.classpath">
+        <path refid="compile.classpath"/>
+        <pathelement location="${build.classes.dir}"/>
+        <fileset dir="${supplementary.lib.dir}" includes="*.jar"/>
+    </path>
+
+    <path id="run.tests.classpath">
+        <path refid="compile.tests.classpath"/>
+    </path>
+
+    <!-- =============================================================== -->
+    <!-- Displays usage information and current configuration.           -->
+    <!-- =============================================================== -->
+
+    <target name="usage"
+            description="Displays usage information and current configuration.">
+
+        <echo>Configuration:</echo>
+        <echo>--------------</echo>
+        <echo/>
+        <echo>Sources and libraries paths</echo>
+        <echo/>
+        <echo>Source       : ${src.dir}</echo>
+        <echo>Tests        : ${tests.dir}</echo>
+        <echo>Resources    : ${resources.dir}</echo>
+        <echo>Libraries    : ${lib.dir}</echo>
+        <echo/>
+        <echo>Build paths</echo>
+        <echo/>
+        <echo>Classes      : ${build.classes.dir}</echo>
+        <echo>Test classes : ${build.tests.classes.dir}</echo>
+        <echo>JARs         : ${build.jars.dir}</echo>
+        <echo/>
+        <echo>Deployment paths</echo>
+        <echo/>
+        <echo>Root         : ${deploy.dir}</echo>
+        <echo>JARs         : ${deploy.lib.dir}</echo>
+        <echo/>
+        <echo>JNLP Codebase</echo>
+        <echo/>
+        <echo>Stable       : ${base.url}/${ftp.stable.remote.dir}</echo>
+        <echo>Final        : ${base.url}/${ftp.final.remote.dir}</echo>
+        <echo/>
+        <echo>Miscellaneous paths</echo>
+        <echo/>
+        <echo>JavaDoc      : ${javadoc.dir}</echo>
+        <echo>Repack temp  : ${repack.temp.dir}</echo>
+        <echo/>
+        <echo>Signing properties</echo>
+        <echo/>
+        <echo>Keystore     : ${sign.keystore}</echo>
+        <echo>Alias        : ${sign.alias}</echo>
+        <echo/>
+        <echo>FTP properties</echo>
+        <echo/>
+        <echo>Development  : ${ftp.devel.server}/${ftp.common.http.dir}/${ftp.devel.remote.dir} [user=${ftp.devel.user}, password=${ftp.devel.password}]</echo>
+        <echo>Weekly       : ${ftp.weekly.server}/${ftp.common.http.dir}/${ftp.weekly.remote.dir} [user=${ftp.weekly.user}, password=${ftp.weekly.password}]</echo>
+        <echo>Stable       : ${ftp.stable.server}/${ftp.common.http.dir}/${ftp.stable.remote.dir} [user=${ftp.stable.user}, password=${ftp.stable.password}]</echo>
+        <echo>Final        : ${ftp.final.server}/${ftp.common.http.dir}/${ftp.final.remote.dir} [user=${ftp.final.user}, password=${ftp.final.password}]</echo>
+
+        <echo/>
+        <echo>Usage:</echo>
+        <echo>----------------</echo>
+        <echo/>
+        <echo>clean          - cleans everything up.</echo>
+        <echo>compile        - compiles the sources.</echo>
+        <echo>jar            - builds JAR file and copies libraries under the build directory.</echo>
+        <echo/>
+        <echo>deploy.devel   - builds deployment for Development-release.</echo>
+        <echo>deploy.weekly  - builds deployment for Weekly-release.</echo>
+        <echo>deploy.stable  - builds deployment for Stable-release.</echo>
+        <echo>deploy.final   - builds deployment for Production-release.</echo>
+        <echo/>
+        <echo>ftp.final      - uses deploy.release to build deployment and uploads it on FTP.</echo>
+        <echo/>
+        <echo>javadoc        - creates API JavaDoc documentation.</echo>
+        <echo/>
+        <echo>style.all      - creates report of style violations in all project files.</echo>
+        <echo>style.changed  - creates report of style violations in files changed since last 'catchup',</echo>
+        <echo>catchup        - marks all project files as up-to-date.</echo>
+    </target>
+
+    <!-- =============================================================== -->
+    <!-- Cleans and deployes everything.                                 -->
+    <!-- =============================================================== -->
+
+    <target name="redeploy"
+            description="Cleans everything up and deploys."
+            depends="clean, deploy.final">
+    </target>
+
+    <!-- =============================================================== -->
+    <!-- Cleans everything.                                              -->
+    <!-- =============================================================== -->
+
+    <target name="clean"
+            description="Cleans all">
+        <delete dir="${build.dir}"/>
+        <delete dir="${deploy.dir}"/>
+    </target>
+
+    <!-- =============================================================== -->
+    <!-- Comiles the sources.                                            -->
+    <!-- =============================================================== -->
+
+    <target name="compile"
+            description="Compile sources.">
+
+        <mkdir dir="${build.classes.dir}"/>
+
+        <javac srcdir="${src.dir}"
+               destdir="${build.classes.dir}"
+               fork="true"
+               debug="false"
+               source="1.5">
+            <classpath refid="compile.classpath"/>
+        </javac>
+    </target>
+
+    <!-- =============================================================== -->
+    <!-- Performs tests.                                                 -->
+    <!-- =============================================================== -->
+
+    <target name="test.compile"
+            description="Compiles tests."
+            depends="compile">
+
+        <mkdir dir="${build.tests.classes.dir}"/>
+
+        <javac srcdir="${tests.dir}"
+               destdir="${build.tests.classes.dir}"
+               fork="true"
+               debug="true"
+               source="1.4">
+            <classpath refid="compile.tests.classpath"/>
+        </javac>
+    </target>
+
+    <target name="test.prepare"
+            description="Prepares tests data.">
+
+        <copy todir="${build.tests.classes.dir}">
+            <fileset dir="${src.dir}" includes="**/*.properties"/>
+            <fileset dir="${tests.dir}" includes="data/**/*"/>
+            <fileset dir="${src.dir}" includes="resources/**"/>
+        </copy>
+    </target>
+
+    <target name="test"
+            description="Performs tests of application."
+            depends="test.compile, test.prepare">
+
+        <delete dir="${build.tests.data}"/>
+        <delete dir="${build.tests.reports}"/>
+        <mkdir dir="${build.tests.data}"/>
+        <mkdir dir="${build.tests.reports}"/>
+
+        <junit printsummary="no" showoutput="no" fork="yes" dir="${build.tests.classes.dir}">
+            <classpath>
+                <path refid="run.tests.classpath"/>
+                <pathelement path="${build.tests.classes.dir}"/>
+            </classpath>
+            <formatter type="brief" usefile="false"/>
+            <formatter type="xml"/>
+            <batchtest fork="true" todir="${build.tests.data}">
+                <fileset dir="${tests.dir}">
+                    <include name="**/Test*.java"/>
+                    <exclude name="**/TestAll.java"/>
+                </fileset>
+            </batchtest>
+        </junit>
+
+        <!-- build report -->
+        <junitreport todir="${build.tests.data}">
+            <fileset dir="${build.tests.data}">
+                <include name="TEST-*.xml"/>
+            </fileset>
+            <report format="frames" todir="${build.tests.reports}"/>
+        </junitreport>
+
+        <!-- Clean tests data -->
+        <delete dir="${build.tests.data}"/>
+    </target>
+
+    <!-- =============================================================== -->
+    <!-- Builds main JAR file.                                           -->
+    <!-- =============================================================== -->
+
+    <target name="jar"
+            description="Build JAR archive from classes."
+            depends="compile">
+
+        <jar destfile="${build.dir}/${main.jar.file}">
+            <fileset dir="${build.classes.dir}"/>
+            <fileset dir="${src.dir}" includes="*.properties,com/**/*.properties"/>
+            <fileset dir="${src.dir}" includes="resources/**" excludes="resources/startingpoints/**"/>
+            <fileset dir="${src.dir}" includes="docs/**"/>
+        </jar>
+    </target>
+
+    <!-- =============================================================== -->
+    <!-- Repacks libraries by removing unnecessary stuff from manifest.  -->
+    <!-- =============================================================== -->
+
+    <target name="repack.libs"
+            description="Performs repacking of modified libraries.">
+
+        <foreach target="repack.file" param="filename.full" inheritall="true">
+            <path>
+                <fileset dir="${deploy.lib.dir}" includes="*.jar">
+                    <modified>
+                        <param name="update" value="false"/>
+                        <param name="cache.cachefile" value="${build.dir}/deploy.cache.properties"/>
+                    </modified>
+                </fileset>
+            </path>
+        </foreach>
+
+        <delete dir="${repack.temp.dir}"/>
+    </target>
+
+    <!--
+        This target is intended to remove unnecessary information from JARs
+        which will lead to incorrect format of manifest.mf file. This format
+        is not understood by JavaWebStart version < 1.4.2.
+
+        This target should NEVER be called directly.
+    -->
+    <target name="repack.file"
+            description="Repacks single library file.">
+        <condition property="filename.full.set" value="true">
+            <isset property="filename.full"/>
+        </condition>
+        <fail message="Do not call this target directly!"
+            unless="filename.full.set"/>
+
+        <delete dir="${repack.temp.dir}"/>
+        <mkdir dir="${repack.temp.dir}"/>
+
+        <!-- Get only the name of lib. -->
+        <!-- Extract its contents into temp. -->
+        <unjar src="${filename.full}" dest="${repack.temp.dir}"/>
+
+        <delete>
+            <fileset dir="${repack.temp.dir}"
+                includes="META-INF/MANIFEST.MF,META-INF/*.DSA,META-INF/*.SF"/>
+        </delete>
+
+        <jar basedir="${repack.temp.dir}" destfile="${filename.full}"/>
+
+        <delete dir="${repack.temp.dir}"/>
+    </target>
+
+    <!-- =============================================================== -->
+    <!-- Creates complete deployment ready for distribution.             -->
+    <!--                                                                 -->
+    <!-- Set of targets deploy.final                                     -->
+    <!-- should be used to create particular types of deployment.        -->
+    <!--                                                                 -->
+    <!-- deploy.custom should NEVER be called DIRECTLY.                  -->
+    <!--                                                                 -->
+    <!-- repack.file performs repacking of libraries JAR-files in order  -->
+    <!--   to avoid problems with JWS version < 1.4.2. Should NEVER be   -->
+    <!--   called DIRECTLY.                                              -->
+    <!-- =============================================================== -->
+
+    <target name="deploy.devel"
+            description="Organizes deployment directory of DEVELOPMENT.">
+
+        <property name="deploy.base.url" value="${base.devel.url}/${ftp.devel.remote.dir}"/>
+        <property name="working.folder" value="devel"/>
+        <property name="release.type" value="development"/>
+        <property name="title.type" value=" - Development"/>
+
+        <antcall target="deploy.custom" inheritAll="yes"/>
+    </target>
+
+    <target name="deploy.weekly"
+            description="Organizes deployment directory of WEEKLY.">
+
+        <property name="deploy.base.url" value="${base.url}/${ftp.weekly.remote.dir}"/>
+        <property name="working.folder" value="weekly"/>
+        <property name="release.type" value="weekly"/>
+        <property name="title.type" value=" - Weekly"/>
+
+        <antcall target="deploy.custom" inheritAll="yes"/>
+    </target>
+
+    <target name="deploy.stable"
+            description="Organizes deployment directory of STABLE.">
+
+        <property name="deploy.base.url" value="${base.url}/${ftp.stable.remote.dir}"/>
+        <property name="working.folder" value="final"/>
+        <property name="release.type" value="stable"/>
+        <property name="title.type" value=" - Stable"/>
+
+        <antcall target="deploy.custom" inheritAll="yes"/>
+    </target>
+
+    <target name="deploy.final"
+            description="Organizes deployment directory of FINAL.">
+
+        <property name="deploy.base.url" value="${base.url}/${ftp.final.remote.dir}"/>
+        <property name="working.folder" value="final"/>
+        <property name="release.type" value="final"/>
+        <property name="title.type" value=""/>
+
+        <antcall target="deploy.custom" inheritAll="yes"/>
+    </target>
+
+    <target name="deploy.custom"
+            description="Organizes deployment directory."
+            depends="jar">
+
+        <echo>Deployment settings:</echo>
+        <echo>--------------------</echo>
+        <echo>Base URL: ${deploy.base.url}</echo>
+
+        <!-- make deployment directory -->
+        <mkdir dir="${deploy.lib.dir}"/>
+
+        <!-- copy application and resources -->
+        <copy todir="${deploy.dir}">
+            <fileset dir="${build.dir}" includes="blogbridge.jar"/>
+            <fileset dir="${resources.dir}" includes="blogbridge.gif"/>
+        </copy>
+
+        <!-- copy and tune blogbridge.jnlp -->
+        <copy file="${resources.dir}/blogbridge.jnlp.template"
+            tofile="${deploy.dir}/blogbridge.jnlp" overwrite="yes"/>
+
+        <replace file="${deploy.dir}/blogbridge.jnlp" token="{deploy.base.url}" value="${deploy.base.url}"/>
+        <replace file="${deploy.dir}/blogbridge.jnlp" token="{version}" value="${version}"/>
+        <replace file="${deploy.dir}/blogbridge.jnlp" token="{working.folder}" value="${working.folder}"/>
+        <replace file="${deploy.dir}/blogbridge.jnlp" token="{release.type}" value="${release.type}"/>
+        <replace file="${deploy.dir}/blogbridge.jnlp" token="{title.type}" value="${title.type}"/>
+
+        <!-- setup file separator for regex operations -->
+        <if>
+            <equals arg1="${file.separator}" arg2="\"/>
+            <then>
+                <property name="file.separator.regex" value="\\"/>
+            </then>
+            <else>
+                <property name="file.separator.regex" value="${file.separator}"/>
+            </else>
+        </if>
+
+	<!-- deploy and repack libraries -->
+        <copy todir="${deploy.lib.dir}">
+            <fileset dir="${lib.dir}" includes="*.jar"/>
+        </copy>
+
+        <antcall target="repack.libs"/>
+
+        <!-- create JAR for DLL's in the lib folder -->
+        <jar basedir="${lib.dir}" includes="*.dll,*.jnilib" destfile="${deploy.lib.dir}/native.jar"/>
+
+        <!-- sign content -->
+        <signjar keystore="${sign.keystore}"
+                 storepass="${sign.storepass}"
+                 alias="${sign.alias}">
+                <fileset dir="${deploy.dir}" includes="**/*.jar">
+                    <modified>
+                        <param name="cache.cachefile" value="${build.dir}/deploy.cache.properties"/>
+                        <param name="update" value="false"/>
+                    </modified>
+                </fileset>
+        </signjar>
+
+        <checksum property="temp">
+            <fileset dir="${deploy.dir}" includes="**/*.jar">
+                <modified>
+                    <param name="cache.cachefile" value="${build.dir}/deploy.cache.properties"/>
+                    <param name="update" value="true"/>
+                </modified>
+            </fileset>
+        </checksum>
+    </target>
+
+    <target name="documentation" depends="test, javadoc, style.all">
+        <!-- Pack tests report -->
+
+        <tar destfile="${deploy.dir}/junit.tar" basedir="${build.tests.reports}"/>
+        <bzip2 src="${deploy.dir}/junit.tar" destfile="${deploy.dir}/junit.tar.bz2"/>
+        <delete file="${deploy.dir}/junit.tar"/>
+
+        <!-- Pack javadoc -->
+        <tar destfile="${deploy.dir}/javadoc.tar" basedir="${javadoc.dir}"/>
+        <bzip2 src="${deploy.dir}/javadoc.tar" destfile="${deploy.dir}/javadoc.tar.bz2"/>
+        <delete file="${deploy.dir}/javadoc.tar"/>
+
+        <!-- Pack style -->
+        <tar destfile="${deploy.dir}/style.tar" basedir="${build.style.errors.dir}" excludes="*.xml"/>
+        <bzip2 src="${deploy.dir}/style.tar" destfile="${deploy.dir}/style.tar.bz2"/>
+        <delete file="${deploy.dir}/style.tar"/>
+    </target>
+
+    <!-- =============================================================== -->
+    <!-- Moves distribution on FTP.                                      -->
+    <!--                                                                 -->
+    <!-- ftp.stable and ftp.final targets use appropriate                -->
+    <!-- deploy.xxxx tasks to produce deployments and then upload them   -->
+    <!-- to specific locations.                                          -->
+    <!--                                                                 -->
+    <!-- ftp.custom should NEVER be called DIRECTLY.                     -->
+    <!-- =============================================================== -->
+
+    <target name="ftp.final"
+            description="Moves deployment to FINAL."
+            depends="deploy.final">
+
+            <property name="ftp.server" value="${ftp.final.server}"/>
+            <property name="ftp.user" value="${ftp.final.user}"/>
+            <property name="ftp.password" value="${ftp.final.password}"/>
+            <property name="ftp.remote.dir" value="${ftp.final.remote.dir}"/>
+
+            <antcall target="ftp.custom" inheritAll="yes"/>
+    </target>
+
+    <target name="ftp.custom"
+            description="Upload whole release to FTP.">
+
+        <condition property="ftp.subtask" value="true">
+            <isset property="ftp.server"/>
+        </condition>
+
+        <fail message="This target cannot be called directly. Use 'ftp.xxxx' instead." unless="ftp.subtask"/>
+
+        <echo>FTP deployment settings:</echo>
+        <echo>------------------------</echo>
+        <echo>Server     : ${ftp.server}</echo>
+        <echo>User       : ${ftp.user}</echo>
+        <echo>Password   : ${ftp.password}</echo>
+        <echo>Remote dir : ${ftp.remote.dir}</echo>
+
+        <!-- upload files to root directory (for now, assume resources go there too) -->
+        <ftp server="${ftp.server}"
+             userid="${ftp.user}"
+             password="${ftp.password}"
+             remotedir="${ftp.common.http.dir}/${ftp.remote.dir}">
+
+            <fileset dir="${deploy.dir}"/>
+        </ftp>
+    </target>
+
+    <!-- =============================================================== -->
+    <!-- Creates complete API documentation.                             -->
+    <!-- =============================================================== -->
+
+    <target name="javadoc"
+            description="Creates full API documentation.">
+         <delete dir="${javadoc.dir}"/>
+         <javadoc  sourcepath="${src.dir}"
+                   destdir="${javadoc.dir}"
+                   classpathref="compile.classpath"
+                   source="1.4"
+                   author="true"
+                   version="true"
+                   use="true"
+                   windowtitle="BlogBridge API">
+            <fileset dir="${src.dir}"/>
+            <doctitle><![CDATA[<h1>BlogBridge API</h1>]]></doctitle>
+            <bottom><![CDATA[<i>Copyright &#169; 2000 Copyright 2003 Salas Associates, Inc.</i>]]></bottom>
+         </javadoc>
+    </target>
+
+    <!-- =============================================================== -->
+    <!-- Checks the style of code.                                       -->
+    <!-- =============================================================== -->
+
+    <target name="style.all"
+            description="Checks style of all project files.">
+        <delete dir="${build.style.errors.dir}"/>
+        <mkdir dir="${build.style.errors.dir}"/>
+        <checkstyle config="style/style.xml"
+                    failOnViolation="false"
+                    failureProperty="style.failure.set">
+            <fileset dir="${src.dir}" includes="**/*.java"/>
+            <formatter type="xml" toFile="${build.style.errors.dir}/style.errors.xml"/>
+        </checkstyle>
+
+        <dirname property="root.dir" file="${src.dir}/com"/>
+        <replace file="${build.style.errors.dir}/style.errors.xml"
+            token="${root.dir}/" value=""/>
+
+        <antcall target="report"/>
+    </target>
+
+    <target name="style.changed"
+            description="Checks style in files changed since last 'catchup'.">
+        <mkdir dir="${build.style.errors.dir}"/>
+
+        <fileset id="changed-src" dir="${src.dir}" includes="**/*.java">
+            <modified>
+                <param name="update" value="false"/>
+            </modified>
+        </fileset>
+
+        <fileset id="changed-test" dir="${tests.dir}" includes="**/*.java">
+            <modified>
+                <param name="update" value="false"/>
+            </modified>
+        </fileset>
+
+        <delete dir="temp"/>
+        <mkdir dir="temp"/>
+
+        <copy todir="temp">
+            <fileset refid="changed-src"/>
+            <fileset refid="changed-test"/>
+        </copy>
+
+        <checkstyle config="style/style.xml"
+                    failOnViolation="false"
+                    failureProperty="style.failure.set">
+            <classpath refid="run.tests.classpath"/>
+            <fileset dir="temp"/>
+            <formatter type="xml" toFile="${build.style.errors.dir}/style.errors.xml"/>
+        </checkstyle>
+
+        <delete dir="temp"/>
+
+        <dirname property="current.dir" file="${src.dir}"/>
+        <replace file="${build.style.errors.dir}/style.errors.xml"
+            token="${current.dir}/temp/" value=""/>
+
+        <antcall target="report"/>
+
+        <fail message="Style check failed." if="style.failure.set"/>
+    </target>
+
+    <target name="report"
+            description="Creates coding style vialotion report">
+
+        <dirname property="current.dir" file="${src.dir}"/>
+
+        <replace file="${build.style.errors.dir}/style.errors.xml"
+            token="${current.dir}\${src.dir}\" value=""/>
+
+        <style destdir="."
+               extension=".html"
+               style="style/checkstyle-frames.xsl"
+               includes="${build.style.errors.dir}/style.errors.xml"/>
+    </target>
+
+    <target name="catchup"
+            description="Flushes all changes.">
+        <checksum property="tmp">
+            <fileset dir="${src.dir}" includes="**/*.java">
+                <modified>
+                    <param name="update" value="true"/>
+                </modified>
+            </fileset>
+        </checksum>
+        <checksum property="tmp">
+            <fileset dir="${tests.dir}" includes="**/*.java">
+                <modified>
+                    <param name="update" value="true"/>
+                </modified>
+            </fileset>
+        </checksum>
+    </target>
+
+    <!-- =============================================================== -->
+    <!-- Creates new release package.                                    -->
+    <!-- =============================================================== -->
+
+    <target name="release.init">
+      <delete dir="${release.dir}"/>
+      <mkdir dir="${release.dir}"/>
+    </target>
+
+    <target name="build.release.final" depends="deploy.final">
+      <property name="working.folder" value="final"/>
+      <property name="release.type" value="final"/>
+      <antcall target="build.release.common" inheritall="yes"/>
+    </target>
+
+    <target name="build.release.stable" depends="deploy.stable">
+      <property name="working.folder" value="final"/>
+      <property name="release.type" value="stable"/>
+      <antcall target="build.release.common" inheritall="yes"/>
+    </target>
+
+    <target name="build.release.common" depends="release.init">
+      <antcall target="release.batches" inheritall="yes"/>
+
+      <!-- blogbridge-bin-version.zip -->
+      <zip destfile="${release.dir}/blogbridge-bin-${version}.zip" compress="yes">
+          <zipfileset dir="${deploy.dir}" includes="blogbridge.jar, blogbridge.gif" prefix="blogbridge-${version}"/>
+          <zipfileset dir="${build.dir}" includes="blogbridge.bat" prefix="blogbridge-${version}"/>
+          <zipfileset dir="${build.dir}" includes="blogbridge.sh" prefix="blogbridge-${version}"/>
+      </zip>
+
+      <!-- blogbridge-lib-version.zip -->
+      <zip destfile="${release.dir}/blogbridge-lib-${version}.zip" compress="yes">
+          <zipfileset dir="${deploy.dir}" includes="lib/*.jar" prefix="blogbridge-${version}"/>
+      </zip>
+    </target>
+
+    <!--
+      Creates two command files for application start: blogbridge.bat and blogbridge.sh.
+
+      Places them in ${build.dir} directory.
+
+      Uses ${deploy.dir} to get ${main.jar.file} and ${deploy.lib.dir} to get **/*.jar and
+      composes actual classpath.
+
+      Uses ${main.class} property to get the name of main application class.
+    -->
+    <target name="release.batches">
+        <dirname file="${deploy.lib.dir}" property="base.dir.path"/>
+        <path id="full.path">
+          <pathelement location="${deploy.dir}/${main.jar.file}"/>
+          <fileset dir="${deploy.lib.dir}">
+            <include name="**/*.jar"/>
+          </fileset>
+        </path>
+
+        <pathconvert refid="full.path" property="batch.classpath.windows"
+          targetos="windows">
+            <map from="${base.dir.path}${file.separator}" to=""/>
+        </pathconvert>
+
+        <pathconvert refid="full.path" property="batch.classpath.unix"
+          targetos="unix">
+            <map from="${base.dir.path}${file.separator}" to=""/>
+        </pathconvert>
+
+        <property name="full.batch.classpath.unix" value="${main.jar.file}${path.separator}${batch.classpath.unix}"/>
+        <property name="batch.properties" value="-Dsun.net.client.defaultConnectTimeout=30000 -Dsun.net.client.defaultReadTimeout=60000 -Dworking.folder=${working.folder} -Drelease.type=${release.type} -Dreport.errors -Dapple.laf.useScreenMenuBar=true -Xms256M -Xmx256M -XX:NewRatio=2 -XX:SurvivorRatio=3 -Xverify:none"/>
+
+        <echo file="${build.dir}/blogbridge.bat">java ${batch.properties} -cp ${batch.classpath.windows} ${main.class}</echo>
+        <echo file="${build.dir}/blogbridge.sh">#!/bin/sh
+if [ -L $0 ] ; then
+    BB_HOME=`readlink -f "$0" | xargs dirname`
+else
+    BB_HOME=${0%${0##*/}}
+fi
+cd $BB_HOME
+LIBS=`find lib -name '*.jar' | paste -s -d : -`
+java ${batch.properties} -cp blogbridge.jar:$LIBS ${main.class}
+    </echo>
+    </target>
+
+  <!-- =============================================================== -->
+  <!-- Packaging targets.                                              -->
+  <!-- =============================================================== -->
+
+  <!-- Prepare to pacakge -->
+  <target name="package-init" depends="release.init">
+    <delete dir="${packages.dir}"/>
+    <mkdir dir="${packages.dir}"/>
+  </target>
+
+  <target name="package.tgz.final" depends="deploy.final, package-init">
+
+    <property name="working.folder" value="final"/>
+    <property name="release.type" value="final"/>
+
+    <antcall target="release.batches" inheritall="yes"/>
+    <antcall target="package.tgz.common" inheritall="yes"/>
+  </target>
+
+  <target name="package.tgz.stable" depends="deploy.stable, package-init">
+
+    <property name="working.folder" value="final"/>
+    <property name="release.type" value="stable"/>
+
+    <antcall target="release.batches" inheritall="yes"/>
+    <antcall target="package.tgz.common" inheritall="yes"/>
+  </target>
+
+  <target name="package.tgz.weekly" depends="deploy.weekly, package-init">
+
+    <property name="working.folder" value="weekly"/>
+    <property name="release.type" value="weekly"/>
+
+    <antcall target="release.batches" inheritall="yes"/>
+    <antcall target="package.tgz.common" inheritall="yes"/>
+  </target>
+
+  <target name="package.tgz.common">
+    <!-- create single tar.gz archive with release files. -->
+    <tar destfile="${packages.dir}/blogbridge-${version}.tgz" compression="gzip">
+      <tarfileset dir="${deploy.dir}" includes="blogbridge.jar, blogbridge.gif" prefix="blogbridge-${version}" username="root" group="root"/>
+      <tarfileset dir="${build.dir}" includes="blogbridge.bat" prefix="blogbridge-${version}" username="root" group="root"/>
+      <tarfileset dir="${build.dir}" includes="blogbridge.sh" prefix="blogbridge-${version}" mode="777" username="root" group="root"/>
+      <tarfileset dir="${deploy.dir}" includes="lib/*.jar" prefix="blogbridge-${version}" username="root" group="root"/>
+    </tar>
+  </target>
+
+  <!-- Creates debian package -->
+  <target name="package.deb" depends="package-init">
+
+    <property name="bb.lib" value="${packages.dir}/debian/usr/lib/blogbridge"/>
+    <property name="bb.bin" value="${packages.dir}/debian/usr/bin"/>
+    <property name="bb.share" value="${packages.dir}/debian/usr/share/blogbridge"/>
+    <property name="bb.app" value="${packages.dir}/debian/usr/share/applications"/>
+    <property name="bb.script" value="blogbridge.sh"/>
+
+    <delete dir="${packages.dir}/debian"/>
+    <mkdir dir="${packages.dir}/debian"/>
+
+    <!-- create all necessary directories -->
+    <mkdir dir="${packages.dir}/debian/DEBIAN"/>
+    <mkdir dir="${bb.bin}"/>
+    <mkdir dir="${bb.lib}"/>
+    <mkdir dir="${bb.share}"/>
+    <mkdir dir="${bb.app}"/>
+
+    <!-- prepare all files and directory structure -->
+    <copy todir="${bb.lib}">
+      <fileset dir="${deploy.dir}" includes="blogbridge.jar"/>
+      <fileset dir="${deploy.dir}/lib" includes="*.jar"/>
+    </copy>
+    <copy file="${deploy.dir}/blogbridge.gif" todir="${bb.share}"/>
+
+    <!-- prepare shell script -->
+    <copy file="docs/debian/blogbridge.sh" tofile="${bb.bin}/${bb.script}"/>
+    <chmod file="${bb.bin}/${bb.script}" perm="755"/>
+
+    <!-- prepage GNOME menu link -->
+    <copy file="docs/debian/blogbridge.desktop" tofile="${bb.app}/blogbridge-${version}.desktop"/>
+    <replace file="${bb.app}/blogbridge-${version}.desktop" token="_version_" value="${version}"/>
+
+    <!-- prepare debian control descriptor -->
+    <copy file="docs/debian/control" tofile="${packages.dir}/debian/DEBIAN/control"/>
+    <replace file="${packages.dir}/debian/DEBIAN/control" token="_version_" value="${version}"/>
+
+    <!-- perform packaging -->
+    <exec dir="${packages.dir}" executable="fakeroot">
+      <arg line="dpkg-deb -z9 -Zbzip2 --build debian"/>
+    </exec>
+    <move file="${packages.dir}/debian.deb" tofile="${packages.dir}/blogbridge-${version}.deb"/>
+
+    <delete dir="${packages.dir}/debian"/>
+  </target>
+
+    <!--  Debian packaging -->
+    <target name="debian" depends="jar,package-init">
+
+        <!-- ================================================================================== -->
+
+        <mkdir dir="${packages.dir}/temp"/>
+
+        <!-- Extract all libraries and the application in the temp directory -->
+        <unjar dest="${packages.dir}/temp">
+            <fileset dir="${lib.dir}">
+                <include name="*.jar"/>
+                <exclude name="bbmacicon.jar"/>
+                <exclude name="*native*.jar"/>
+            </fileset>
+        </unjar>
+        <unjar dest="${packages.dir}/temp" src="${build.dir}/blogbridge.jar"/>
+
+        <!-- Rename licenses -->
+        <move file="${packages.dir}/temp/LICENSE" tofile="${packages.dir}/temp/aelfred2.LICENSE"/>
+        <move file="${packages.dir}/temp/COPYING" tofile="${packages.dir}/temp/aelfred2.COPYING"/>
+
+        <!-- Compile everything together -->
+        <delete dir="${packages.dir}/temp/META-INF" />
+        <delete dir="${packages.dir}/temp/classes" />
+        <jar basedir="${packages.dir}/temp" destfile="${packages.dir}/BlogBridge.jar" compress="yes"/>
+
+        <!-- Cleanup -->
+        <delete dir="${packages.dir}/temp" />
+
+        <!-- ================================================================================== -->
+
+        <property name="bb.bin" value="${packages.dir}/debian/usr/bin"/>
+        <property name="bb.doc" value="${packages.dir}/debian/usr/share/doc/blogbridge"/>
+        <property name="bb.app" value="${packages.dir}/debian/usr/share/applications"/>
+        <property name="bb.jav" value="${packages.dir}/debian/usr/share/java"/>
+        <property name="bb.man" value="${packages.dir}/debian/usr/share/man/man1"/>
+        <property name="bb.men" value="${packages.dir}/debian/usr/share/menu"/>
+        <property name="bb.pix" value="${packages.dir}/debian/usr/share/pixmaps"/>
+	<property name="bb.deb" value="${packages.dir}/debian/DEBIAN"/>
+
+        <!-- Create all directories -->
+        <mkdir dir="${bb.bin}"/>
+        <mkdir dir="${bb.doc}"/>
+        <mkdir dir="${bb.app}"/>
+        <mkdir dir="${bb.jav}"/>
+        <mkdir dir="${bb.man}"/>
+        <mkdir dir="${bb.men}"/>
+        <mkdir dir="${bb.pix}"/>
+
+        <!-- Prepare files -->
+        <copy todir="${bb.bin}" file="docs/debian/blogbridge"/>
+        <copy todir="${bb.doc}">
+            <fileset dir="docs/debian/doc">
+                <include name="README*"/>
+                <include name="changelog*"/>
+                <include name="copyright"/>
+            </fileset>
+        </copy>
+        <copy todir="${bb.jav}" file="${packages.dir}/BlogBridge.jar"/>
+        <copy todir="${bb.pix}">
+            <fileset dir="docs/debian/pixmaps">
+                <include name="blogbridge*.xpm"/>
+            </fileset>
+        </copy>
+        <copy todir="${bb.man}" file="docs/debian/man/blogbridge.1.gz"/>
+        <copy todir="${bb.men}" file="docs/debian/menu/blogbridge"/>
+	<copy todir="${bb.deb}" file="docs/debian/postinst"/>
+	<copy todir="${bb.deb}" file="docs/debian/postrm"/>
+        <copy todir="${bb.deb}" file="docs/debian/control"/>
+        <copy todir="${bb.app}" file="docs/debian/blogbridge.desktop"/>
+
+	<!-- Assign correct permissions -->
+        <chmod file="${bb.bin}/blogbridge" perm="755"/>
+	<chmod file="${bb.deb}/postinst" perm="755"/>
+	<chmod file="${bb.deb}/postrm" perm="755"/>
+
+        <!-- prepage GNOME menu link -->
+        <replace file="${bb.app}/blogbridge.desktop" token="_version_" value="${version}"/>
+
+        <!-- prepare debian control descriptor -->
+        <replace file="${bb.deb}/control" token="_version_" value="${version}"/>
+
+        <!-- ================================================================================== -->
+
+        <!-- perform packaging -->
+        <exec dir="${packages.dir}" executable="fakeroot">
+          <arg line="dpkg-deb -Zgzip --build debian"/>
+        </exec>
+        <move file="${packages.dir}/debian.deb" tofile="${packages.dir}/blogbridge-${version}.deb"/>
+
+        <delete dir="${packages.dir}/debian"/>
+        <delete file="${packages.dir}/BlogBridge.jar"/>
+    </target>
+
+  <!-- Creates windows package using Advanced Installer application. -->
+  <target name="package.winmac.final" depends="deploy.final">
+    <property name="working.folder" value="final"/>
+    <property name="release.type" value="final"/>
+    <antcall target="package.winmac.common" inheritall="yes"/>
+  </target>
+
+  <target name="package.winmac.stable" depends="deploy.stable">
+    <property name="working.folder" value="final"/>
+    <property name="release.type" value="stable"/>
+    <antcall target="package.winmac.common" inheritall="yes"/>
+  </target>
+
+  <target name="package.winmac.weekly" depends="deploy.weekly">
+    <property name="working.folder" value="weekly"/>
+    <property name="release.type" value="weekly"/>
+    <antcall target="package.winmac.common" inheritall="yes"/>
+  </target>
+
+  <target name="package.winmac.common" depends="package-init">
+      <copy file="BlogBridge.aip" tofile="${ai.script.path}"/>
+      <copy file="blogbridge.ico" todir="${packages.dir}"/>
+      <copy file="blogbridge.icns" todir="${packages.dir}"/>
+
+      <replace file="${ai.script.path}" token="_version_" value="${version}"/>
+      <replace file="${ai.script.path}" token="_working.folder_" value="${working.folder}"/>
+      <replace file="${ai.script.path}" token="_release.type_" value="${release.type}"/>
+
+      <exec dir="${packages.dir}" executable="${ai.path}\\AdvancedInstaller.exe">
+          <arg line="/edit ${ai.script} /setversion ${version}"/>
+      </exec>
+
+      <exec dir="${packages.dir}" executable="${ai.path}\\AdvancedInstaller.exe">
+          <arg line="/build ${ai.script}"/>
+      </exec>
+
+      <delete file="${ai.script.path}"/>
+      <delete file="${packages.dir}/blogbridge.ico"/>
+      <delete file="${packages.dir}/blogbridge.icns"/>
+  </target>
+
+</project>

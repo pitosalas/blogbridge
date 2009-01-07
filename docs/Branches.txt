@@ -1,0 +1,11 @@
+Branch Roots (Tags)
+-------------------
+
+release-1-0-rc-br
+release-1-3-br
+
+Branches
+--------
+
+release-1-0
+release-1-3 (stable branch before redesign)

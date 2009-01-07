@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="blogbridge" default="javadoc">
+    <target name="javadoc">
+        <javadoc destdir="doc" access="private" source="1.4" use="true"
+            notree="false" nonavbar="false" noindex="false"
+            splitindex="true" author="true" version="true"
+            nodeprecatedlist="false" nodeprecated="false"
+            packagenames="com.salas.bb.channelguide,com.salas.bb.ai,com.salas.bb.utils,com.salas.bb.views,com.salas.bb.core,com.salas.bb.dialogs"
+            sourcepath="src"
+            classpath="bin;C:\JavaWork\blogbridge\lib\commons-logging.jar;C:\JavaWork\blogbridge\lib\forms-1.0.2.jar;C:\JavaWork\blogbridge\lib\hibernate2.jar;C:\JavaWork\blogbridge\lib\hsqldb.jar;C:\JavaWork\blogbridge\lib\htmlparser.jar;C:\JavaWork\blogbridge\lib\looks-1.1.3.jar;C:\JavaWork\blogbridge\lib\uif-1.2b2.jar;C:\JavaWork\blogbridge\lib\binding-0.8.8.jar;..\informa\bin;..\informa\lib\castor.jar;..\informa\lib\checkstyle-all.jar;..\informa\lib\commons-logging.jar;..\informa\lib\jdom.jar;..\informa\lib\jta.jar;..\informa\lib\junit.jar;..\informa\lib\lucene.jar;..\informa\lib\postgresql.jar;..\informa\lib\xerces.jar;..\informa\lib\hibernate2.jar;..\informa\lib\commons-lang.jar;..\informa\lib\castor-doclet.jar;..\informa\lib\cglib-asm.jar;..\informa\lib\commons-beanutils.jar;..\informa\lib\commons-collections.jar;..\informa\lib\dom4j.jar;..\informa\lib\mysql.jar;..\informa\lib\odmg.jar;..\informa\lib\xdoclet.jar;..\informa\lib\xdoclet-hibernate-module.jar;..\informa\lib\xdoclet-xdoclet-module.jar;..\informa\lib\xjavadoc.jar;..\informa\build\classes;..\informa\lib\hsqldb.jar;..\informa\build\lib\informa.jar;C:\JavaWork\blogbridge\lib\commons-lang.jar;C:\JavaWork\blogbridge\lib\xmlrpc-1.2-b1.jar" doctitle="Blog Bridge"/>
+    </target>
+</project>

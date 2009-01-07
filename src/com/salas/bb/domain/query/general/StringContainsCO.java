@@ -1,0 +1,106 @@
+// BlogBridge -- RSS feed reader, manager, and web based service
+// Copyright (C) 2002-2006 by R. Pito Salas
+//
+// This program is free software; you can redistribute it and/or modify it under
+// the terms of the GNU General Public License as published by the Free Software Foundation;
+// either version 2 of the License, or (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+// See the GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License along with this program;
+// if not, write to the Free Software Foundation, Inc., 59 Temple Place,
+// Suite 330, Boston, MA 02111-1307 USA
+//
+// Contact: R. Pito Salas
+// mailto:pitosalas@users.sourceforge.net
+// More information: about BlogBridge
+// http://www.blogbridge.com
+// http://sourceforge.net/projects/blogbridge
+//
+// $Id: StringContainsCO.java,v 1.8 2007/03/29 15:14:54 spyromus Exp $
+//
+
+package com.salas.bb.domain.query.general;
+
+import com.salas.bb.domain.query.AbstractComparisonOperation;
+import com.salas.bb.utils.StringUtils;
+import com.salas.bb.utils.i18n.Strings;
+
+import java.util.Map;
+import java.util.WeakHashMap;
+import java.util.regex.Pattern;
+
+/**
+ * Checks if the target value contains one of the space-delimitered words or multi-words
+ * enclosed in quotes.
+ */
+public class StringContainsCO extends AbstractComparisonOperation
+{
+    /** Instance of this comparison operation. */
+    public static final StringContainsCO INSTANCE = new StringContainsCO();
+
+    /**
+     * Creates operation.
+     */
+    public StringContainsCO()
+    {
+        this(Strings.message("query.operation.contains"), "contains");
+    }
+
+    /**
+     * Constructor for extensions.
+     *
+     * @param aName name.
+     * @param aDescriptor descriptor.
+     */
+    protected StringContainsCO(String aName, String aDescriptor)
+    {
+        super(aName, aDescriptor);
+    }
+
+    /**
+     * Compares some target value against value for comparison.
+     *
+     * @param targetValue     target value.
+     * @param comparisonValue comparison value.
+     *
+     * @return TRUE if the target value matches the condition presented by this comparison operation
+     *         in conjunction with comparison value.
+     */
+    public boolean match(String targetValue, String comparisonValue)
+    {
+        Pattern pattern = preparePattern(comparisonValue);
+
+        return pattern != null && targetValue != null &&
+            pattern.matcher(targetValue).find();
+    }
+
+    private static final Map<String, Pattern> patterns = new WeakHashMap<String, Pattern>();
+
+    /**
+     * Prepares new pattern for matching or takes an old one from the cache.
+     *
+     * @param comparisonValue comparison value.
+     *
+     * @return value.
+     */
+    private static synchronized Pattern preparePattern(String comparisonValue)
+    {
+        if (comparisonValue == null) return null;
+
+        Pattern pattern = patterns.get(comparisonValue);
+
+        if (pattern == null)
+        {
+            String[] keys = StringUtils.keywordsToArray(comparisonValue);
+            String regex = StringUtils.keywordsToPattern(keys);
+            pattern = regex == null ? null : Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+
+            patterns.put(comparisonValue, pattern);
+        }
+
+        return pattern;
+    }
+}

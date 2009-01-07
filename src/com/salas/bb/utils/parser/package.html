@@ -1,0 +1,27 @@
+<p>External parsers gateway package. This package is intended to hide the details
+of other parsers implementation by providing the unified interface to them. The rest
+of BlogBridge application is isolated from the specific ways of parsing the content
+by unified FeedParser interface and the results of parsing.</p>
+
+<p>In order to parse some resource the following steps are required:</p>
+
+<pre>
+  IFeedParser parser = FeedParserConfig.create();
+  FeedParserResult result;
+
+  try
+  {
+    result = parser.parse(feedXmlURL, feedTitle, lastUpdateTimestamp);
+
+    // Everything parsed fine -- processing of results
+    IChannel channel = result.getChannel();
+  } catch (FeedParserException e)
+  {
+    // Some parsing error happened -- handling
+  }
+</pre>
+
+<p>The parser will register the activity for the updating of feed specified by title. It will
+use the timestamp of last update to find out if the resource has been changed since then and
+make the processing much faster. If the timestamp is not specified then the feed will be
+fully fetched and parsed.</p>

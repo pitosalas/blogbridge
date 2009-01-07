@@ -1,0 +1,47 @@
+<p>This package contains classes for work with visual themes.</p>
+
+<p>Theme is a set of properties used by visual components to customize their look. Each
+theme implements <code>ITheme</code> interface. Themes contain different types of data.
+Each data type can be returned by appropriate method: colors by <code>getColor()</code>,
+fonts by <code>getFont()</code> and etc. These methods accept keys of specific type as
+parameter and return value of corresponding type.</p>
+
+<p>Internally each theme represents 3-level hierarchy of properties:
+<ul>
+  <li><b>Theme settings</b> - top-most level. Here are the values of properties defined
+    in specific theme are located. In the specific theme all or any number of properties
+    can be defined, leaving the rest of them equal to their default values taken from
+    the next level.</li>
+
+  <li><b>Default settings</b> - the level where we have values of properties defined in
+    default (default.theme) theme. These properties override LAF settings dictated by
+    current LAF. If you need something different than current LAF says in all themes
+    you change these settings here and the values will be inherited by each and every
+    specific theme.</li>
+
+  <li><b>LAF settings</b> - the level where current LAF theme settings are adopted to
+    our theme properties. We use this level to maintain compatibility with the UI of the
+    rest of application. However, any or all of the settings can be overriden by default
+    or theme levels as appropriate. You can think of this level as default for default.</li>
+</ul>
+
+<p>Each theme (default or specific) is defined in standard property-files with ".theme"
+extensions located in "resources/themes" directory. In order the theme to be loaded it
+should appear in textual list of available themes in "resources/themes/index.txt" file.
+Each file name should be relative to "resources/themes" path and presented on a separate
+line. Note that it isn't necessary to put "default.theme" into this file because it is
+special theme and will be refered to as default for any other theme.</p>
+
+<p>The set of possible keys is defined by sub-classes of <code>ThemeKey</code> class. You
+can examine <code>ThemeKey.Color</code> class to quickly lookup what color customizations
+are supported at the moment. The same is related to <code>ThemeKey.Font</code> class
+containing keys for fonts setting.</p>
+
+<p>In addition each theme should have <code>name</code> and <code>title</code> properties
+defined in theme definition file. <code>name</code> is unicque identifier of the theme
+used in various parts of application for referencing. <code>title</code> is a title
+of the theme which will be presented to a user in selection dialogs.</p>
+
+<p>There's the property to hide the theme at particular OS'es -- <code>hidden</code>.
+The value of this property is comma-separated list of OS'es. Supported values are:
+<code>windows</code>, <code>linux</code>, <code>mac</code>.</p>

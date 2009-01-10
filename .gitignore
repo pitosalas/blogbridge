@@ -1,4 +1,7 @@
 .DS_Store
 blogbridge-ant.properties
 blogbridge.jnlp
+blogbridge.ipr
+blogbridge.iml
+blogbridge.iws
 keys

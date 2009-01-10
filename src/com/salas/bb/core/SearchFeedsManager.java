@@ -296,16 +296,19 @@ public class SearchFeedsManager extends DomainAdapter
     {
         IFeed feed = event.getFeed();
 
-        if (feed instanceof SearchFeed)
+        if (feed.getParentGuides().length == 0)
         {
-            SearchFeed sfeed = (SearchFeed)feed;
+            if (feed instanceof SearchFeed)
+            {
+                SearchFeed sfeed = (SearchFeed)feed;
 
-            sfeed.unregisterListeners();
-            searchFeeds.remove(sfeed);
-        } else if (feed instanceof DataFeed)
-        {
-            IArticle[] articles = feed.getArticles();
-            for (IArticle article : articles) articleRemoved(feed, article);
+                sfeed.unregisterListeners();
+                searchFeeds.remove(sfeed);
+            } else if (feed instanceof DataFeed)
+            {
+                IArticle[] articles = feed.getArticles();
+                for (IArticle article : articles) articleRemoved(feed, article);
+            }
         }
     }
 

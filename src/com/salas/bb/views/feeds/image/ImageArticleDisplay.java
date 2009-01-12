@@ -48,7 +48,7 @@ import java.net.URL;
 /**
  * The view showing the article as an image.
  */
-class ImageArticleDisplay extends JPanel implements IArticleListener, IArticleDisplay
+public class ImageArticleDisplay extends JPanel implements IArticleListener, IArticleDisplay
 {
     private static final int EXCERPT_MIN_CHARS = 100;
     private static final int EXCERPT_MAX_CHARS = 200;

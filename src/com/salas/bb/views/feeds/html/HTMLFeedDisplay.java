@@ -29,11 +29,14 @@ import com.salas.bb.core.GlobalController;
 import com.salas.bb.core.GlobalModel;
 import com.salas.bb.domain.IArticle;
 import com.salas.bb.domain.IFeed;
+import com.salas.bb.domain.FeedType;
 import com.salas.bb.utils.i18n.Strings;
 import com.salas.bb.utils.uif.html.CustomHTMLEditorKit;
 import com.salas.bb.views.feeds.AbstractFeedDisplay;
 import com.salas.bb.views.feeds.IArticleDisplay;
 import com.salas.bb.views.feeds.IFeedDisplayConstants;
+import com.salas.bb.views.feeds.image.ImageArticleDisplay;
+import com.salas.bb.views.settings.ImageFeedDisplayConfig;
 
 import javax.swing.*;
 import java.awt.*;
@@ -134,6 +137,11 @@ public class HTMLFeedDisplay extends AbstractFeedDisplay
 
         IArticleDisplayConfig articleConfig = htmlConfig.getArticleViewConfig();
 
+        if (smartFeed && aArticle.getFeed().getType() == FeedType.IMAGE)
+        {
+            return new ImageArticleDisplay(aArticle, new ImageFeedDisplayConfig());
+        }
+        
         return new HTMLArticleDisplay(aArticle, articleConfig, smartFeed, this,
             new CustomHTMLEditorKit());
     }

@@ -6,7 +6,7 @@ BlogBridge the most powerful blog and feed reader. Are you an info-junky? Here's
 
 What you need to know about BlogBridge is that it goes far beyond the usual aggregator in terms of power and flexibility. If you are reading one, two or even ten blogs, stick with what you've got now. But if you're job requires that you keep up to date with hundreds of feeds and blogs, then you owe it to yourself to check us out. BlogBridge is also free and open source!
 
-So download BlogBridge now and we’ll help you get started. You can be up and learning in seconds!
+So download BlogBridge now and we'll help you get started. You can be up and learning in seconds!
 
 
 h1. DOWNLOADS

@@ -134,6 +134,8 @@ public class TestUserPreferences extends TestCase
         checkBooleanProperty(PROP_WH_NOSELFLINKS);
         checkBooleanProperty(PROP_WH_SUPPRESS_SAME_SOURCE_LINKS);
         checkLongProperty(PROP_WH_SETTINGS_CHANGE_TIME);
+
+        checkBooleanProperty(PROP_ALWAYS_USE_ENGLISH);
     }
 
     /**

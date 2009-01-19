@@ -149,6 +149,10 @@ public final class UserPreferences extends Model
     /** Checking for updates on startup property. */
     public static final String PROP_CHECKING_FOR_UPDATES_ON_STARTUP = "checkingForUpdatesOnStartup";
 
+    /** Use English as the interface language. */
+    public static final String PROP_ALWAYS_USE_ENGLISH = "alwaysUseEnglish";
+    private boolean alwaysUseEnglish = DEFAULT_ALWAYS_USE_ENGLISH;
+
     /** Toolbar labels enableness state. */
     public static final String PROP_SHOW_TOOLBAR_LABELS = "showToolbarLabels";
     /** There's a menu when user presses over the unread button in the feeds and guides lists. */
@@ -206,6 +210,7 @@ public final class UserPreferences extends Model
     public static final boolean DEFAULT_UPDATE_READING_LISTS        = true;
     public static final boolean DEFAULT_UPDATE_FEEDS                = true;
     private static final int DEFAULT_ON_READING_LIST_UPDATE_ACTIONS = RL_UPDATE_NONE;
+    public static final boolean DEFAULT_ALWAYS_USE_ENGLISH         = false;
 
     /** Default for shoing the unread button menu on click. */
     public static final boolean DEFAULT_SHOW_UNREAD_BUTTON_MENU = true;
@@ -2098,6 +2103,28 @@ public final class UserPreferences extends Model
     }
 
     /**
+     * Returns TRUE if the language setting is to be overriden.
+     *
+     * @return TRUE to use English.
+     */
+    public boolean isAlwaysUseEnglish()
+    {
+        return alwaysUseEnglish;
+    }
+
+    /**
+     * Enables / disables the user of English.
+     *
+     * @param alwaysUseEnglish TRUE to enable.
+     */
+    public void setAlwaysUseEnglish(boolean alwaysUseEnglish)
+    {
+        boolean old = this.alwaysUseEnglish;
+        this.alwaysUseEnglish = alwaysUseEnglish;
+        firePropertyChange(PROP_ALWAYS_USE_ENGLISH, old, alwaysUseEnglish);
+    }
+
+    /**
      * Read all the Preferences from persistent preferences into this object. On Windows, the
      * persistent store is the Registry.
      *
@@ -2227,6 +2254,8 @@ public final class UserPreferences extends Model
                 DEFAULT_WH_SUPPRESS_SAME_SOURCE_LINKS));
         setWhTargetGuide(prefs.get(PROP_WH_TARGET_GUIDE, DEFAULT_WH_TARGET_GUIDE));
         setWhSettingsChangeTime(prefs.getLong(PROP_WH_SETTINGS_CHANGE_TIME, DEFAULT_WH_SETTINGS_CHANGE_TIME));
+
+        setAlwaysUseEnglish(prefs.getBoolean(PROP_ALWAYS_USE_ENGLISH, DEFAULT_ALWAYS_USE_ENGLISH));
     }
 
     /**
@@ -2325,6 +2354,8 @@ public final class UserPreferences extends Model
         prefs.putBoolean(PROP_WH_SUPPRESS_SAME_SOURCE_LINKS, isWhSuppressSameSourceLinks());
         prefs.put(PROP_WH_TARGET_GUIDE, getWhTargetGuide());
         prefs.putLong(PROP_WH_SETTINGS_CHANGE_TIME, getWhSettingsChangeTime());
+
+        prefs.putBoolean(PROP_ALWAYS_USE_ENGLISH, isAlwaysUseEnglish());
     }
 
     /**

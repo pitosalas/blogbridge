@@ -86,6 +86,7 @@ import java.security.Permission;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
@@ -503,6 +504,7 @@ public class ApplicationLauncher extends DefaultApplicationStarter
         }
     }
 
+    
     /** Configures GUI part. */
     protected void configureUI()
     {
@@ -611,6 +613,8 @@ public class ApplicationLauncher extends DefaultApplicationStarter
         initReleaseTypeAndPrefix(arguments, System.getProperty("release.type"),
             System.getProperty("working.folder"));
 
+        overrideLocale();
+
         String urlToOpen = checkCommandLineForURL(arguments);
 
         socketFile = new File(getContextPath() + "/application.sock");
@@ -638,6 +642,17 @@ public class ApplicationLauncher extends DefaultApplicationStarter
                 "BlogBridge", JOptionPane.WARNING_MESSAGE);
             System.exit(1);
         }
+    }
+
+    /**
+     * Overrides system locale with English if the flag is set to use English.
+     */
+    private static void overrideLocale()
+    {
+        boolean alwaysUseEnglish = Preferences.userRoot().node(prefix).getBoolean(UserPreferences.PROP_ALWAYS_USE_ENGLISH,
+            UserPreferences.DEFAULT_ALWAYS_USE_ENGLISH);
+
+        if (alwaysUseEnglish) Locale.setDefault(new Locale("en"));
     }
 
     /**

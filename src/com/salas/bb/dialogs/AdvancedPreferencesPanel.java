@@ -109,6 +109,7 @@ public class AdvancedPreferencesPanel extends JPanel
     private JCheckBox                   chShowAppIconInSystray;
     private JCheckBox                   chMinimizeToSystray;
     private JComboBox                   cbBIDMode;
+    private JCheckBox chAlwaysUseEnglish;
 
     /**
      * Constructs the <i>Advanced</i> panel for the preferences dialog.
@@ -156,6 +157,12 @@ public class AdvancedPreferencesPanel extends JPanel
             chDoUpdatesCheck.setEnabled(false);
         }
 
+        chAlwaysUseEnglish = ComponentsFactory.createCheckBox(
+            Strings.message("userprefs.tab.advanced.always.use.english"),
+            new ToggleButtonAdapter(new BufferedValueModel(new PropertyAdapter(userPrefs,
+                UserPreferences.PROP_ALWAYS_USE_ENGLISH),
+                triggerChannel)));
+        
         tfInternetBrowser = new JTextField();
         tfInternetBrowser.setDocument(new DocumentAdapter(new BufferedValueModel(
             new PropertyAdapter(userPrefs, UserPreferences.PROP_INTERNET_BROWSER),
@@ -381,6 +388,7 @@ public class AdvancedPreferencesPanel extends JPanel
         builder.setLeadingColumnOffset(1);
         builder.append(chShowTipsBox, 4);
         builder.append(chDoUpdatesCheck, 4);
+        builder.append(chAlwaysUseEnglish, 4);
 
         builder.setLeadingColumnOffset(1);
         builder.appendSeparator(Strings.message("userprefs.tab.advanced.separator.network"));

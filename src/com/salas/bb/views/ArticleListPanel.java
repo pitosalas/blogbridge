@@ -212,9 +212,6 @@ public final class ArticleListPanel extends CoolInternalFrame implements Propert
         
         subTBbldr.add(comboboxPanel);
         subTBbldr.addGap();
-
-        subTBbldr.add(new ViewTypeSelector(GlobalModel.SINGLETON.getViewTypeValueModel()));
-        subTBbldr.addGap();
         subTBbldr.add(new ViewModeSelector(GlobalModel.SINGLETON.getViewModeValueModel()));
 
         return toolbar;

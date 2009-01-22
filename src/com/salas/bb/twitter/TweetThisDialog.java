@@ -24,19 +24,21 @@
 
 package com.salas.bb.twitter;
 
+import com.jgoodies.forms.factories.ButtonBarFactory;
+import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.uif.AbstractDialog;
 import com.jgoodies.uif.util.ResourceUtils;
-import com.jgoodies.forms.layout.CellConstraints;
-import com.jgoodies.forms.factories.ButtonBarFactory;
+import com.salas.bb.utils.Constants;
+import com.salas.bb.utils.ResourceID;
 import com.salas.bb.utils.i18n.Strings;
-import com.salas.bb.utils.uif.BBFormBuilder;
 import com.salas.bb.utils.net.LinkShortener;
 import com.salas.bb.utils.net.LinkShorteningException;
+import com.salas.bb.utils.uif.*;
 
 import javax.swing.*;
-import javax.swing.event.DocumentListener;
-import javax.swing.event.DocumentEvent;
 import javax.swing.border.Border;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
@@ -45,10 +47,15 @@ import java.awt.event.ActionEvent;
  */
 public class TweetThisDialog extends AbstractDialog
 {
+    private static final int WIDTH_AVAILABLE = 500;
+    private static final int WIDTH_UNAVAILABLE = 450;
+
     private JTextArea taMessage;
     private JTextField tfLink;
     private JButton btnShorten;
     private JLabel lbCharsLeft;
+    private JButton btnSend;
+    private JScrollPane spMessage;
 
     /**
      * Creates the dialog.
@@ -60,6 +67,15 @@ public class TweetThisDialog extends AbstractDialog
         super(frame, Strings.message("tweetthis.dialog.title"));
     }
 
+    @Override
+    protected JComponent buildHeader()
+    {
+        return new HeaderPanelExt(
+            Strings.message("tweetthis.dialog.title"),
+            Strings.message("tweetthis.dialog.header"),
+            IconSource.getIcon(ResourceID.ICON_TWITTER));
+    }
+
     /**
      * Builds the dialog content pane.
      *
@@ -67,9 +83,10 @@ public class TweetThisDialog extends AbstractDialog
      */
     protected JComponent buildContent()
     {
+        final Component buttonBar = buildButtonBar();
         JPanel content = new JPanel(new BorderLayout());
         content.add(buildBody(), BorderLayout.CENTER);
-        content.add(buildButtonBar(), BorderLayout.SOUTH);
+        content.add(buttonBar, BorderLayout.SOUTH);
         return content;
     }
 
@@ -80,10 +97,21 @@ public class TweetThisDialog extends AbstractDialog
      */
     private Component buildButtonBar()
     {
-        JButton btnSend = createOKButton(true);
-        btnSend.setText(Strings.message("tweetthis.send"));
+        JComponent bar;
 
-        return ButtonBarFactory.buildOKCancelBar(btnSend, createCancelButton());
+        if (TwitterFeature.isAvaiable())
+        {
+            btnSend = createOKButton(true);
+            btnSend.setText(Strings.message("tweetthis.send"));
+            bar = ButtonBarFactory.buildOKCancelBar(btnSend, createCancelButton());
+        } else
+        {
+            bar = buildButtonBarWithClose();
+        }
+
+        bar.setBorder(Constants.DIALOG_BUTTON_BAR_BORDER);
+        
+        return bar;
     }
 
     /**
@@ -93,9 +121,50 @@ public class TweetThisDialog extends AbstractDialog
      */
     private Component buildBody()
     {
+        BBFormBuilder builder = TwitterFeature.isAvaiable() ? buildAvailableBody() : buildUnavailableBody();
+        builder.appendUnrelatedComponentsGapRow();
+        return builder.getPanel();
+    }
+
+    /**
+     * Body to show when feature is unavailable.
+     *
+     * @return panel.
+     */
+    private BBFormBuilder buildUnavailableBody()
+    {
+        BBFormBuilder builder = new BBFormBuilder("7dlu, pref:grow");
+        builder.setDefaultDialogBorder();
+
+        // Service link
+        LinkLabel lnkService = new LinkLabel(
+            Strings.message("spw.learn.more"),
+            ResourceUtils.getString("server.plans.url"));
+        lnkService.setForeground(LinkLabel.HIGHLIGHT_COLOR);
+
+        String message = Strings.message("tweetthis.unavailable.1");
+        builder.append(ComponentsFactory.createWrappedMultilineLabel(message), 2);
+
+        builder.appendUnrelatedComponentsGapRow(2);
+        builder.append(new JLabel(Strings.message("tweetthis.unavailable.2")), 2);
+
+        builder.setLeadingColumnOffset(1);
+        builder.append(lnkService);
+
+        return builder;
+    }
+
+    /**
+     * Body to show when feature is available.
+     *
+     * @return panel.
+     */
+    private BBFormBuilder buildAvailableBody()
+    {
         initComponents();
 
-        BBFormBuilder builder = new BBFormBuilder("right:pref, 4dlu, 150dlu, 2dlu, pref");
+        BBFormBuilder builder = new BBFormBuilder("right:pref, 4dlu, 100dlu:grow, 2dlu, pref");
+        builder.setDefaultDialogBorder();
 
         // Build shifted label
         BBFormBuilder pb = new BBFormBuilder("right:pref");
@@ -105,11 +174,10 @@ public class TweetThisDialog extends AbstractDialog
         pb.append(lbCharsLeft);
 
         builder.append(pb.getPanel(), 1, CellConstraints.LEFT, CellConstraints.TOP);
-        builder.append(taMessage, 3);
+        builder.append(spMessage, 3);
         builder.append(Strings.message("tweetthis.shorten.link"), tfLink, btnShorten);
-        builder.appendUnrelatedComponentsGapRow();
 
-        return builder.getPanel();
+        return builder;
     }
 
     /**
@@ -121,13 +189,14 @@ public class TweetThisDialog extends AbstractDialog
         taMessage   = new JTextArea(5, 70);
         btnShorten  = new JButton(new ShortenAction());
         lbCharsLeft = new JLabel();
+        spMessage   = new JScrollPane(taMessage);
 
         Border spacing = BorderFactory.createLineBorder(new JLabel().getBackground(), 3);
+        spMessage.setBorder(BorderFactory.createCompoundBorder(spacing, spMessage.getBorder()));
 
         taMessage.setWrapStyleWord(false);
         taMessage.setLineWrap(true);
         taMessage.setDocument(new TwitterMessage());
-        taMessage.setBorder(BorderFactory.createCompoundBorder(spacing, tfLink.getBorder()));
         taMessage.getDocument().addDocumentListener(new DocumentListener() {
             public void insertUpdate(DocumentEvent e)
             {
@@ -156,6 +225,22 @@ public class TweetThisDialog extends AbstractDialog
     {
         int current = taMessage.getText().length();
         lbCharsLeft.setText(Integer.toString(TwitterMessage.MAX_LENGTH - current));
+        final boolean over = current > TwitterMessage.MAX_LENGTH;
+
+        taMessage.setBackground(over ? Color.RED : tfLink.getBackground());
+        taMessage.setForeground(over ? Color.WHITE : tfLink.getForeground());
+        btnSend.setEnabled(!over && current > 0);
+    }
+
+    /**
+     * Resizing hook.
+     *
+     * @param component component.
+     */
+    protected void resizeHook(JComponent component)
+    {
+        final int width = TwitterFeature.isAvaiable() ? WIDTH_AVAILABLE : WIDTH_UNAVAILABLE;
+        component.setPreferredSize(new Dimension(width, (int)component.getPreferredSize().getHeight()));
     }
 
     /**
@@ -230,12 +315,5 @@ public class TweetThisDialog extends AbstractDialog
         {
             onShorten();
         }
-    }
-
-    public static void main(String[] args)
-    {
-        ResourceUtils.setBundlePath("Strings");
-        TweetThisDialog tt = new TweetThisDialog(null);
-        tt.open();
     }
 }

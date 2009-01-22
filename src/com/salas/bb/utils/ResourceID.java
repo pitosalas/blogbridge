@@ -124,4 +124,7 @@ public class ResourceID extends ResourceIDs
 
     /** The list of file extensions not to start discovery for. */
     public static final String NO_DISCOVERY_EXTENSIONS = "no.discovery.extensions";
+
+    /** Icon for twitter. */
+    public static final String ICON_TWITTER = "twitter.icon";
 }

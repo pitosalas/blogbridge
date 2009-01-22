@@ -69,6 +69,7 @@ import com.salas.bb.views.feeds.IFeedDisplay;
 import com.salas.bb.views.feeds.html.ArticlesGroup;
 import com.salas.bb.views.feeds.html.HTMLArticleDisplay;
 import com.salas.bb.views.feeds.html.HTMLFeedDisplay;
+import com.salas.bb.twitter.TweetThisDialog;
 import com.salas.bbnative.Taskbar;
 
 import javax.swing.*;
@@ -323,6 +324,8 @@ public class MainFrame extends AbstractFrame
         {
             public void actionPerformed(ActionEvent e)
             {
+                TweetThisDialog ttd = new TweetThisDialog(MainFrame.this);
+                ttd.open();
             }
         });
         ulAMap.put("test-f12", new AbstractAction()

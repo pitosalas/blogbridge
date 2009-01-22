@@ -24,40 +24,20 @@
 
 package com.salas.bb.twitter;
 
-import javax.swing.text.BadLocationException;
-import javax.swing.text.AttributeSet;
-import javax.swing.text.PlainDocument;
-import java.awt.*;
+import com.salas.bb.core.GlobalController;
 
 /**
- * The document that maintains the correct size.
+ * Twitter feature.
  */
-class TwitterMessage extends PlainDocument
+public class TwitterFeature
 {
-    public static final int MAX_LENGTH = 140;
-
-    public TwitterMessage()
+    /**
+     * Returns TRUE when the feature is available.
+     *
+     * @return TRUE.
+     */
+    public static boolean isAvaiable()
     {
-    }
-
-    public void insertString(int offset, String str, AttributeSet a)
-        throws BadLocationException
-    {
-//        boolean beep = true;
-//        int messageLength = super.getLength();
-//        if (messageLength < MAX_LENGTH)
-//        {
-            // Remove carriage returns
-            str = str.replaceAll("\n", " ");
-
-//            int length = str.length();
-//            if (length > MAX_LENGTH - messageLength) length -= MAX_LENGTH - messageLength; else beep = false;
-
-//            super.insertString(offset, str.substring(0, length), a);
-//        }
-//
-//        if (beep) Toolkit.getDefaultToolkit().beep();
-
-        super.insertString(offset, str, a);
+        return GlobalController.SINGLETON.getFeatureManager().isRegistered();
     }
 }

@@ -909,4 +909,19 @@ public final class FeatureManager implements Runnable
 
         return res;
     }
+
+    /**
+     * Returns TRUE if the user is registered.
+     *
+     * NOTE: This checks only if the user has entered their email / password.
+     *
+     * @return TRUE if registered.
+     */
+    public boolean isRegistered()
+    {
+        String email = servicePrefs.getEmail();
+        String password = servicePrefs.getPassword();
+
+        return StringUtils.isNotEmpty(email) && StringUtils.isNotEmpty(password);
+    }
 }

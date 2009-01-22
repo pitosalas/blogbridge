@@ -34,6 +34,8 @@ import com.salas.bb.utils.net.LinkShortener;
 import com.salas.bb.utils.net.LinkShorteningException;
 
 import javax.swing.*;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.DocumentEvent;
 import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -46,6 +48,7 @@ public class TweetThisDialog extends AbstractDialog
     private JTextArea taMessage;
     private JTextField tfLink;
     private JButton btnShorten;
+    private JLabel lbCharsLeft;
 
     /**
      * Creates the dialog.
@@ -95,10 +98,11 @@ public class TweetThisDialog extends AbstractDialog
         BBFormBuilder builder = new BBFormBuilder("right:pref, 4dlu, 150dlu, 2dlu, pref");
 
         // Build shifted label
-        BBFormBuilder pb = new BBFormBuilder("pref");
+        BBFormBuilder pb = new BBFormBuilder("right:pref");
         pb.appendRow("3px");
         pb.nextLine();
         pb.append(Strings.message("tweetthis.your.message"));
+        pb.append(lbCharsLeft);
 
         builder.append(pb.getPanel(), 1, CellConstraints.LEFT, CellConstraints.TOP);
         builder.append(taMessage, 3);
@@ -113,16 +117,45 @@ public class TweetThisDialog extends AbstractDialog
      */
     private void initComponents()
     {
-        tfLink     = new JTextField();
-        taMessage  = new JTextArea(5, 70);
-        btnShorten = new JButton(new ShortenAction());
+        tfLink      = new JTextField();
+        taMessage   = new JTextArea(5, 70);
+        btnShorten  = new JButton(new ShortenAction());
+        lbCharsLeft = new JLabel();
 
         Border spacing = BorderFactory.createLineBorder(new JLabel().getBackground(), 3);
 
-        taMessage.setWrapStyleWord(true);
+        taMessage.setWrapStyleWord(false);
         taMessage.setLineWrap(true);
         taMessage.setDocument(new TwitterMessage());
         taMessage.setBorder(BorderFactory.createCompoundBorder(spacing, tfLink.getBorder()));
+        taMessage.getDocument().addDocumentListener(new DocumentListener() {
+            public void insertUpdate(DocumentEvent e)
+            {
+                updateCharsCount();
+            }
+
+            public void removeUpdate(DocumentEvent e)
+            {
+                updateCharsCount();
+            }
+
+            public void changedUpdate(DocumentEvent e)
+            {
+                updateCharsCount();
+            }
+        });
+
+        lbCharsLeft.setForeground(Color.DARK_GRAY);
+        updateCharsCount();
+    }
+
+    /**
+     * Updates the count of chars left.
+     */
+    private void updateCharsCount()
+    {
+        int current = taMessage.getText().length();
+        lbCharsLeft.setText(Integer.toString(TwitterMessage.MAX_LENGTH - current));
     }
 
     /**

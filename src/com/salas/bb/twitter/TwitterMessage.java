@@ -34,7 +34,7 @@ import java.awt.*;
  */
 class TwitterMessage extends PlainDocument
 {
-    private static final int MAX_LENGTH = 160;
+    public static final int MAX_LENGTH = 140;
 
     public TwitterMessage()
     {

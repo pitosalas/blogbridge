@@ -27,11 +27,10 @@ package com.salas.bb.utils.net.delicious;
 import com.salas.bb.utils.parser.*;
 import com.salas.bb.utils.StringUtils;
 import com.salas.bb.utils.Assert;
+import com.salas.bb.utils.net.HttpClient;
 
 import java.net.URL;
-import java.net.HttpURLConnection;
 import java.io.IOException;
-import java.io.InputStream;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.ArrayList;
@@ -222,25 +221,7 @@ public final class DeliciousService
     private static String sendApiRequest(String request, String user, String password)
         throws IOException
     {
-
-        URL url = new URL(SERVICE_API_URL + request);
-        HttpURLConnection con = (HttpURLConnection)url.openConnection();
-        con.setRequestProperty("Authorization", StringUtils.createBasicAuthToken(user, password));
-        InputStream stream = con.getInputStream();
-
-        String response = null;
-        try
-        {
-            StringBuffer buf = new StringBuffer();
-            int ch;
-            while ((ch = stream.read()) != -1) buf.append((char)ch);
-            response = buf.toString();
-        } finally
-        {
-            stream.close();
-        }
-
-        return response;
+        return HttpClient.get(SERVICE_API_URL + request, user, password);
     }
 
     /**

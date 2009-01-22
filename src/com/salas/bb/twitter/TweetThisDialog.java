@@ -57,6 +57,8 @@ public class TweetThisDialog extends AbstractDialog
     private JButton btnSend;
     private JScrollPane spMessage;
 
+    private String initialText;
+
     /**
      * Creates the dialog.
      *
@@ -194,6 +196,7 @@ public class TweetThisDialog extends AbstractDialog
         Border spacing = BorderFactory.createLineBorder(new JLabel().getBackground(), 3);
         spMessage.setBorder(BorderFactory.createCompoundBorder(spacing, spMessage.getBorder()));
 
+        taMessage.setText(initialText);
         taMessage.setWrapStyleWord(false);
         taMessage.setLineWrap(true);
         taMessage.setDocument(new TwitterMessage());
@@ -216,6 +219,17 @@ public class TweetThisDialog extends AbstractDialog
 
         lbCharsLeft.setForeground(Color.DARK_GRAY);
         updateCharsCount();
+    }
+
+    /**
+     * Opens with some initial text.
+     *
+     * @param text text.
+     */
+    public void open(String text)
+    {
+        initialText = text;
+        open();
     }
 
     /**

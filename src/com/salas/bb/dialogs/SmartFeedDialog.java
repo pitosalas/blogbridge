@@ -620,6 +620,12 @@ public abstract class SmartFeedDialog extends AbstractDialog
                     QueryType queryType = (QueryType)item;
                     description = queryType.getQueryDescription();
                     pnlEditor = queryEditor = queryType.getEditorPanel(LABEL_COL_WIDTH);
+
+                    if (displayTab != null)
+                    {
+                        displayTab.setViewMode(queryType.getPreferredViewMode());
+                        displayTab.setFeedType(queryType.getFeedType());
+                    }
                 } else
                 {
                     description = Strings.message("create.smartfeed.own.feeds.description");

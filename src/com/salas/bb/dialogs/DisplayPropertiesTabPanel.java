@@ -123,6 +123,16 @@ public class DisplayPropertiesTabPanel extends JPanel
     }
 
     /**
+     * Selects the feed type.
+     *
+     * @param type new type.
+     */
+    public void setFeedType(FeedType type)
+    {
+        cbFeedType.setSelectedItem(type);
+    }
+
+    /**
      * Returns selected view mode.
      *
      * @return view mode.
@@ -130,6 +140,16 @@ public class DisplayPropertiesTabPanel extends JPanel
     public int getViewMode()
     {
         return cbViewMode.getSelectedIndex();
+    }
+
+    /**
+     * Sets the selected view mode.
+     *
+     * @param mode mode.
+     */
+    public void setViewMode(int mode)
+    {
+        cbViewMode.setSelectedIndex(mode);
     }
 
     /**

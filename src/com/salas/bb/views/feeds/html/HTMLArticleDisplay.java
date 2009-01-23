@@ -32,6 +32,7 @@ import com.salas.bb.core.GlobalModel;
 import com.salas.bb.domain.IArticle;
 import com.salas.bb.domain.IArticleListener;
 import com.salas.bb.domain.IFeed;
+import com.salas.bb.domain.NetworkFeed;
 import com.salas.bb.domain.prefs.ViewModePreferences;
 import com.salas.bb.domain.utils.TextRange;
 import com.salas.bb.sentiments.Calculator;
@@ -197,6 +198,13 @@ public class HTMLArticleDisplay extends JPanel implements IArticleListener, IArt
         Style def = doc.getStyle("default");
         doc.addStyle(TEXT_STYLE_NAME, def);
         UifUtilities.setFontAttributes(doc, TEXT_STYLE_NAME, config.getTextFont());
+
+        // Set base URL to resolve relative links
+        final IFeed feed = article.getFeed();
+        if (feed instanceof NetworkFeed)
+        {
+            doc.putProperty(Document.StreamDescriptionProperty, ((NetworkFeed)feed).getXmlURL());
+        }
 
         setupLayout();
         setBorder(new UpDownBorder(COLOR_BORDER_LINE));

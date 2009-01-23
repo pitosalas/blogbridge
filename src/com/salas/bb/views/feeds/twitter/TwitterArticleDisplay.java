@@ -30,11 +30,12 @@ import com.jgoodies.uif.util.SystemUtils;
 import com.salas.bb.core.GlobalModel;
 import com.salas.bb.domain.IArticle;
 import com.salas.bb.domain.IArticleListener;
+import com.salas.bb.domain.NetworkFeed;
 import com.salas.bb.utils.i18n.Strings;
+import com.salas.bb.utils.uif.DelegatingMouseListener;
 import com.salas.bb.utils.uif.LinkLabel;
 import com.salas.bb.utils.uif.UifUtilities;
 import com.salas.bb.utils.uif.UpDownBorder;
-import com.salas.bb.utils.uif.DelegatingMouseListener;
 import com.salas.bb.utils.uif.html.CustomHTMLEditorKit;
 import com.salas.bb.views.feeds.ArticlePinControl;
 import com.salas.bb.views.feeds.IArticleDisplay;
@@ -44,6 +45,7 @@ import com.salas.bb.views.feeds.html.IArticleDisplayConfig;
 
 import javax.swing.*;
 import javax.swing.event.HyperlinkListener;
+import javax.swing.text.Document;
 import javax.swing.text.Style;
 import javax.swing.text.html.HTMLDocument;
 import java.awt.*;
@@ -114,6 +116,8 @@ public class TwitterArticleDisplay extends JPanel implements IArticleListener, I
             // no text will be displayed.
             if (SystemUtils.IS_OS_MAC) text = "<p id='start'>" + text;
         }
+
+        doc.putProperty(Document.StreamDescriptionProperty, ((NetworkFeed)article.getFeed()).getXmlURL());
 
         tfText.setText(text);
         UifUtilities.installTextStyle(tfText, TEXT_STYLE_NAME);
@@ -247,6 +251,7 @@ public class TwitterArticleDisplay extends JPanel implements IArticleListener, I
      */
     public void addHyperlinkListener(HyperlinkListener aListener)
     {
+        tfText.addHyperlinkListener(aListener);
     }
 
     /**

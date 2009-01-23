@@ -31,16 +31,11 @@ import com.salas.bb.views.feeds.IArticleDisplay;
 import com.salas.bb.views.feeds.html.ArticlesGroup;
 import com.salas.bb.views.feeds.html.IArticleDisplayConfig;
 import com.salas.bb.views.feeds.html.IHTMLFeedDisplayConfig;
-import com.salas.bb.views.feeds.html.HTMLArticleDisplay;
-import com.salas.bb.core.GlobalModel;
-import com.salas.bb.core.GlobalController;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.logging.Logger;
-import java.net.URL;
 
 /**
  * Twitter feed display.

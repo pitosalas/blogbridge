@@ -147,57 +147,22 @@ public class ImageFeedDisplay extends AbstractFeedDisplay
     // ---------------------------------------------------------------------------------------------
 
     /**
-     * Processes mouse events.
+     * Returns the view popup adapter.
      *
-     * @param e the mouse event
+     * @return view popup adapter.
      */
-    protected void processMouseEvent(MouseEvent e)
+    protected MouseListener getViewPopupAdapter()
     {
-        super.processMouseEvent(e);
+        return imageConfig.getViewPopupAdapter();
+    }
 
-        Object component = e.getSource();
-
-        int i = e.getID();
-        if (i == MouseEvent.MOUSE_PRESSED)
-        {
-            requestFocus();
-            if (component instanceof IArticleDisplay)
-            {
-                IArticleDisplay articleDisplay = (IArticleDisplay)component;
-                // Note that isRightMouseButton may not be very well suited for all systems
-                // It should match the popup dialog guesture
-                if (!SwingUtilities.isRightMouseButton(e) || !selectedDisplays.contains(articleDisplay))
-                {
-                    selectDisplay(articleDisplay, false, eventToMode(e));
-                }
-
-                // See if popup is necessary
-                MouseListener popup = imageConfig.getViewPopupAdapter();
-                if (popup != null) popup.mousePressed(e);
-            }
-        } else if (i == MouseEvent.MOUSE_RELEASED)
-        {
-            if (component instanceof IArticleDisplay)
-            {
-                MouseListener popup = imageConfig.getViewPopupAdapter();
-                if (popup != null) popup.mouseReleased(e);
-            }
-        } else if (i == MouseEvent.MOUSE_CLICKED)
-        {
-                if (SwingUtilities.isLeftMouseButton(e) &&
-                    component instanceof ImageArticleDisplay)
-                {
-                    URL link = null;
-                    if (hoveredLink != null)
-                    {
-                        link = hoveredLink;
-                    } else if (e.getClickCount() == 2)
-                    {
-                        link = ((ImageArticleDisplay)component).getArticle().getLink();
-                    }
-
-                    if (link != null) fireLinkClicked(link);
-                }
-        }
+    /**
+     * Returns the link popup adapter.
+     *
+     * @return link popup adapter.
+     */
+    protected MouseListener getLinkPopupAdapter()
+    {
+        return getViewPopupAdapter();
     }
 }

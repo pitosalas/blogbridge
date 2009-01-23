@@ -27,6 +27,8 @@ package com.salas.bb.views.feeds;
 import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
+import com.salas.bb.core.GlobalController;
+import com.salas.bb.core.GlobalModel;
 import com.salas.bb.domain.IArticle;
 import com.salas.bb.domain.IFeed;
 import com.salas.bb.sentiments.ArticleFilterProtector;
@@ -42,9 +44,7 @@ import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import java.awt.*;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.net.URL;
@@ -866,7 +866,6 @@ public abstract class AbstractFeedDisplay extends JPanel
      * @return next view or <code>NULL</code>.
      *
      * @see com.salas.bb.views.INavigationModes#MODE_NORMAL
-     * @see com.salas.bb.views.INavigationModes#MODE_KEYWORDS
      * @see com.salas.bb.views.INavigationModes#MODE_UNREAD
      */
     private IArticleDisplay findNextDisplay(IArticleDisplay currentDisplay, int aMode)
@@ -900,7 +899,6 @@ public abstract class AbstractFeedDisplay extends JPanel
      * @return previous view or <code>NULL</code>.
      *
      * @see com.salas.bb.views.INavigationModes#MODE_NORMAL
-     * @see com.salas.bb.views.INavigationModes#MODE_KEYWORDS
      * @see com.salas.bb.views.INavigationModes#MODE_UNREAD
      */
     private IArticleDisplay findPrevDisplay(IArticleDisplay currentDisplay, int aMode)
@@ -1244,7 +1242,6 @@ public abstract class AbstractFeedDisplay extends JPanel
      * @return <code>TRUE</code> if article fits conditions of the mode.
      *
      * @see com.salas.bb.views.INavigationModes#MODE_NORMAL
-     * @see com.salas.bb.views.INavigationModes#MODE_KEYWORDS
      * @see com.salas.bb.views.INavigationModes#MODE_UNREAD
      */
     private boolean fitsMode(IArticle aArticle, int aMode)
@@ -1402,6 +1399,137 @@ public abstract class AbstractFeedDisplay extends JPanel
         }
     }
 
+    // ---------------------------------------------------------------------------------------------
+    // Mouse Event processing
+    // ---------------------------------------------------------------------------------------------
+
+    protected void processMouseEvent(MouseEvent e)
+    {
+        super.processMouseEvent(e);
+
+        Object component = getComponentForMouseEvent(e);
+
+        switch (e.getID())
+        {
+            case MouseEvent.MOUSE_PRESSED:
+                requestFocus();
+                if (component instanceof IArticleDisplay)
+                {
+                    IArticleDisplay articleDisplay = (IArticleDisplay)component;
+                    // Note that isRightMouseButton may not be very well suited for all systems
+                    // It should match the popup dialog guesture
+                    if (!SwingUtilities.isRightMouseButton(e) || !selectedDisplays.contains(articleDisplay))
+                    {
+                        selectDisplay(articleDisplay, false, eventToMode(e));
+                    }
+
+                    MouseListener popup = (hoveredLink != null) ? getLinkPopupAdapter() : getViewPopupAdapter();
+                    if (popup != null) popup.mousePressed(e);
+                }
+                break;
+
+            case MouseEvent.MOUSE_RELEASED:
+                if (component instanceof IArticleDisplay)
+                {
+                    MouseListener popup = (hoveredLink != null) ? getLinkPopupAdapter() : getViewPopupAdapter();
+                    if (popup != null) popup.mousePressed(e);
+                }
+                break;
+
+            case MouseEvent.MOUSE_CLICKED:
+                if (SwingUtilities.isLeftMouseButton(e) && component instanceof IArticleDisplay)
+                {
+                    URL link = null;
+                    IArticle article = null;
+                    if (hoveredLink != null)
+                    {
+                        link = hoveredLink;
+                    } else if (e.getClickCount() == 2)
+                    {
+                        article = ((IArticleDisplay)component).getArticle();
+                        link = article.getLink();
+                    }
+
+                    if (link != null) fireLinkClicked(link);
+                    if (article != null)
+                    {
+                        GlobalModel model = GlobalModel.SINGLETON;
+                        GlobalController.readArticles(true, model.getSelectedGuide(), model.getSelectedFeed(), article);
+                    }
+                }
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    /**
+     * Returns the component the user clicked on.
+     *
+     * @param e event.
+     *
+     * @return component.
+     */
+    protected Object getComponentForMouseEvent(MouseEvent e)
+    {
+        return e.getSource();
+    }
+
+    /**
+     * Returns the view popup adapter.
+     *
+     * @return view popup adapter.
+     */
+    protected MouseListener getViewPopupAdapter() { return null; }
+
+    /**
+     * Returns the link popup adapter.
+     *
+     * @return link popup adapter.
+     */
+    protected MouseListener getLinkPopupAdapter() { return null; }
+
+    /**
+     * Forwards the mouse wheel event higher to a parent.
+     * @param e event to forward.
+     */
+    private void forwardMouseWheelHigher(MouseWheelEvent e)
+    {
+        int newX, newY;
+
+        newX = e.getX() + getX(); // Coordinates take into account at least
+        newY = e.getY() + getY(); // the cursor's position relative to this
+                                  // Component (e.getX()), and this Component's
+                                  // position relative to its parent.
+
+        Container parent = getParent();
+        if (parent == null) return;
+
+        // Fix coordinates to be relative to new event source
+        newX += parent.getX();
+        newY += parent.getY();
+
+        // Change event to be from new source, with new x,y
+        MouseWheelEvent newMWE = new MouseWheelEvent(parent, e.getID(), e.getWhen(),
+            e.getModifiers(), newX, newY, e.getClickCount(), e.isPopupTrigger(),
+            e.getScrollType(), e.getScrollAmount(), e.getWheelRotation());
+
+        parent.dispatchEvent(newMWE);
+    }
+
+    @Override
+    protected void processMouseWheelEvent(MouseWheelEvent e)
+    {
+        if ((e.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) != 0 && e.getScrollAmount() != 0)
+        {
+            // Zooming in / out
+            boolean in = e.getWheelRotation() > 0;
+
+            if (in) fireZoomIn(); else fireZoomOut();
+        } else forwardMouseWheelHigher(e);
+    }
+    
     // ---------------------------------------------------------------------------------------------
     // Hyperlink support
     // ---------------------------------------------------------------------------------------------

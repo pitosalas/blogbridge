@@ -82,7 +82,7 @@ public class HTMLArticleDisplay extends JPanel implements IArticleListener, IArt
 
     private static final ExecutorService executor;
 
-    private static final Color COLOR_BORDER_LINE = Color.decode("#dfdfdf"); //bfbfbf
+    public  static final Color COLOR_BORDER_LINE = Color.decode("#dfdfdf"); //bfbfbf
 
     /** Name of the style we use to apply customized fonts. */
     private static final String TEXT_STYLE_NAME = "normal";
@@ -1274,7 +1274,7 @@ public class HTMLArticleDisplay extends JPanel implements IArticleListener, IArt
          */
         protected void doAction()
         {
-            callback.onFeedJumpLinkClicked(feed);
+            if (callback != null) callback.onFeedJumpLinkClicked(feed);
         }
     }
 

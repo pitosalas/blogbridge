@@ -31,6 +31,7 @@ import com.salas.bb.views.feeds.html.HTMLFeedDisplay;
 import com.salas.bb.views.feeds.html.IHTMLFeedDisplayConfig;
 import com.salas.bb.views.feeds.image.IImageFeedDisplayConfig;
 import com.salas.bb.views.feeds.image.ImageFeedDisplay;
+import com.salas.bb.views.feeds.twitter.TwitterFeedDisplay;
 
 import javax.swing.*;
 import java.awt.*;
@@ -313,6 +314,8 @@ public class CompositeFeedDisplay extends AbstractFeedDisplay
             switch(aFeedType.getType())
             {
                 case FeedType.TYPE_TWITTER:
+                    display = new TwitterFeedDisplay(htmlDisplayConfig, pageModel, pageCountModel);
+                    break;
                 case FeedType.TYPE_TEXT:
                     display = new HTMLFeedDisplay(htmlDisplayConfig, pageModel, pageCountModel);
                     break;

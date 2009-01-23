@@ -57,6 +57,7 @@ public class SmartFeedPlugin extends DefaultQueryType implements IPlugin
         TYPES.put("text", FeedType.TEXT);
         TYPES.put("link", FeedType.LINK);
         TYPES.put("image", FeedType.IMAGE);
+        TYPES.put("twitter", FeedType.TWITTER);
     }
 
     /**

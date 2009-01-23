@@ -310,12 +310,15 @@ public class CompositeFeedDisplay extends AbstractFeedDisplay
 
         if (aFeedType != null)
         {
-            if (FeedType.TEXT == aFeedType)
+            switch(aFeedType.getType())
             {
-                display = new HTMLFeedDisplay(htmlDisplayConfig, pageModel, pageCountModel);
-            } else if (FeedType.IMAGE == aFeedType)
-            {
-                display = new ImageFeedDisplay(imageDisplayConfig, pageModel, pageCountModel);
+                case FeedType.TYPE_TWITTER:
+                case FeedType.TYPE_TEXT:
+                    display = new HTMLFeedDisplay(htmlDisplayConfig, pageModel, pageCountModel);
+                    break;
+                case FeedType.TYPE_IMAGE:
+                    display = new ImageFeedDisplay(imageDisplayConfig, pageModel, pageCountModel);
+                    break;
             }
         }
 

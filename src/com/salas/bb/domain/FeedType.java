@@ -11,18 +11,22 @@ import com.salas.bb.utils.i18n.Strings;
 public class FeedType
 {
     /** Numeric type of text. */
-    public static final int TYPE_TEXT = 0;
+    public static final int TYPE_TEXT    = 0;
     /** Numeric type of image. */
-    public static final int TYPE_IMAGE = 1;
+    public static final int TYPE_IMAGE   = 1;
     /** Numeric type of link. */
-    public static final int TYPE_LINK = 2;
+    public static final int TYPE_LINK    = 2;
+    /** Numeric type of Twitter feed. */
+    public static final int TYPE_TWITTER = 3;
 
     /** Traditional text feed. */
-    public static final FeedType TEXT = new FeedType(TYPE_TEXT, Strings.message("feed.type.text"));
+    public static final FeedType TEXT       = new FeedType(TYPE_TEXT, Strings.message("feed.type.text"));
     /** Images feed (flickr, engadget ...). */
-    public static final FeedType IMAGE = new FeedType(TYPE_IMAGE, Strings.message("feed.type.images"));
+    public static final FeedType IMAGE      = new FeedType(TYPE_IMAGE, Strings.message("feed.type.images"));
     /** Links feed (del.icio.us, simpy ...). */
-    public static final FeedType LINK = new FeedType(TYPE_LINK, Strings.message("feed.type.links"));
+    public static final FeedType LINK       = new FeedType(TYPE_LINK, Strings.message("feed.type.links"));
+    /** Twitter feed */
+    public static final FeedType TWITTER    = new FeedType(TYPE_TWITTER, Strings.message("feed.type.twitter"));
 
     private final int type;
     private final String typeName;
@@ -72,6 +76,9 @@ public class FeedType
                 break;
             case TYPE_LINK:
                 obj = LINK;
+                break;
+            case TYPE_TWITTER:
+                obj = TWITTER;
                 break;
             default:
                 throw new IllegalArgumentException(Strings.error("unsupported.feed.type"));
@@ -124,6 +131,6 @@ public class FeedType
      */
     public static FeedType[] getAllTypes()
     {
-        return new FeedType[] { TEXT, IMAGE };
+        return new FeedType[] { TEXT, IMAGE, TWITTER };
     }
 }

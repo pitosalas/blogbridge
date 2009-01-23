@@ -68,12 +68,12 @@ public class ResultItem
             priority = article.isPinned();
 
             IFeed feed = article.getFeed();
-            if (feed.getType() == FeedType.TEXT)
-            {
-                type = ResultItemType.ARTICLE;
-            } else
+            if (feed.getType() == FeedType.IMAGE)
             {
                 type = ResultItemType.PICTURE;
+            } else
+            {
+                type = ResultItemType.ARTICLE;
             }
         }
     }

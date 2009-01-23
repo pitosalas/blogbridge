@@ -208,12 +208,12 @@ public class HTMLArticleDisplay extends JPanel implements IArticleListener, IArt
 
         mode = -1;
         textMode = -1;
+        linksRanges = null;
+
         setViewMode(config.getViewMode());
 
         updateTitle();
         updateDateStatus();
-
-        linksRanges = null;
     }
 
     /**

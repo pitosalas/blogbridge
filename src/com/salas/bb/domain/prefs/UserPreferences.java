@@ -31,6 +31,7 @@ import com.salas.bb.domain.FeedClass;
 import com.salas.bb.domain.ReadingList;
 import com.salas.bb.remixfeeds.prefs.BloggingPreferences;
 import com.salas.bb.utils.Constants;
+import com.salas.bb.twitter.TwitterPreferences;
 
 import java.util.Date;
 import java.util.HashSet;
@@ -463,6 +464,9 @@ public final class UserPreferences extends Model
 
     /** Blogging preferences. */
     private final BloggingPreferences bloggingPreferences = new BloggingPreferences();
+
+    /** Twitter preferences. */
+    private final TwitterPreferences twitterPreferences = new TwitterPreferences();
 
     /** Mac OS X dock icon badge mode. */
     public static final int DIB_MODE_INVISIBLE = 0;
@@ -2218,6 +2222,7 @@ public final class UserPreferences extends Model
 
         viewModePreferences.restore(prefs);
         bloggingPreferences.restore(prefs);
+        twitterPreferences.restore(prefs);
 
         setNotificationsEnabled(prefs.getBoolean(PROP_NOTIFICATIONS_ENABLED,
             DEFAULT_NOTIFICATIONS_ENABLED));
@@ -2327,6 +2332,7 @@ public final class UserPreferences extends Model
 
         viewModePreferences.store(prefs);
         bloggingPreferences.store(prefs);
+        twitterPreferences.store(prefs);
         
         prefs.putBoolean(PROP_NOTIFICATIONS_ENABLED, isNotificationsEnabled());
         prefs.putBoolean(PROP_SOUND_ON_NEW_ARTICLES, isSoundOnNewArticles());

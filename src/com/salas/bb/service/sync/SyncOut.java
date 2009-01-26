@@ -42,6 +42,7 @@ import com.salas.bb.utils.opml.Converter;
 import com.salas.bb.utils.uif.UifUtilities;
 import com.salas.bb.views.settings.FeedRenderingSettings;
 import com.salas.bb.views.settings.RenderingSettingsNames;
+import com.salas.bb.twitter.TwitterPreferences;
 import com.salas.bbutilities.opml.export.Exporter;
 import com.salas.bbutilities.opml.objects.OPMLGuideSet;
 import com.salas.bbutilities.opml.utils.Transformation;
@@ -150,7 +151,6 @@ public class SyncOut extends AbstractSynchronization
         throws ServerServiceException
     {
         final Hashtable<String, Object> prefs = new Hashtable<String, Object>();
-        final UserPreferences userPreferences = model.getUserPreferences();
 
         // image blocker expressions
         String expressions = StringUtils.join(ImageBlocker.getExpressions().iterator(), "\n");
@@ -166,6 +166,7 @@ public class SyncOut extends AbstractSynchronization
         storeReadingListsPreferences(prefs);
         storeAdvancedPreferences(prefs);
         storeWhatsHotPreferences(prefs);
+        storeTwitterPreferences(prefs);
         Manager.storeState(prefs);
 
         // Save current time to record on the service
@@ -539,6 +540,19 @@ public class SyncOut extends AbstractSynchronization
         setBoolean(prefs, UserPreferences.PROP_WH_SUPPRESS_SAME_SOURCE_LINKS, up.isWhSuppressSameSourceLinks());
         setString(prefs, UserPreferences.PROP_WH_TARGET_GUIDE, up.getWhTargetGuide());
         setLong(prefs, UserPreferences.PROP_WH_SETTINGS_CHANGE_TIME, up.getWhSettingsChangeTime());
+    }
+
+    /**
+     * Stores Twitter preferences.
+     *
+     * @param prefs prefs.
+     */
+    private void storeTwitterPreferences(Map prefs)
+    {
+        TwitterPreferences tp = model.getUserPreferences().getTwitterPreferences();
+        setBoolean(prefs, TwitterPreferences.PROP_TWITTER_ENABLED, tp.isEnabled());
+        setString(prefs, TwitterPreferences.PROP_TWITTER_SCREEN_NAME, tp.getScreenName());
+        setString(prefs, TwitterPreferences.PROP_TWITTER_PASSWORD, tp.getPassword());
     }
 
     /**

@@ -33,16 +33,16 @@ import java.util.prefs.Preferences;
  */
 public class TwitterPreferences extends Model
 {
-    private static final String PROP_TWITTER_ENABLED    = "twitter.enabled";
-    private static final String PROP_TWITTER_USER       = "twitter.user";
-    private static final String PROP_TWITTER_PASSWORD   = "twitter.password";
+    public static final String PROP_TWITTER_ENABLED        = "twitter.enabled";
+    public static final String PROP_TWITTER_SCREEN_NAME    = "twitter.screenName";
+    public static final String PROP_TWITTER_PASSWORD       = "twitter.password";
 
     public static final String PROP_ENABLED     = "enabled";
-    public static final String PROP_USER        = "user";
+    public static final String PROP_SCREEN_NAME = "screenName";
     public static final String PROP_PASSWORD    = "password";
 
     private boolean enabled;
-    private String  user;
+    private String  screenName;
     private String  password;
 
     /**
@@ -68,25 +68,25 @@ public class TwitterPreferences extends Model
     }
 
     /**
-     * Returns the Twitter user name.
+     * Returns the Twitter screen name.
      *
-     * @return user name.
+     * @return screen name.
      */
-    public String getUser()
+    public String getScreenName()
     {
-        return user;
+        return screenName;
     }
 
     /**
-     * Sets the user name.
+     * Sets the screen name.
      *
-     * @param user name.
+     * @param screenName name.
      */
-    public void setUser(String user)
+    public void setScreenName(String screenName)
     {
-        String old = this.user;
-        this.user = user;
-        firePropertyChange(PROP_USER, old, user);
+        String old = this.screenName;
+        this.screenName = screenName;
+        firePropertyChange(PROP_SCREEN_NAME, old, screenName);
     }
 
     /**
@@ -119,8 +119,8 @@ public class TwitterPreferences extends Model
     public void store(Preferences prefs)
     {
         prefs.putBoolean(PROP_TWITTER_ENABLED, isEnabled());
-        prefs.put(PROP_TWITTER_USER, getUser());
-        prefs.put(PROP_TWITTER_PASSWORD, getPassword());
+        if (getScreenName() == null) prefs.remove(PROP_TWITTER_SCREEN_NAME); else prefs.put(PROP_TWITTER_SCREEN_NAME, getScreenName());
+        if (getPassword() == null) prefs.remove(PROP_TWITTER_PASSWORD); else prefs.put(PROP_TWITTER_PASSWORD, getPassword());
     }
 
     /**
@@ -131,9 +131,7 @@ public class TwitterPreferences extends Model
     public void restore(Preferences prefs)
     {
         setEnabled(prefs.getBoolean(PROP_TWITTER_ENABLED, false));
-        setUser(prefs.get(PROP_TWITTER_USER, null));
+        setScreenName(prefs.get(PROP_TWITTER_SCREEN_NAME, null));
         setPassword(prefs.get(PROP_TWITTER_PASSWORD, null));
-
     }
-
 }

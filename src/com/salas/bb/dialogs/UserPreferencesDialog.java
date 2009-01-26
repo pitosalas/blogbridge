@@ -56,6 +56,7 @@ import com.salas.bb.views.feeds.IFeedDisplayConstants;
 import com.salas.bb.views.mainframe.MainFrame;
 import com.salas.bb.views.settings.FeedRenderingSettings;
 import com.salas.bb.views.settings.RenderingSettingsNames;
+import com.salas.bb.twitter.TwitterPreferencesPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -215,6 +216,8 @@ public final class UserPreferencesDialog extends AbstractDialog
         pages.addPage(Strings.message("userprefs.tab.readinglists"), new ReadingListsPanel(prefs, trigger));
         pages.addPage(Strings.message("userprefs.tab.blogs"),
             new BloggingPreferencesPanel(this, trigger, prefs.getBloggingPreferences()));
+        pages.addPage(Strings.message("userprefs.tab.twitter"),
+            new TwitterPreferencesPanel(this, trigger, prefs.getTwitterPreferences()));
         pages.addPage(Strings.message("userprefs.tab.notifications"), new NotificationsPanel(prefs, trigger));
         pages.addPage(Strings.message("userprefs.tab.advanced"), pnlAdvanced);
 

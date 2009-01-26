@@ -52,6 +52,7 @@ import com.salas.bb.utils.uif.CheckBoxList;
 import com.salas.bb.utils.uif.ComponentsFactory;
 import com.salas.bb.views.settings.FeedRenderingSettings;
 import com.salas.bb.views.settings.RenderingSettingsNames;
+import com.salas.bb.twitter.TwitterPreferences;
 import com.salas.bbutilities.opml.Importer;
 import com.salas.bbutilities.opml.ImporterException;
 import com.salas.bbutilities.opml.objects.OPMLGuideSet;
@@ -1430,6 +1431,7 @@ public class SyncIn extends AbstractSynchronization
         loadTagsPreferences(prefs);
         loadReadingListsPrefereneces(prefs);
         loadAdvancedPreferences(prefs);
+        loadTwitterPreferences(prefs);
         Manager.restoreState(prefs);
     }
 
@@ -1649,6 +1651,20 @@ public class SyncIn extends AbstractSynchronization
             UserPreferences.PROP_SHOW_UNREAD_BUTTON_MENU, up.isShowUnreadButtonMenu()));
         up.setFeedImportLimit(getInt(prefs,
             UserPreferences.PROP_FEED_IMPORT_LIMIT, up.getFeedImportLimit()));
+    }
+
+    /**
+     * Loads twitter preferences from the map.
+     *
+     * @param prefs preferences.
+     */
+    private void loadTwitterPreferences(Map prefs)
+    {
+        TwitterPreferences tp = model.getUserPreferences().getTwitterPreferences();
+
+        tp.setEnabled(getBoolean(prefs, TwitterPreferences.PROP_TWITTER_ENABLED, tp.isEnabled()));
+        tp.setScreenName(getString(prefs, TwitterPreferences.PROP_TWITTER_SCREEN_NAME, tp.getScreenName()));
+        tp.setPassword(getString(prefs, TwitterPreferences.PROP_TWITTER_PASSWORD, tp.getPassword()));
     }
 
     /**

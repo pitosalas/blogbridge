@@ -558,6 +558,16 @@ public final class UserPreferences extends Model
     }
 
     /**
+     * Returns twitter preferences.
+     *
+     * @return preferences.
+     */
+    public TwitterPreferences getTwitterPreferences()
+    {
+        return twitterPreferences;
+    }
+
+    /**
      * Returns TRUE when marking of channel as read required when changing channels.
      *
      * @return TRUE if marking required.

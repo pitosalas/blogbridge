@@ -35,6 +35,7 @@ import com.salas.bb.sentiments.ArticleFilterProtector;
 import com.salas.bb.utils.IdentityList;
 import com.salas.bb.utils.i18n.Strings;
 import com.salas.bb.utils.uif.JumplessViewport;
+import com.salas.bb.utils.uif.UifUtilities;
 import com.salas.bb.views.INavigationModes;
 import static com.salas.bb.views.feeds.IFeedDisplayConstants.MODE_FULL;
 import static com.salas.bb.views.feeds.IFeedDisplayConstants.MODE_MINIMAL;
@@ -1412,20 +1413,19 @@ public abstract class AbstractFeedDisplay extends JPanel
         switch (e.getID())
         {
             case MouseEvent.MOUSE_PRESSED:
-                requestFocus();
                 if (component instanceof IArticleDisplay)
                 {
                     IArticleDisplay articleDisplay = (IArticleDisplay)component;
                     // Note that isRightMouseButton may not be very well suited for all systems
                     // It should match the popup dialog guesture
-                    if (!SwingUtilities.isRightMouseButton(e) || !selectedDisplays.contains(articleDisplay))
+                    if (!e.isPopupTrigger() || !selectedDisplays.contains(articleDisplay))
                     {
                         selectDisplay(articleDisplay, false, eventToMode(e));
                     }
 
                     MouseListener popup = (hoveredLink != null) ? getLinkPopupAdapter() : getViewPopupAdapter();
                     if (popup != null) popup.mousePressed(e);
-                }
+                } else requestFocus();
                 break;
 
             case MouseEvent.MOUSE_RELEASED:

@@ -45,7 +45,6 @@ public class TweetThisAction extends AbstractAction
     private TweetThisAction()
     {
         // Hidden singleton constructor
-        setEnabled(false);
     }
 
     /**

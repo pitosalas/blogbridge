@@ -42,6 +42,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.io.IOException;
 
 /**
  * Tweet This dialog box.
@@ -253,6 +254,51 @@ public class TweetThisDialog extends AbstractDialog
     {
         initialLink = link;
         open(text);
+    }
+
+    @Override
+    public void doAccept()
+    {
+        btnSend.setEnabled(false);
+        btnSend.setText("sending ...");
+
+        new Thread("Sending To Twitter")
+        {
+            public void run()
+            {
+                try
+                {
+                    TwitterGateway.update(taMessage.getText());
+                    onSent();
+                } catch (IOException e)
+                {
+                    onFailedToSend(e.getMessage());
+                }
+            }
+        }.start();
+    }
+
+    /**
+     * Invoked when the message is sent.
+     */
+    private void onSent()
+    {
+        super.doAccept();
+    }
+
+    /**
+     * Invoked when sending has failed.
+     *
+     * @param error error message.
+     */
+    private void onFailedToSend(String error)
+    {
+        btnSend.setText(Strings.message("tweetthis.send"));
+        btnSend.setEnabled(true);
+
+        JOptionPane.showMessageDialog(this, error,
+            Strings.message("tweetthis.dialog.title") + " - " + Strings.message("tweetthis.send"),
+            JOptionPane.WARNING_MESSAGE);
     }
 
     /**

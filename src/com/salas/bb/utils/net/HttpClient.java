@@ -28,8 +28,11 @@ import com.salas.bb.utils.StringUtils;
 
 import java.net.URL;
 import java.net.HttpURLConnection;
-import java.io.IOException;
-import java.io.InputStream;
+import java.net.URLEncoder;
+import java.net.URLConnection;
+import java.io.*;
+import java.util.Map;
+import java.util.ArrayList;
 
 /**
  * HTTP utility class.
@@ -98,20 +101,82 @@ public abstract class HttpClient
         throws IOException
     {
         HttpURLConnection con = (HttpURLConnection)url.openConnection();
-        if (user != null && password != null) con.setRequestProperty("Authorization", StringUtils.createBasicAuthToken(user, password));
-        InputStream stream = con.getInputStream();
+        if (user != null && password != null) con.setRequestProperty("Authorization",
+            StringUtils.createBasicAuthToken(user, password));
 
-        String response = null;
+        return readResponse(con);
+    }
+
+    /**
+     * Sends the POST request and returns the response text.
+     *
+     * @param url       URL to send the request to.
+     * @param data      data map.
+     * @param user      user name for the authentication.
+     * @param password  password.
+     *
+     * @return response text.
+     *
+     * @throws IOException in case when communication fails.
+     */
+    public static String post(URL url, Map<String, String> data, String user, String password)
+        throws IOException
+    {
+        // Construct data
+        ArrayList<String> content = new ArrayList<String>(data.size());
+        for (Map.Entry<String, String> entry : data.entrySet())
+        {
+            content.add(URLEncoder.encode(entry.getKey(), "UTF-8") + "=" +
+                URLEncoder.encode(entry.getValue(), "UTF-8"));
+        }
+
+        // Send data
+        URLConnection con = url.openConnection();
+        con.setDoInput(true);
+        con.setDoOutput(true);
+        con.setUseCaches(false);
+        con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+        if (user != null && password != null) con.setRequestProperty("Authorization",
+            StringUtils.createBasicAuthToken(user, password));
+
+
+        OutputStreamWriter wr = new OutputStreamWriter(con.getOutputStream());
         try
         {
-            StringBuffer buf = new StringBuffer();
-            int ch;
-            while ((ch = stream.read()) != -1) buf.append((char)ch);
-            response = buf.toString();
+            wr.write(StringUtils.join(content.iterator(), "&"));
+            wr.flush();
         } finally
         {
-            stream.close();
+            wr.close();
         }
-        return response;
+
+        return readResponse(con);
+    }
+
+    /**
+     * Reads the response text from the given connection.
+     *
+     * @param con connection.
+     *
+     * @return response text.
+     *
+     * @throws IOException in case when communication fails.
+     */
+    private static String readResponse(URLConnection con)
+        throws IOException
+    {
+        StringBuffer buf = new StringBuffer();
+        BufferedReader rd = new BufferedReader(new InputStreamReader(con.getInputStream()));
+
+        try
+        {
+            String line;
+            while ((line = rd.readLine()) != null) buf.append(line).append("\n");
+        } finally
+        {
+            rd.close();
+        }
+
+        return buf.toString();
     }
 }

@@ -30,6 +30,7 @@ import com.jgoodies.uif.AbstractDialog;
 import com.jgoodies.uif.util.ResourceUtils;
 import com.salas.bb.utils.Constants;
 import com.salas.bb.utils.ResourceID;
+import com.salas.bb.utils.StringUtils;
 import com.salas.bb.utils.i18n.Strings;
 import com.salas.bb.utils.net.LinkShortener;
 import com.salas.bb.utils.net.LinkShorteningException;
@@ -49,6 +50,7 @@ public class TweetThisDialog extends AbstractDialog
 {
     private static final int WIDTH_AVAILABLE = 500;
     private static final int WIDTH_UNAVAILABLE = 450;
+    private static final String THREAD_SHORTEN_LINK = "Shorten Link";
 
     private JTextArea taMessage;
     private JTextField tfLink;
@@ -58,6 +60,7 @@ public class TweetThisDialog extends AbstractDialog
     private JScrollPane spMessage;
 
     private String initialText;
+    private String initialLink;
 
     /**
      * Creates the dialog.
@@ -187,7 +190,7 @@ public class TweetThisDialog extends AbstractDialog
      */
     private void initComponents()
     {
-        tfLink      = new JTextField();
+        tfLink      = new JTextField(initialLink);
         taMessage   = new JTextArea(5, 70);
         btnShorten  = new JButton(new ShortenAction());
         lbCharsLeft = new JLabel();
@@ -200,7 +203,8 @@ public class TweetThisDialog extends AbstractDialog
         taMessage.setWrapStyleWord(false);
         taMessage.setLineWrap(true);
         taMessage.setDocument(new TwitterMessage());
-        taMessage.getDocument().addDocumentListener(new DocumentListener() {
+        taMessage.getDocument().addDocumentListener(new DocumentListener()
+        {
             public void insertUpdate(DocumentEvent e)
             {
                 updateCharsCount();
@@ -219,6 +223,19 @@ public class TweetThisDialog extends AbstractDialog
 
         lbCharsLeft.setForeground(Color.DARK_GRAY);
         updateCharsCount();
+
+        if (StringUtils.isNotEmpty(initialLink))
+        {
+            SwingUtilities.invokeLater(new Runnable()
+            {
+                public void run()
+                {
+                    onShorten();
+                }
+            });
+        }
+
+        taMessage.requestFocusInWindow();
     }
 
     /**
@@ -230,6 +247,12 @@ public class TweetThisDialog extends AbstractDialog
     {
         initialText = text;
         open();
+    }
+
+    public void open(String text, String link)
+    {
+        initialLink = link;
+        open(text);
     }
 
     /**
@@ -263,23 +286,46 @@ public class TweetThisDialog extends AbstractDialog
     private void onShorten()
     {
         componentsEnabled(false);
-        SwingUtilities.invokeLater(new Runnable()
+
+        new Thread(THREAD_SHORTEN_LINK)
         {
             public void run()
             {
+                String aLink = null;
+                String anErrorMessage = null;
+
                 try
                 {
-                    String link = LinkShortener.process(tfLink.getText());
-                    onShortenSuccess(link);
+                    aLink = LinkShortener.process(tfLink.getText());
                 } catch (LinkShorteningException e)
                 {
-                    onShortenFailure(e.getMessage());
-                } finally
-                {
-                    componentsEnabled(true);
+                    anErrorMessage = e.getMessage();
                 }
+
+                // Invoke in the GUI thread
+                final String link = aLink;
+                final String errorMessage = anErrorMessage;
+                SwingUtilities.invokeLater(new Runnable()
+                {
+                    public void run()
+                    {
+                        try
+                        {
+                            if (link != null)
+                            {
+                                onShortenSuccess(link);
+                            } else
+                            {
+                                onShortenFailure(errorMessage);
+                            }
+                        } finally
+                        {
+                            componentsEnabled(true);
+                        }
+                    }
+                });
             }
-        });
+        }.start();
     }
 
     /**

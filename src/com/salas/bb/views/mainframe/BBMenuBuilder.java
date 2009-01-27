@@ -247,6 +247,7 @@ public class BBMenuBuilder
         bld.add(ActionManager.get(ActionsTable.CMD_ARTICLE_COPY_LINK));
         bld.add(ActionManager.get(ActionsTable.CMD_ARTICLE_SEND_LINK));
         bld.add(ActionManager.get(ActionsTable.CMD_ARTICLE_POST_TO_BLOG));
+        bld.add(ActionManager.get(ActionsTable.CMD_ARTICLE_TWEET_THIS));
 
         bld.addSeparator();
 

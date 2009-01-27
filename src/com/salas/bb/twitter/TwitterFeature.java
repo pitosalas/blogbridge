@@ -25,6 +25,7 @@
 package com.salas.bb.twitter;
 
 import com.salas.bb.core.GlobalController;
+import com.salas.bb.utils.StringUtils;
 
 /**
  * Twitter feature.
@@ -39,5 +40,22 @@ public class TwitterFeature
     public static boolean isAvaiable()
     {
         return GlobalController.SINGLETON.getFeatureManager().isRegistered();
+    }
+
+    public static boolean isConfigured()
+    {
+        TwitterPreferences p = getPreferences();
+        return isAvaiable() && p.isEnabled() && StringUtils.isNotEmpty(p.getScreenName()) &&
+            StringUtils.isNotEmpty(p.getPassword());
+    }
+
+    /**
+     * Returns twitter preferences.
+     *
+     * @return preferences.
+     */
+    private static TwitterPreferences getPreferences()
+    {
+        return GlobalController.SINGLETON.getModel().getUserPreferences().getTwitterPreferences();
     }
 }

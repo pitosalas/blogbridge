@@ -324,8 +324,6 @@ public class MainFrame extends AbstractFrame
         {
             public void actionPerformed(ActionEvent e)
             {
-                TweetThisDialog ttd = new TweetThisDialog(MainFrame.this);
-                ttd.open();
             }
         });
         ulAMap.put("test-f12", new AbstractAction()
@@ -1265,6 +1263,7 @@ public class MainFrame extends AbstractFrame
                     menu.add(ActionManager.get(ActionsTable.CMD_ARTICLE_COPY_LINK));
                     menu.add(ActionManager.get(ActionsTable.CMD_ARTICLE_SEND_LINK));
                     menu.add(ActionManager.get(ActionsTable.CMD_ARTICLE_POST_TO_BLOG));
+                    menu.add(ActionManager.get(ActionsTable.CMD_ARTICLE_TWEET_THIS));
 
                     menu.addSeparator();
 

@@ -54,6 +54,7 @@ import com.salas.bb.views.feeds.IFeedDisplayConstants;
 import com.salas.bb.views.feeds.image.SaveImageAction;
 import com.salas.bb.views.settings.FeedRenderingSettings;
 import com.salas.bb.whatshot.WhatsHotAction;
+import com.salas.bb.twitter.TweetThisAction;
 
 /**
  * The following are command codes - constant strings. Theses strings are used to look in
@@ -157,6 +158,7 @@ public final class ActionsTable
     public static final String CMD_ARTICLE_HYPERLINK_SAVE_AS        = "article.hyperlink.saveas";
     public static final String CMD_ARTICLE_BLOCK_IMAGE              = "article.blockimage";
     public static final String CMD_ARTICLE_DISCOVER                 = "article.discover";
+    public static final String CMD_ARTICLE_TWEET_THIS               = "article.tweet.this";
 
     public static final String CMD_ARTICLEGROUP_MARK_UNREAD         = "articlegroup.mark.unread";
     public static final String CMD_ARTICLEGROUP_MARK_READ           = "articlegroup.mark.read";
@@ -358,6 +360,7 @@ public final class ActionsTable
         ActionManager.register(CMD_ARTICLE_HYPERLINK_SEND, HyperLinkEmailAction.getInstance());
 
         ActionManager.register(CMD_ARTICLE_POST_TO_BLOG, PostToBlogAction.getInstanceForArticle());
+        ActionManager.register(CMD_ARTICLE_TWEET_THIS, TweetThisAction.getInstance());
 
         ActionManager.register(CMD_ARTICLE_BLOCK_IMAGE, BlockImageAction.getInstance());
         ActionManager.register(CMD_ARTICLE_DISCOVER, DiscoverInArticlesAction.getInstance());

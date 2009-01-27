@@ -83,6 +83,8 @@ public final class UserPreferencesDialog extends AbstractDialog
     private static final ColorListCellRenderer colorListCellRenderer =
         new ColorListCellRenderer(Strings.message("userprefs.tab.feeds.filter.hidden"));
 
+    private Class selectedPanelClass;
+
     /**
      * Creates user preferences dialog.
      *
@@ -143,6 +145,17 @@ public final class UserPreferencesDialog extends AbstractDialog
         Insets ins = Borders.DIALOG_BORDER.getBorderInsets(null);
         panel.setBorder(BorderFactory.createEmptyBorder(0, 0, ins.bottom, 0));
         return panel;
+    }
+
+    /**
+     * Opens the dialog and chooses the panel.
+     *
+     * @param panelClass panel.
+     */
+    public void open(Class panelClass)
+    {
+        selectedPanelClass = panelClass;
+        open();
     }
 
     /**
@@ -224,8 +237,11 @@ public final class UserPreferencesDialog extends AbstractDialog
         pages.setBorder(BorderFactory.createEtchedBorder());
 
         // Restore last selected page
-        int i = prefs.getSelectedPrefsPage();
-        if (i > -1 && i < pages.getSelector().getItemCount()) pages.getSelector().setSelectedIndex(i);
+        if (!pages.selectPageByClass(selectedPanelClass))
+        {
+            int i = prefs.getSelectedPrefsPage();
+            if (i > -1 && i < pages.getSelector().getItemCount()) pages.getSelector().setSelectedIndex(i);
+        }
 
         return pages;
     }
@@ -354,6 +370,30 @@ public final class UserPreferencesDialog extends AbstractDialog
         public void addPage(String title, JComponent page)
         {
             selector.addItem(new Page(title, page));
+        }
+
+        /**
+         * Selects the page by its component class.
+         *
+         * @param pageClass class.
+         *
+         * @return TRUE if the page was found.
+         */
+        public boolean selectPageByClass(Class pageClass)
+        {
+            if (pageClass == null) return false;
+
+            Page selectedPage = null;
+            int count = selector.getItemCount();
+            for (int i = 0; i < count && selectedPage == null; i++)
+            {
+                Page page = (Page)selector.getItemAt(i);
+                if (page.page.getClass() == pageClass) selectedPage = page;
+            }
+
+            selector.setSelectedItem(selectedPage);
+
+            return selectedPage != null;
         }
 
         /**

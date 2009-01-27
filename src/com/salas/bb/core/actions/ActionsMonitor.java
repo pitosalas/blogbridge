@@ -46,6 +46,7 @@ import com.salas.bb.utils.ConnectionState;
 import com.salas.bb.utils.uif.UifUtilities;
 import com.salas.bb.views.feeds.image.SaveImageAction;
 import com.salas.bb.whatshot.WhatsHotAction;
+import com.salas.bb.twitter.TweetThisAction;
 
 import javax.swing.*;
 import java.beans.PropertyChangeEvent;
@@ -322,6 +323,7 @@ public final class ActionsMonitor extends ControllerAdapter
 
         PinUnpinArticleAction.getInstance().setEnabled(bInited);
         PostToBlogAction.update();
+        TweetThisAction.getInstance().setEnabled(bInited);
         FeedLinkPostToBlogAction.update();
         DiscoverInArticlesAction.getInstance().setEnabled(bInited);
 

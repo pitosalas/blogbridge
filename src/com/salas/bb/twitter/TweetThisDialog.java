@@ -200,7 +200,6 @@ public class TweetThisDialog extends AbstractDialog
         Border spacing = BorderFactory.createLineBorder(new JLabel().getBackground(), 3);
         spMessage.setBorder(BorderFactory.createCompoundBorder(spacing, spMessage.getBorder()));
 
-        taMessage.setText(initialText);
         taMessage.setWrapStyleWord(false);
         taMessage.setLineWrap(true);
         taMessage.setDocument(new TwitterMessage());
@@ -221,6 +220,7 @@ public class TweetThisDialog extends AbstractDialog
                 updateCharsCount();
             }
         });
+        taMessage.setText(initialText);
 
         lbCharsLeft.setForeground(Color.DARK_GRAY);
         updateCharsCount();

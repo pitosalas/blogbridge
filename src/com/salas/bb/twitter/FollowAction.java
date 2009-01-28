@@ -39,11 +39,9 @@ import java.io.IOException;
 /**
  * (Un)follow action.
  */
-public class FollowAction extends AbstractAction
+public class FollowAction extends AbstractTwitterAction
 {
-    private static final Pattern PATTERN_SCREEN_NAME =
-        Pattern.compile("http://(www\\.)?twitter\\.com/([^/\\?\\#\\s]+)($|#|\\?)");
-    
+
     private static FollowAction instance;
 
     private final Object lock = new Object();
@@ -51,6 +49,7 @@ public class FollowAction extends AbstractAction
     private URL         userURL;
     private String      screenName;
     private boolean     followAction;
+    private boolean     myself;
 
     /** Creates action. */
     private FollowAction()
@@ -70,21 +69,11 @@ public class FollowAction extends AbstractAction
     }
 
     /**
-     * Sets the user URL to figure the action from it.
-     *
-     * @param url URL.
-     */
-    public static void setUserURL(URL url)
-    {
-        getInstance().setUserURL0(url);
-    }
-
-    /**
      * Sets user URL.
      *
      * @param url URL.
      */
-    private void setUserURL0(URL url)
+    public void setUserURL(URL url)
     {
         synchronized (lock)
         {
@@ -133,8 +122,10 @@ public class FollowAction extends AbstractAction
             if (name.equalsIgnoreCase(getPreferences().getScreenName()))
             {
                 update(false, Strings.message("twitter.myself"));
+                myself = true;
             } else
             {
+                myself = false;
                 new Thread("Follows?")
                 {
                     public void run()
@@ -161,16 +152,6 @@ public class FollowAction extends AbstractAction
     {
         setEnabled(enabled);
         putValue("Name", text);
-    }
-
-    /**
-     * Returns preferences.
-     *
-     * @return preferences.
-     */
-    private TwitterPreferences getPreferences()
-    {
-        return GlobalController.SINGLETON.getModel().getUserPreferences().getTwitterPreferences();
     }
 
     private void updateState(final boolean following, final boolean error, final String name, final URL url)
@@ -200,26 +181,12 @@ public class FollowAction extends AbstractAction
     }
 
     /**
-     * Returns the username from the URL or NULL.
+     * Returns TRUE if the action can be performed.
      *
-     * @param url URL to analyze.
-     *
-     * @return screen name.
+     * @return TRUE if the action can be performed.
      */
-    static String urlToScreenName(URL url)
+    public boolean isAvailable()
     {
-        String name = null;
-
-        String urls = url.toString();
-        Matcher m = PATTERN_SCREEN_NAME.matcher(urls);
-        try
-        {
-            if (m.find()) name = URLDecoder.decode(m.group(2), "UTF-8");
-        } catch (UnsupportedEncodingException e)
-        {
-            // Failed transformation -- ignore
-        }
-
-        return name;
+        return !myself;
     }
 }

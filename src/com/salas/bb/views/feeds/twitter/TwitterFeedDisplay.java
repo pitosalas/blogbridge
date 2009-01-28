@@ -40,6 +40,7 @@ import com.salas.bb.core.GlobalController;
 import com.salas.bb.core.actions.article.*;
 import com.salas.bb.core.actions.ActionsTable;
 import com.salas.bb.twitter.FollowAction;
+import com.salas.bb.twitter.ReplyAction;
 
 import javax.swing.*;
 import java.awt.*;
@@ -138,17 +139,16 @@ public class TwitterFeedDisplay extends AbstractFeedDisplay
                     MainFrame frame = controller.getMainFrame();
                     JPopupMenu menu = frame.createNonLockingPopupMenu("User Link");
 
+                    FollowAction actFollow = FollowAction.getInstance();
+
                     // Set links to the actions as the hovered link will be reset upon
                     // the menu opening as the mouse pointer will move away off the link.
                     URL link = controller.getHoveredHyperLink();
-                    FollowAction.setUserURL(link);
-//                    HyperLinkOpenAction.setLink(link);
+                    actFollow.setUserURL(link);
+                    ReplyAction.getInstance().setUserURL(link);
 
-//                    menu.add(ActionManager.get(ActionsTable.CMD_ARTICLE_HYPERLINK_OPEN));
-                    menu.add(FollowAction.getInstance());
-
-//                    menu.add("Reply");
-//                    menu.add("Follow");
+                    if (actFollow.isAvailable()) menu.add(actFollow);
+                    menu.add(ActionManager.get(ActionsTable.CMD_TWITTER_MESSAGE));
 
                     return menu;
                 }

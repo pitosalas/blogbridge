@@ -27,7 +27,9 @@ package com.salas.bb.views.feeds.twitter;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.uif.util.SystemUtils;
+import com.jgoodies.uif.action.ActionManager;
 import com.salas.bb.core.GlobalModel;
+import com.salas.bb.core.actions.ActionsTable;
 import com.salas.bb.domain.IArticle;
 import com.salas.bb.domain.IArticleListener;
 import com.salas.bb.domain.NetworkFeed;
@@ -43,6 +45,7 @@ import com.salas.bb.views.feeds.IArticleDisplay;
 import com.salas.bb.views.feeds.IFeedDisplayConstants;
 import com.salas.bb.views.feeds.html.HTMLArticleDisplay;
 import com.salas.bb.views.feeds.html.IArticleDisplayConfig;
+import com.salas.bb.twitter.ReplyAction;
 
 import javax.swing.*;
 import javax.swing.event.HyperlinkListener;
@@ -53,6 +56,8 @@ import java.awt.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.regex.Matcher;
+import java.net.URL;
+import java.net.MalformedURLException;
 
 /**
  * Twitter article display.
@@ -99,6 +104,8 @@ public class TwitterArticleDisplay extends JPanel implements IArticleListener, I
 
     private void setText()
     {
+        String name;
+        String link = null;
         String text = article.getHtmlText();
 
         // Create new style for article and init it with default style settings
@@ -110,7 +117,6 @@ public class TwitterArticleDisplay extends JPanel implements IArticleListener, I
 
         if (text != null)
         {
-            String name;
             if (text.matches("^[^:]+:.*$"))
             {
                 // There's the user name at the beginning of the line, like "username: ...."
@@ -122,10 +128,11 @@ public class TwitterArticleDisplay extends JPanel implements IArticleListener, I
                 // Take the author
                 name = article.getAuthor().split("\\s")[0];
             }
+            link = "http://twitter.com/" + name;
 
-            text = "<a href='http://twitter.com/" + name + "' rel='twitter'>" + name + "</a>: " + text;
+            text = "<a href='" + link + "' rel='twitter'>" + name + "</a>: " + text;
 
-            // Wrap "@name" with links
+            // Wrap "@name" and "#tag" with links
             text = text.replaceAll("@([\\w\\d]+)", "<a href=\"http://twitter.com/$1\">@$1</a>");
             text = text.replaceAll("#([\\w\\d]+)", "<a href=\"http://search.twitter.com/search?q=%23$1\">#$1</a>");
 
@@ -139,6 +146,17 @@ public class TwitterArticleDisplay extends JPanel implements IArticleListener, I
 
         tfText.setText(text);
         UifUtilities.installTextStyle(tfText, TEXT_STYLE_NAME);
+
+        if (link != null)
+        {
+            try
+            {
+                lnReply.setLink(new URL(link));
+            } catch (MalformedURLException e)
+            {
+                lnReply.setVisible(false);
+            }
+        }
     }
 
     /**
@@ -152,7 +170,16 @@ public class TwitterArticleDisplay extends JPanel implements IArticleListener, I
         tfText  = createTextArea();
         lbDate  = new JLabel(SimpleDateFormat.getDateInstance().format(date), SwingConstants.LEFT);
         lbPin   = new ArticlePinControl(model.getSelectedGuide(), model.getSelectedFeed(), article);
-        lnReply = new LinkLabel(Strings.message("twitter.article.reply"));
+        lnReply = new LinkLabel(Strings.message("twitter.article.reply"))
+        {
+            protected void doAction()
+            {
+                ReplyAction action = (ReplyAction)ActionManager.get(ActionsTable.CMD_TWITTER_REPLY);
+                action.setUserURL(lnReply.getLink());
+                action.actionPerformed(null);
+            }
+        };
+        lnReply.setForeground(LinkLabel.HIGHLIGHT_COLOR);
 
         setLayout(new FormLayout("5dlu, min:grow, 5dlu", "5dlu, pref, pref, 5dlu"));
 

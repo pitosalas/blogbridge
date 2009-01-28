@@ -172,7 +172,7 @@ public class LinkLabel extends JLabel
                 if (highlightLink)
                 {
                     super.setForeground(HIGHLIGHT_COLOR);
-                    GlobalController.SINGLETON.setStatus(getStatus());
+                    GlobalController.SINGLETON.setHoveredHyperLink(link);
                 }
                 break;
 
@@ -180,7 +180,7 @@ public class LinkLabel extends JLabel
                 if (highlightLink)
                 {
                     super.setForeground(originalForeground);
-                    GlobalController.SINGLETON.setStatus(null);
+                    GlobalController.SINGLETON.setHoveredHyperLink(null);
                 }
                 break;
         }

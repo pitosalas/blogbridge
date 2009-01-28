@@ -55,6 +55,7 @@ import com.salas.bb.views.feeds.image.SaveImageAction;
 import com.salas.bb.views.settings.FeedRenderingSettings;
 import com.salas.bb.whatshot.WhatsHotAction;
 import com.salas.bb.twitter.TweetThisAction;
+import com.salas.bb.twitter.ReplyAction;
 
 /**
  * The following are command codes - constant strings. Theses strings are used to look in
@@ -191,6 +192,9 @@ public final class ActionsTable
     public static final String CMD_BB_IMAGE_BLOCKER                 = "bb.imageblocker";
     public static final String CMD_BB_SENTIMENT_ANALYSIS            = "bb.sentiment.analysis";
 
+    public static final String CMD_TWITTER_REPLY                    = "twitter.reply";
+    public static final String CMD_TWITTER_MESSAGE                  = "twitter.message";
+
     /** Full synchronization. */
     public static final String CMD_SYNC_FULL                        = "sync.full";
     public static final String CMD_SYNC_FULL_TB                     = "sync.full.toolbar";
@@ -226,6 +230,9 @@ public final class ActionsTable
         ActionManager.register(CMD_BB_STATISTICS_TB, new ActionAlias(ReportsAction.getInstance()));
         ActionManager.register(CMD_BB_IMAGE_BLOCKER, new ImageBlockerConfigAction());
         ActionManager.register(CMD_BB_SENTIMENT_ANALYSIS, new SettingsAction());
+
+        ActionManager.register(CMD_TWITTER_REPLY, ReplyAction.getInstance());
+        ActionManager.register(CMD_TWITTER_MESSAGE, new ActionAlias(ReplyAction.getInstance()));
 
         ActionManager.register(CMD_BB_FAQ,
             new OpenUrlAction("http://www.blogbridge.com/category/faq/", "Show FAQ"));

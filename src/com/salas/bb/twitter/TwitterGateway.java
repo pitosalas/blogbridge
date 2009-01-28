@@ -29,6 +29,7 @@ import com.salas.bb.core.GlobalController;
 
 import java.io.IOException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -67,8 +68,65 @@ public class TwitterGateway
         data.put("status", status);
         if (replyToId != null) data.put("in_reply_to_status_id", replyToId);
 
+        post(url, data);
+    }
+
+    /**
+     * Returns TRUE if the current user has friendship with the given screenname.
+     *
+     * @param screenname user to check friendship with.
+     *
+     * @return TRUE if follows.
+     *
+     * @throws IOException if fails to communicate.
+     */
+    public static boolean isFollowing(String screenname)
+        throws IOException
+    {
         TwitterPreferences prefs = getPreferences();
-        HttpClient.post(url, data, prefs.getScreenName(), prefs.getPassword());
+
+        String userA = URLEncoder.encode(prefs.getScreenName(), "UTF-8");
+        String userB = URLEncoder.encode(screenname, "UTF-8");
+        URL url = new URL("http://twitter.com/friendships/exists.json?user_a=" + userA + "&user_b=" + userB);
+        String res = HttpClient.get(url, prefs.getScreenName(), prefs.getPassword());
+
+        return res.contains("true");
+    }
+
+    /**
+     * Requests to follow the given user.
+     *
+     * @param screenname user.
+     *
+     * @throws IOException if fails to communicate.
+     */
+    public static void follow(String screenname)
+        throws IOException
+    {
+        screenname = URLEncoder.encode(screenname, "UTF-8");
+
+        URL url = new URL("http://twitter.com/friendships/create/" + screenname + ".json");
+
+        Map<String, String> data = new HashMap<String, String>();
+        data.put("follow", "true");
+
+        post(url, data);
+    }
+
+    /**
+     * Requests to unfollow the given user.
+     *
+     * @param screenname user.
+     *
+     * @throws IOException if fails to communicate.
+     */
+    public static void unfollow(String screenname)
+        throws IOException
+    {
+        screenname = URLEncoder.encode(screenname, "UTF-8");
+
+        URL url = new URL("http://twitter.com/friendships/destroy/" + screenname + ".json");
+        post(url, null);
     }
 
     /**
@@ -79,5 +137,20 @@ public class TwitterGateway
     private static TwitterPreferences getPreferences()
     {
         return GlobalController.SINGLETON.getModel().getUserPreferences().getTwitterPreferences();
+    }
+
+    /**
+     * Authenticated POST request.
+     *
+     * @param url  URL.
+     * @param data data map.
+     *
+     * @throws IOException if communication fails.
+     */
+    private static void post(URL url, Map<String, String> data)
+        throws IOException
+    {
+        TwitterPreferences prefs = getPreferences();
+        HttpClient.post(url, data, prefs.getScreenName(), prefs.getPassword());
     }
 }

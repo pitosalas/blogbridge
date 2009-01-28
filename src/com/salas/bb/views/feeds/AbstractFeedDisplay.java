@@ -64,6 +64,7 @@ public abstract class AbstractFeedDisplay extends JPanel
     implements IFeedDisplay
 {
     private static final Logger LOG = Logger.getLogger(AbstractFeedDisplay.class.getName());
+    private boolean popupTriggered;
 
     /**
      * Selection mode show how the article selection event has to be interpreted.
@@ -1413,6 +1414,7 @@ public abstract class AbstractFeedDisplay extends JPanel
         switch (e.getID())
         {
             case MouseEvent.MOUSE_PRESSED:
+                popupTriggered = false;
                 if (component instanceof IArticleDisplay)
                 {
                     IArticleDisplay articleDisplay = (IArticleDisplay)component;
@@ -1425,6 +1427,8 @@ public abstract class AbstractFeedDisplay extends JPanel
 
                     MouseListener popup = (hoveredLink != null) ? getLinkPopupAdapter() : getViewPopupAdapter();
                     if (popup != null) popup.mousePressed(e);
+
+                    popupTriggered = e.isPopupTrigger();
                 } else requestFocus();
                 break;
 
@@ -1432,7 +1436,7 @@ public abstract class AbstractFeedDisplay extends JPanel
                 if (component instanceof IArticleDisplay)
                 {
                     MouseListener popup = (hoveredLink != null) ? getLinkPopupAdapter() : getViewPopupAdapter();
-                    if (popup != null) popup.mousePressed(e);
+                    if (popup != null) popup.mouseReleased(e);
                 }
                 break;
 
@@ -1450,7 +1454,7 @@ public abstract class AbstractFeedDisplay extends JPanel
                         link = article.getLink();
                     }
 
-                    if (link != null) fireLinkClicked(link);
+                    if (link != null && !popupTriggered) fireLinkClicked(link);
                     if (article != null)
                     {
                         GlobalModel model = GlobalModel.SINGLETON;

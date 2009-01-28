@@ -37,6 +37,7 @@ import com.salas.bb.utils.uif.LinkLabel;
 import com.salas.bb.utils.uif.UifUtilities;
 import com.salas.bb.utils.uif.UpDownBorder;
 import com.salas.bb.utils.uif.html.CustomHTMLEditorKit;
+import com.salas.bb.utils.StringUtils;
 import com.salas.bb.views.feeds.ArticlePinControl;
 import com.salas.bb.views.feeds.IArticleDisplay;
 import com.salas.bb.views.feeds.IFeedDisplayConstants;
@@ -51,6 +52,7 @@ import javax.swing.text.html.HTMLDocument;
 import java.awt.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.regex.Matcher;
 
 /**
  * Twitter article display.
@@ -108,8 +110,24 @@ public class TwitterArticleDisplay extends JPanel implements IArticleListener, I
 
         if (text != null)
         {
-            String name = article.getAuthor().split("\\s")[0];
+            String name;
+            if (text.matches("^[^:]+:.*$"))
+            {
+                // There's the user name at the beginning of the line, like "username: ...."
+                int i = text.indexOf(':');
+                name = StringUtils.substring(text, 0, i);
+                text = StringUtils.substring(text, i + 2);
+            } else
+            {
+                // Take the author
+                name = article.getAuthor().split("\\s")[0];
+            }
+
             text = "<a href='http://twitter.com/" + name + "' rel='twitter'>" + name + "</a>: " + text;
+
+            // Wrap "@name" with links
+            text = text.replaceAll("@([\\w\\d]+)", "<a href=\"http://twitter.com/$1\">@$1</a>");
+            text = text.replaceAll("#([\\w\\d]+)", "<a href=\"http://search.twitter.com/search?q=%23$1\">#$1</a>");
 
             // This is the special trick to outsmart Mac OS implementation of HTMLEditorKit.
             // Otherwise under some conditions the height will be equal to zero and

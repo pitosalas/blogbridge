@@ -25,17 +25,28 @@
 package com.salas.bb.views.feeds.twitter;
 
 import com.jgoodies.binding.value.ValueModel;
+import com.jgoodies.uifextras.util.PopupAdapter;
+import com.jgoodies.uif.action.ActionManager;
 import com.salas.bb.domain.IArticle;
+import com.salas.bb.domain.NetworkFeed;
 import com.salas.bb.views.feeds.AbstractFeedDisplay;
 import com.salas.bb.views.feeds.IArticleDisplay;
 import com.salas.bb.views.feeds.html.ArticlesGroup;
 import com.salas.bb.views.feeds.html.IArticleDisplayConfig;
 import com.salas.bb.views.feeds.html.IHTMLFeedDisplayConfig;
+import com.salas.bb.views.mainframe.MainFrame;
+import com.salas.bb.utils.i18n.Strings;
+import com.salas.bb.core.GlobalController;
+import com.salas.bb.core.actions.article.*;
+import com.salas.bb.core.actions.ActionsTable;
+import com.salas.bb.twitter.FollowAction;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseEvent;
 import java.util.logging.Logger;
+import java.net.URL;
 
 /**
  * Twitter feed display.
@@ -44,6 +55,8 @@ public class TwitterFeedDisplay extends AbstractFeedDisplay
 {
     private static final Logger LOG = Logger.getLogger(TwitterFeedDisplay.class.getName());
     private IHTMLFeedDisplayConfig htmlConfig;
+
+    private PopupAdapter userLinkPopupAdapter;
 
     /**
      * Abstract view.
@@ -95,7 +108,7 @@ public class TwitterFeedDisplay extends AbstractFeedDisplay
      */
     protected MouseListener getViewPopupAdapter()
     {
-        return htmlConfig.getViewPopupAdapter();
+        return null;
     }
 
     /**
@@ -105,6 +118,44 @@ public class TwitterFeedDisplay extends AbstractFeedDisplay
      */
     protected MouseListener getLinkPopupAdapter()
     {
-        return htmlConfig.getLinkPopupAdapter();
+        return getArticleUserLinkPopupAdapter();
     }
+
+    /**
+     * Returns popup adapter for article user hyper-links.
+     *
+     * @return popup adapter.
+     */
+    public synchronized PopupAdapter getArticleUserLinkPopupAdapter()
+    {
+        if (userLinkPopupAdapter == null)
+        {
+            userLinkPopupAdapter = new PopupAdapter()
+            {
+                protected JPopupMenu buildPopupMenu(MouseEvent anevent)
+                {
+                    GlobalController controller = GlobalController.SINGLETON;
+                    MainFrame frame = controller.getMainFrame();
+                    JPopupMenu menu = frame.createNonLockingPopupMenu("User Link");
+
+                    // Set links to the actions as the hovered link will be reset upon
+                    // the menu opening as the mouse pointer will move away off the link.
+                    URL link = controller.getHoveredHyperLink();
+                    FollowAction.setUserURL(link);
+//                    HyperLinkOpenAction.setLink(link);
+
+//                    menu.add(ActionManager.get(ActionsTable.CMD_ARTICLE_HYPERLINK_OPEN));
+                    menu.add(FollowAction.getInstance());
+
+//                    menu.add("Reply");
+//                    menu.add("Follow");
+
+                    return menu;
+                }
+            };
+        }
+
+        return userLinkPopupAdapter;
+    }
+
 }

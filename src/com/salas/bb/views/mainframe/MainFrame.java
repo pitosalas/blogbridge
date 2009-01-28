@@ -1699,8 +1699,20 @@ public class MainFrame extends AbstractFrame
     }
 
     /**
+     * Creates a non-locking menu.
+     *
+     * @param label label.
+     *
+     * @return menu.
+     */
+    public JPopupMenu createNonLockingPopupMenu(String label)
+    {
+        return new NonlockingPopupMenu(label);
+    }
+
+    /**
      * The menu which isn't locking invoker component. Upon hiding it releases the reference
-     * alowing it to be normally GC'ed even if this menu instance is cached somewhere.
+     * allowing it to be normally GC'ed even if this menu instance is cached somewhere.
      */
     private class NonlockingPopupMenu extends JPopupMenu
     {

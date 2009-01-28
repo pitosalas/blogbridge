@@ -123,11 +123,16 @@ public abstract class HttpClient
         throws IOException
     {
         // Construct data
-        ArrayList<String> content = new ArrayList<String>(data.size());
-        for (Map.Entry<String, String> entry : data.entrySet())
+        ArrayList<String> content = null;
+
+        if (data != null)
         {
-            content.add(URLEncoder.encode(entry.getKey(), "UTF-8") + "=" +
-                URLEncoder.encode(entry.getValue(), "UTF-8"));
+            content = new ArrayList<String>(data.size());
+            for (Map.Entry<String, String> entry : data.entrySet())
+            {
+                content.add(URLEncoder.encode(entry.getKey(), "UTF-8") + "=" +
+                    URLEncoder.encode(entry.getValue(), "UTF-8"));
+            }
         }
 
         // Send data
@@ -143,7 +148,7 @@ public abstract class HttpClient
         OutputStreamWriter wr = new OutputStreamWriter(con.getOutputStream());
         try
         {
-            wr.write(StringUtils.join(content.iterator(), "&"));
+            if (content != null) wr.write(StringUtils.join(content.iterator(), "&"));
             wr.flush();
         } finally
         {
@@ -177,6 +182,6 @@ public abstract class HttpClient
             rd.close();
         }
 
-        return buf.toString();
+        return buf.toString().trim();
     }
 }

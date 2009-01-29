@@ -117,7 +117,7 @@ public class TwitterArticleDisplay extends JPanel implements IArticleListener, I
 
         if (text != null)
         {
-            if (text.matches("^[^:]+:.*$"))
+            if (text.matches("^[^:\\s+]+:.*$"))
             {
                 // There's the user name at the beginning of the line, like "username: ...."
                 int i = text.indexOf(':');

@@ -68,6 +68,8 @@ public abstract class QueryType
     public static final int TYPE_GOOGLE_NEWS    = 13;
     /** Search Amazon tags. */
     public static final int TYPE_AMAZON_TAGS    = 14;
+    /** Twitter search. */
+    public static final int TYPE_TWITTER        = 15;
 
     /** The number of reserved ID's. */
     public static final int RESERVED_IDS        = 1000;
@@ -159,6 +161,8 @@ public abstract class QueryType
             Strings.message("queryfeed.type.googlenews.description"),
             IFeedDisplayConstants.MODE_FULL);
 
+        QueryType twitter = new TwitterQueryType();
+        
         TYPES = new HashMap<Integer, QueryType>();
         registerType(feedster);
         registerType(technorati);
@@ -172,6 +176,7 @@ public abstract class QueryType
         registerType(googleNews);
         registerType(diggSearch);
         registerType(monster);
+        registerType(twitter);
     }
 
     /**

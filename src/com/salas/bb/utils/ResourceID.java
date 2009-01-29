@@ -121,6 +121,8 @@ public class ResourceID extends ResourceIDs
     public static final String ICON_QUERYFEED_MONSTER = "queryfeed.monster.icon";
     /** Icon for search feed My own feeds. */
     public static final String ICON_SEARCHFEED_MYFEEDS = "searchfeed.myfeeds.icon";
+    /** Icon for query feed Twitter. */
+    public static final String ICON_QUERY_FEED_TWITTER = "queryfeed.twitter.icon";
 
     /** The list of file extensions not to start discovery for. */
     public static final String NO_DISCOVERY_EXTENSIONS = "no.discovery.extensions";

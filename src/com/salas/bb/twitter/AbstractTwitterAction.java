@@ -58,7 +58,7 @@ public abstract class AbstractTwitterAction extends AbstractAction
      *
      * @return screen name.
      */
-    static String urlToScreenName(URL url)
+    public static String urlToScreenName(URL url)
     {
         String name = null;
 

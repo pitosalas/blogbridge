@@ -28,32 +28,39 @@ import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.uifextras.util.PopupAdapter;
 import com.jgoodies.uif.action.ActionManager;
 import com.salas.bb.domain.IArticle;
-import com.salas.bb.domain.NetworkFeed;
 import com.salas.bb.views.feeds.AbstractFeedDisplay;
 import com.salas.bb.views.feeds.IArticleDisplay;
 import com.salas.bb.views.feeds.html.ArticlesGroup;
 import com.salas.bb.views.feeds.html.IArticleDisplayConfig;
 import com.salas.bb.views.feeds.html.IHTMLFeedDisplayConfig;
 import com.salas.bb.views.mainframe.MainFrame;
-import com.salas.bb.utils.i18n.Strings;
 import com.salas.bb.core.GlobalController;
-import com.salas.bb.core.actions.article.*;
 import com.salas.bb.core.actions.ActionsTable;
 import com.salas.bb.twitter.FollowAction;
 import com.salas.bb.twitter.ReplyAction;
+import com.salas.bb.twitter.AbstractTwitterAction;
+import com.salas.bb.twitter.TwitterGateway;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseEvent;
+import java.awt.event.ActionEvent;
 import java.util.logging.Logger;
+import java.util.Map;
+import java.util.Collections;
+import java.util.WeakHashMap;
 import java.net.URL;
+import java.io.IOException;
 
 /**
  * Twitter feed display.
  */
 public class TwitterFeedDisplay extends AbstractFeedDisplay
 {
+    private static final Map<String, String> USER_INFO_CACHE =
+        Collections.synchronizedMap(new WeakHashMap<String, String>());
+
     private static final Logger LOG = Logger.getLogger(TwitterFeedDisplay.class.getName());
     private IHTMLFeedDisplayConfig htmlConfig;
 
@@ -119,19 +126,21 @@ public class TwitterFeedDisplay extends AbstractFeedDisplay
      */
     protected MouseListener getLinkPopupAdapter()
     {
-        return isUserLinkHovered() ? getArticleUserLinkPopupAdapter() : null;
+        return isUserLink(hoveredLink) ? getArticleUserLinkPopupAdapter() : null;
     }
 
     /**
      * Returns TRUE if it's the user link that is hovered.
      *
+     * @param link link.
+     *
      * @return TRUE if it is.
      */
-    private boolean isUserLinkHovered()
+    private boolean isUserLink(URL link)
     {
-        if (hoveredLink == null) return false;
+        if (link == null) return false;
 
-        String urls = hoveredLink.toString();
+        String urls = link.toString();
 
         return urls.matches("^http://(www\\.)?twitter.com/[^/]+($|\\?|#)");
     }
@@ -172,4 +181,69 @@ public class TwitterFeedDisplay extends AbstractFeedDisplay
         return userLinkPopupAdapter;
     }
 
+
+    /**
+     * Returns tool-tip for a give link.
+     *
+     * @param link          link.
+     * @param textPane      pane requesting the tooltip.
+     *
+     * @return tool-tip text.
+     */
+    protected String getHoveredLinkTooltip(URL link, final JComponent textPane)
+    {
+        if (link == null || !isUserLink(link)) return null;
+
+        final String screenName = AbstractTwitterAction.urlToScreenName(link);
+        
+        String info = USER_INFO_CACHE.get(screenName);
+        if (info == null)
+        {
+            new Thread("Twitter User Info")
+            {
+                public void run()
+                {
+                    String userInfo;
+                    try
+                    {
+                        userInfo = TwitterGateway.userInfoHTML(screenName);
+                    } catch (IOException e)
+                    {
+                        userInfo = "Unavailable";
+                    }
+
+                    cacheAndSetUserInfo(userInfo, screenName, textPane);
+                }
+            }.start();
+
+            return "Loading ...";
+        }
+
+        return info;
+    }
+
+    /**
+     * Places the info in cache and shows the tooltip.
+     *
+     * @param userInfo      info HTML.
+     * @param screenName    screen name.
+     * @param textPane      text pane component.
+     */
+    private void cacheAndSetUserInfo(final String userInfo, final String screenName, final JComponent textPane)
+    {
+        SwingUtilities.invokeLater(new Runnable()
+        {
+            public void run()
+            {
+                USER_INFO_CACHE.put(screenName, userInfo);
+                Action hideTip = textPane.getActionMap().get("hideTip");
+                if (hideTip != null) hideTip.actionPerformed(new ActionEvent(textPane, ActionEvent.ACTION_PERFORMED, "hideTip"));
+
+                textPane.setToolTipText(userInfo);
+
+                Action postTip = textPane.getActionMap().get("postTip");
+                if (postTip != null) postTip.actionPerformed(new ActionEvent(textPane, ActionEvent.ACTION_PERFORMED, "postTip"));
+            }
+        });
+    }
 }

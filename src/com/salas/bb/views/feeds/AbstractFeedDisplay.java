@@ -1557,7 +1557,7 @@ public abstract class AbstractFeedDisplay extends JPanel
                 setHoveredHyperLink(link);
 
                 JComponent textPane = (JComponent)e.getSource();
-                String tooltip = getHoveredLinkTooltip(link);
+                String tooltip = getHoveredLinkTooltip(link, textPane);
                 textPane.setToolTipText(tooltip);
             }
         }
@@ -1566,11 +1566,12 @@ public abstract class AbstractFeedDisplay extends JPanel
     /**
      * Returns tool-tip for a give link.
      *
-     * @param link link.
+     * @param link          link.
+     * @param textPane      pane requesting the tooltip.
      *
      * @return tool-tip text.
      */
-    protected String getHoveredLinkTooltip(URL link)
+    protected String getHoveredLinkTooltip(URL link, JComponent textPane)
     {
         return null;
     }

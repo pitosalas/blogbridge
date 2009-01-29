@@ -25,8 +25,6 @@
 package com.salas.bb.views.feeds.html;
 
 import com.jgoodies.binding.value.ValueModel;
-import com.salas.bb.core.GlobalController;
-import com.salas.bb.core.GlobalModel;
 import com.salas.bb.domain.IArticle;
 import com.salas.bb.domain.IFeed;
 import com.salas.bb.utils.i18n.Strings;
@@ -40,7 +38,6 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.event.MouseWheelEvent;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.logging.Logger;
@@ -288,10 +285,11 @@ public class HTMLFeedDisplay extends AbstractFeedDisplay
      * Returns tool-tip for a give link.
      *
      * @param link link.
+     * @param textPane      pane requesting the tooltip.
      *
      * @return tool-tip text.
      */
-    protected String getHoveredLinkTooltip(URL link)
+    protected String getHoveredLinkTooltip(URL link, JComponent textPane)
     {
         return link == null ? null : htmlConfig.getArticleViewConfig().getLinkTooltip(link);
     }

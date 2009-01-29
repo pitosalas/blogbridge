@@ -25,19 +25,28 @@
 package com.salas.bb.twitter;
 
 import com.salas.bb.utils.net.HttpClient;
+import com.salas.bb.utils.StringUtils;
 import com.salas.bb.core.GlobalController;
 
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.net.MalformedURLException;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.logging.Logger;
+import java.util.logging.Level;
+
+import org.json.JSONObject;
+import org.json.JSONException;
 
 /**
  * Twitter gateway.
  */
 public class TwitterGateway
 {
+    private static final Logger LOG = Logger.getLogger(TwitterGateway.class.getName());
+
     /**
      * Posts an update to the twitter account.
      *
@@ -88,7 +97,7 @@ public class TwitterGateway
         String userA = URLEncoder.encode(prefs.getScreenName(), "UTF-8");
         String userB = URLEncoder.encode(screenname, "UTF-8");
         URL url = new URL("http://twitter.com/friendships/exists.json?user_a=" + userA + "&user_b=" + userB);
-        String res = HttpClient.get(url, prefs.getScreenName(), prefs.getPassword());
+        String res = get(url);
 
         return res.contains("true");
     }
@@ -130,6 +139,57 @@ public class TwitterGateway
     }
 
     /**
+     * Returns HTML for the user info popup.
+     *
+     * @param screenname screen name.
+     *
+     * @return HTML.
+     *
+     * @throws IOException if fails to communicate.
+     */
+    public static String userInfoHTML(String screenname)
+        throws IOException
+    {
+        URL url = new URL("http://twitter.com/users/show/" + screenname + ".json");
+        String response = get(url);
+
+        String html;
+
+        try
+        {
+            JSONObject data = new JSONObject(response);
+            String description          = data.getString("description");
+            String name                 = data.getString("name");
+            String profile_image_url    = data.getString("profile_image_url");
+            String screen_name          = data.getString("screen_name");
+            String location             = data.getString("location");
+            String followers            = data.getString("followers_count");
+            String updates              = data.getString("statuses_count");
+            String friends              = data.getString("friends_count");
+
+            html  = "<html><div style='padding:10px'>";
+            html += "<table border='0'>";
+            html += "<tr valign='top'><td><img src='" + profile_image_url + "'></td>";
+            html += "<td width='10'>&nbsp;</td>";
+            html += "<td width='300'>";
+            html += "<p><strong>" + name + "</strong> (" + screen_name + ")</p>";
+            if (StringUtils.isNotEmpty(location)) html += "<p>" + location + "</p>";
+            if (StringUtils.isNotEmpty(description)) html += "<br><p>" + description + "</p><br>";
+            html += "<p>Followers: " + followers + "</p>";
+            html += "<p>Friends: " + friends + "</p>";
+            html += "<p>Updates: " + updates + "</p>";
+            html += "</td></tr></table>";
+            html += "</div>";
+        } catch (JSONException e)
+        {
+            LOG.log(Level.INFO, "Failed to load screen name info", e);
+            html = null;
+        }
+
+        return html;
+    }
+
+    /**
      * Returns preferences.
      *
      * @return preferences.
@@ -137,6 +197,22 @@ public class TwitterGateway
     private static TwitterPreferences getPreferences()
     {
         return GlobalController.SINGLETON.getModel().getUserPreferences().getTwitterPreferences();
+    }
+
+    /**
+     * Authenticated GET request.
+     *
+     * @param url URL.
+     *
+     * @return response.
+     *
+     * @throws IOException if communication fails.
+     */
+    private static String get(URL url)
+        throws IOException
+    {
+        TwitterPreferences prefs = getPreferences();
+        return HttpClient.get(url, prefs.getScreenName(), prefs.getPassword());
     }
 
     /**

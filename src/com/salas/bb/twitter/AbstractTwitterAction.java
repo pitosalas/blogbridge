@@ -25,6 +25,8 @@
 package com.salas.bb.twitter;
 
 import com.salas.bb.core.GlobalController;
+import com.salas.bb.core.GlobalModel;
+import com.salas.bb.dialogs.UserPreferencesDialog;
 
 import javax.swing.*;
 import java.net.URL;
@@ -32,6 +34,7 @@ import java.net.URLDecoder;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.io.UnsupportedEncodingException;
+import java.awt.event.ActionEvent;
 
 /**
  * Abstract base class for twitter actions.
@@ -74,4 +77,20 @@ public abstract class AbstractTwitterAction extends AbstractAction
 
         return name;
     }
+
+    /** Invoked when action is invoked. */
+    public void actionPerformed(ActionEvent e)
+    {
+        if (TwitterFeature.isConfigured())
+        {
+            customAction();
+        } else
+        {
+            UserPreferencesDialog dialog = new UserPreferencesDialog(
+                GlobalController.SINGLETON.getMainFrame(), GlobalModel.SINGLETON);
+            dialog.open(TwitterPreferencesPanel.class);
+        }
+    }
+
+    protected abstract void customAction();
 }

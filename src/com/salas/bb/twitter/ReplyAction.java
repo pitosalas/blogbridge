@@ -25,6 +25,8 @@
 package com.salas.bb.twitter;
 
 import com.salas.bb.core.GlobalController;
+import com.salas.bb.core.GlobalModel;
+import com.salas.bb.dialogs.UserPreferencesDialog;
 
 import java.awt.event.ActionEvent;
 import java.net.URL;
@@ -64,11 +66,9 @@ public class ReplyAction extends AbstractTwitterAction
         setEnabled(screenName != null);
     }
 
-    /** Invoked when action is invoked. */
-    public void actionPerformed(ActionEvent e)
+    protected void customAction()
     {
         TweetThisDialog ttd = new TweetThisDialog(GlobalController.SINGLETON.getMainFrame());
         ttd.open("@" + screenName + " ");
-
     }
 }

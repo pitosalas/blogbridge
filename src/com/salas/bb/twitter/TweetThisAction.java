@@ -37,7 +37,7 @@ import java.beans.PropertyChangeEvent;
 /**
  * Tweet this action.
  */
-public class TweetThisAction extends AbstractAction
+public class TweetThisAction extends AbstractTwitterAction
 {
     private static TweetThisAction instance;
 
@@ -60,18 +60,10 @@ public class TweetThisAction extends AbstractAction
 
 
     /** Invoked when an action occurs. */
-    public void actionPerformed(ActionEvent e)
+    protected void customAction()
     {
-        if (TwitterFeature.isConfigured())
-        {
-            TweetThisDialog ttd = new TweetThisDialog(GlobalController.SINGLETON.getMainFrame());
-            ttd.open("", getSelectedArticleLink());
-        } else
-        {
-            UserPreferencesDialog dialog = new UserPreferencesDialog(
-                GlobalController.SINGLETON.getMainFrame(), GlobalModel.SINGLETON);
-            dialog.open(TwitterPreferencesPanel.class);
-        }
+        TweetThisDialog ttd = new TweetThisDialog(GlobalController.SINGLETON.getMainFrame());
+        ttd.open("", getSelectedArticleLink());
     }
 
     /**

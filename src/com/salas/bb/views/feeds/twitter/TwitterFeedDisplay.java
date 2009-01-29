@@ -40,6 +40,7 @@ import com.salas.bb.twitter.FollowAction;
 import com.salas.bb.twitter.ReplyAction;
 import com.salas.bb.twitter.AbstractTwitterAction;
 import com.salas.bb.twitter.TwitterGateway;
+import com.salas.bb.utils.i18n.Strings;
 
 import javax.swing.*;
 import java.awt.*;
@@ -209,14 +210,14 @@ public class TwitterFeedDisplay extends AbstractFeedDisplay
                         userInfo = TwitterGateway.userInfoHTML(screenName);
                     } catch (IOException e)
                     {
-                        userInfo = "Unavailable";
+                        userInfo = Strings.message("twitter.unavailable");
                     }
 
                     cacheAndSetUserInfo(userInfo, screenName, textPane);
                 }
             }.start();
 
-            return "Loading ...";
+            return Strings.message("twitter.loading");
         }
 
         return info;

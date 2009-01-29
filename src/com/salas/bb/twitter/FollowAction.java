@@ -85,8 +85,10 @@ public class FollowAction extends AbstractTwitterAction
         }
     }
 
-    /** Invoked when action is performed. */
-    public void actionPerformed(ActionEvent e)
+    /**
+     * Custom action.
+     */
+    protected void customAction()
     {
         synchronized (lock)
         {
@@ -114,7 +116,16 @@ public class FollowAction extends AbstractTwitterAction
     {
         update(false, Strings.message("twitter.checking"));
 
-        if (url == null && !TwitterFeature.isConfigured()) return;
+        if (url == null)
+        {
+            update(false, Strings.message("twitter.unavailable"));
+            return;
+        }
+
+        if (!TwitterFeature.isConfigured())
+        {
+            update(true, Strings.message("twitter.follow"));
+        }
 
         final String name = urlToScreenName(url);
         if (name != null)

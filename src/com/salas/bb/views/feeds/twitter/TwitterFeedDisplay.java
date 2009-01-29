@@ -132,7 +132,8 @@ public class TwitterFeedDisplay extends AbstractFeedDisplay
     protected MouseListener getLinkPopupAdapter()
     {
         return isUserLink(hoveredLink) ? getArticleUserLinkPopupAdapter()
-            : isHashtagLink(hoveredLink) ? getHashtagLinkPopupAdapter() : null;
+            : isHashtagLink(hoveredLink) ? getHashtagLinkPopupAdapter()
+            : htmlConfig.getLinkPopupAdapter();
     }
 
     /**

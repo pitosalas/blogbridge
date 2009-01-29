@@ -321,6 +321,8 @@ public class TwitterGateway
      */
     public static String urlToScreenName(URL url)
     {
+        if (url == null) return null;
+
         String name = null;
 
         String urls = url.toString();
@@ -345,8 +347,10 @@ public class TwitterGateway
      */
     public static String urlToHashtag(URL url)
     {
-        String tag = null;
+        if (url == null) return null;
 
+        String tag = null;
+        
         String urls = url.toString();
         Matcher m = PATTERN_HASHTAG.matcher(urls);
         try

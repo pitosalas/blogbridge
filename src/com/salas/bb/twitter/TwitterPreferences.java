@@ -112,6 +112,8 @@ public class TwitterPreferences extends Model
         String old = this.screenName;
         this.screenName = screenName;
         firePropertyChange(PROP_SCREEN_NAME, old, screenName);
+
+        resetURLDependentActions();
     }
 
     /**
@@ -134,6 +136,8 @@ public class TwitterPreferences extends Model
         String old = this.password;
         this.password = password;
         firePropertyChange(PROP_PASSWORD, old, password);
+
+        resetURLDependentActions();
     }
 
     /**
@@ -160,5 +164,15 @@ public class TwitterPreferences extends Model
         setScreenName(prefs.get(PROP_TWITTER_SCREEN_NAME, null));
         setPassword(prefs.get(PROP_TWITTER_PASSWORD, null));
         setProfilePics(prefs.getBoolean(PROP_PROFILE_PICS, true));
+    }
+
+    /**
+     * Resets actions that depend on URLs after the preferences change.
+     */
+    private static void resetURLDependentActions()
+    {
+        FollowAction.getInstance().setUserURL(null);
+        ReplyAction.getInstance().setUserURL(null);
+        SubscribeAction.getInstance().setUserURL(null);
     }
 }

@@ -68,6 +68,12 @@ public class TwitterPreferencesPanel extends JPanel
                 new PropertyAdapter(preferences, TwitterPreferences.PROP_ENABLED),
                 trigger)));
 
+        JCheckBox chProfilePics = ComponentsFactory.createCheckBox(
+            Strings.message("userprefs.tab.twitter.profile.pics"),
+            new ToggleButtonAdapter(new BufferedValueModel(
+                new PropertyAdapter(preferences, TwitterPreferences.PROP_PROFILE_PICS),
+                trigger)));
+
         JLabel lbScreenName = new JLabel(Strings.message("userprefs.tab.twitter.screenname"));
         JLabel lbPassword   = new JLabel(Strings.message("userprefs.tab.twitter.password"));
 
@@ -79,7 +85,7 @@ public class TwitterPreferencesPanel extends JPanel
         tfPassword.setDocument(new DocumentAdapter(new BufferedValueModel(
             new PropertyAdapter(preferences, TwitterPreferences.PROP_PASSWORD), trigger)));
         
-        StateUpdatingToggleListener.install(chEnabled, lbScreenName, tfScreenName, lbPassword, tfPassword);
+        StateUpdatingToggleListener.install(chEnabled, lbScreenName, tfScreenName, lbPassword, tfPassword, chProfilePics);
 
         builder.append(tfWording, 4);
         builder.appendUnrelatedComponentsGapRow(2);
@@ -89,5 +95,9 @@ public class TwitterPreferencesPanel extends JPanel
         builder.nextLine();
         builder.append(lbScreenName, tfScreenName);
         builder.append(lbPassword, tfPassword);
+
+        builder.setLeadingColumnOffset(3);
+        builder.nextLine();
+        builder.append(chProfilePics);
     }
 }

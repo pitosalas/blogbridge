@@ -56,6 +56,7 @@ import com.salas.bb.views.settings.FeedRenderingSettings;
 import com.salas.bb.whatshot.WhatsHotAction;
 import com.salas.bb.twitter.TweetThisAction;
 import com.salas.bb.twitter.ReplyAction;
+import com.salas.bb.twitter.SubscribeAction;
 
 /**
  * The following are command codes - constant strings. Theses strings are used to look in
@@ -194,6 +195,7 @@ public final class ActionsTable
 
     public static final String CMD_TWITTER_REPLY                    = "twitter.reply";
     public static final String CMD_TWITTER_MESSAGE                  = "twitter.message";
+    public static final String CMD_TWITTER_SUBSCRIBE                = "twitter.subscribe";
 
     /** Full synchronization. */
     public static final String CMD_SYNC_FULL                        = "sync.full";
@@ -233,6 +235,7 @@ public final class ActionsTable
 
         ActionManager.register(CMD_TWITTER_REPLY, ReplyAction.getInstance());
         ActionManager.register(CMD_TWITTER_MESSAGE, new ActionAlias(ReplyAction.getInstance()));
+        ActionManager.register(CMD_TWITTER_SUBSCRIBE, SubscribeAction.getInstance());
 
         ActionManager.register(CMD_BB_FAQ,
             new OpenUrlAction("http://www.blogbridge.com/category/faq/", "Show FAQ"));

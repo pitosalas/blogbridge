@@ -33,17 +33,20 @@ import java.util.prefs.Preferences;
  */
 public class TwitterPreferences extends Model
 {
-    public static final String PROP_TWITTER_ENABLED        = "twitter.enabled";
-    public static final String PROP_TWITTER_SCREEN_NAME    = "twitter.screenName";
-    public static final String PROP_TWITTER_PASSWORD       = "twitter.password";
+    public static final String PROP_TWITTER_ENABLED         = "twitter.enabled";
+    public static final String PROP_TWITTER_SCREEN_NAME     = "twitter.screenName";
+    public static final String PROP_TWITTER_PASSWORD        = "twitter.password";
+    public static final String PROP_TWITTER_PROFILE_PICS    = "twitter.profile.pics";
 
-    public static final String PROP_ENABLED     = "enabled";
-    public static final String PROP_SCREEN_NAME = "screenName";
-    public static final String PROP_PASSWORD    = "password";
+    public static final String PROP_ENABLED                 = "enabled";
+    public static final String PROP_SCREEN_NAME             = "screenName";
+    public static final String PROP_PASSWORD                = "password";
+    public static final String PROP_PROFILE_PICS            = "profilePics";
 
     private boolean enabled;
     private String  screenName;
     private String  password;
+    private boolean profilePics;
 
     /**
      * Returns TRUE when the Twitter support is enabled.
@@ -65,6 +68,28 @@ public class TwitterPreferences extends Model
         boolean old = this.enabled;
         this.enabled = enabled;
         firePropertyChange(PROP_ENABLED, old, enabled);
+    }
+
+    /**
+     * Returns TRUE when profile pics should be shown in tooltips.
+     *
+     * @return profile pics enabled.
+     */
+    public boolean isProfilePics()
+    {
+        return profilePics;
+    }
+
+    /**
+     * Enables / disables profile pics in tooltips.
+     *
+     * @param profilePics TRUE to show.
+     */
+    public void setProfilePics(boolean profilePics)
+    {
+        boolean old = this.profilePics;
+        this.profilePics = profilePics;
+        firePropertyChange(PROP_PROFILE_PICS, old, profilePics);
     }
 
     /**
@@ -121,6 +146,7 @@ public class TwitterPreferences extends Model
         prefs.putBoolean(PROP_TWITTER_ENABLED, isEnabled());
         if (getScreenName() == null) prefs.remove(PROP_TWITTER_SCREEN_NAME); else prefs.put(PROP_TWITTER_SCREEN_NAME, getScreenName());
         if (getPassword() == null) prefs.remove(PROP_TWITTER_PASSWORD); else prefs.put(PROP_TWITTER_PASSWORD, getPassword());
+        prefs.putBoolean(PROP_PROFILE_PICS, isProfilePics());
     }
 
     /**
@@ -133,5 +159,6 @@ public class TwitterPreferences extends Model
         setEnabled(prefs.getBoolean(PROP_TWITTER_ENABLED, false));
         setScreenName(prefs.get(PROP_TWITTER_SCREEN_NAME, null));
         setPassword(prefs.get(PROP_TWITTER_PASSWORD, null));
+        setProfilePics(prefs.getBoolean(PROP_PROFILE_PICS, true));
     }
 }

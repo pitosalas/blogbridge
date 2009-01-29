@@ -29,16 +29,21 @@ import com.salas.bb.utils.StringUtils;
 import com.salas.bb.core.GlobalController;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.net.MalformedURLException;
+import java.net.URLDecoder;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
 import org.json.JSONObject;
 import org.json.JSONException;
+import org.json.JSONArray;
 
 /**
  * Twitter gateway.
@@ -46,6 +51,12 @@ import org.json.JSONException;
 public class TwitterGateway
 {
     private static final Logger LOG = Logger.getLogger(TwitterGateway.class.getName());
+
+    // Screen name extraction pattern
+    public static final Pattern PATTERN_SCREEN_NAME =
+        Pattern.compile("http://(www\\.)?twitter\\.com/([^/\\?\\#\\s]+)($|#|\\?)");
+    private static final Pattern PATTERN_HASHTAG =
+        Pattern.compile("^http://search\\.twitter\\.com/search(\\.(json|atom)?)?\\?q=(#|%23)([^&\\s\\+]+)($|&)");
 
     /**
      * Posts an update to the twitter account.
@@ -94,8 +105,8 @@ public class TwitterGateway
     {
         TwitterPreferences prefs = getPreferences();
 
-        String userA = URLEncoder.encode(prefs.getScreenName(), "UTF-8");
-        String userB = URLEncoder.encode(screenname, "UTF-8");
+        String userA = encode(prefs.getScreenName());
+        String userB = encode(screenname);
         URL url = new URL("http://twitter.com/friendships/exists.json?user_a=" + userA + "&user_b=" + userB);
         String res = get(url);
 
@@ -112,7 +123,7 @@ public class TwitterGateway
     public static void follow(String screenname)
         throws IOException
     {
-        screenname = URLEncoder.encode(screenname, "UTF-8");
+        screenname = encode(screenname);
 
         URL url = new URL("http://twitter.com/friendships/create/" + screenname + ".json");
 
@@ -132,7 +143,7 @@ public class TwitterGateway
     public static void unfollow(String screenname)
         throws IOException
     {
-        screenname = URLEncoder.encode(screenname, "UTF-8");
+        screenname = encode(screenname);
 
         URL url = new URL("http://twitter.com/friendships/destroy/" + screenname + ".json");
         post(url, null);
@@ -169,8 +180,12 @@ public class TwitterGateway
 
             html  = "<html><div style='padding:10px'>";
             html += "<table border='0'>";
-            html += "<tr valign='top'><td><img src='" + profile_image_url + "'></td>";
-            html += "<td width='10'>&nbsp;</td>";
+            html += "<tr valign='top'>";
+            if (isShowingPics())
+            {
+                html += "<td><img src='" + profile_image_url + "'></td>";
+                html += "<td width='10'>&nbsp;</td>";
+            }
             html += "<td width='300'>";
             html += "<p><strong>" + name + "</strong> (" + screen_name + ")</p>";
             if (StringUtils.isNotEmpty(location)) html += "<p>" + location + "</p>";
@@ -183,6 +198,58 @@ public class TwitterGateway
         } catch (JSONException e)
         {
             LOG.log(Level.INFO, "Failed to load screen name info", e);
+            html = null;
+        }
+
+        return html;
+    }
+
+    /**
+     * Search.
+     *
+     * @param query query.
+     *
+     * @return Formatted HTML.
+     *
+     * @throws IOException if communication fails.
+     */
+    public static String search(String query)
+        throws IOException
+    {
+        URL url = new URL("http://search.twitter.com/search.json?q=" + encode(query) + "&rpp=5");
+        String response = HttpClient.get(url);
+
+        String html;
+
+        try
+        {
+            JSONObject data = new JSONObject(response);
+            JSONArray results = data.getJSONArray("results");
+
+            html  = "<html><div style='padding:10px'>";
+            html += "<table border='0'>";
+
+            int count = results.length();
+            for (int i = 0; i < count; i++)
+            {
+                JSONObject record = results.getJSONObject(i);
+
+                html += "<tr valign='top'>";
+                if (isShowingPics())
+                {
+                    html += "<td><img src='" + record.getString("profile_image_url") + "'></td>";
+                    html += "<td width='10'>&nbsp;</td>";
+                }
+                html += "<td width='300'>";
+                html += "<p><strong>" + record.getString("from_user") + "</strong>: " + record.getString("text") + "</p>";
+                html += "</td>";
+                html += "</tr>";
+            }
+
+            html += "</table></div>";
+        } catch (JSONException e)
+        {
+            LOG.log(Level.INFO, "Failed to load search results for '" + query + "'", e);
             html = null;
         }
 
@@ -228,5 +295,78 @@ public class TwitterGateway
     {
         TwitterPreferences prefs = getPreferences();
         HttpClient.post(url, data, prefs.getScreenName(), prefs.getPassword());
+    }
+
+    /**
+     * URL-encodes the string.
+     *
+     * @param str string.
+     *
+     * @return string.
+     *
+     * @throws UnsupportedEncodingException if UTF-8 isn't supported -- nonsense.
+     */
+    private static String encode(String str)
+        throws UnsupportedEncodingException
+    {
+        return URLEncoder.encode(str, "UTF-8");
+    }
+
+    /**
+     * Returns the username from the URL or NULL.
+     *
+     * @param url URL to analyze.
+     *
+     * @return screen name.
+     */
+    public static String urlToScreenName(URL url)
+    {
+        String name = null;
+
+        String urls = url.toString();
+        Matcher m = PATTERN_SCREEN_NAME.matcher(urls);
+        try
+        {
+            if (m.find()) name = URLDecoder.decode(m.group(2), "UTF-8");
+        } catch (UnsupportedEncodingException e)
+        {
+            // Failed transformation -- ignore
+        }
+
+        return name;
+    }
+
+    /**
+     * Extracts the hashtag from the search URL.
+     *
+     * @param url URL.
+     *
+     * @return hashtag.
+     */
+    public static String urlToHashtag(URL url)
+    {
+        String tag = null;
+
+        String urls = url.toString();
+        Matcher m = PATTERN_HASHTAG.matcher(urls);
+        try
+        {
+            if (m.find()) tag = URLDecoder.decode(m.group(4), "UTF-8");
+        } catch (UnsupportedEncodingException e)
+        {
+            // Failed transformation -- ignore
+        }
+
+        return tag;
+    }
+
+    /**
+     * Returns TRUE if profile pics loading is enabled.
+     *
+     * @return TRUE if profile pics loading is enabled.
+     */
+    private static boolean isShowingPics()
+    {
+        return getPreferences().isProfilePics();
     }
 }

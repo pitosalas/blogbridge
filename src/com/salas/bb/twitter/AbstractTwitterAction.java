@@ -41,9 +41,6 @@ import java.awt.event.ActionEvent;
  */
 public abstract class AbstractTwitterAction extends AbstractAction
 {
-    private static final Pattern PATTERN_SCREEN_NAME =
-        Pattern.compile("http://(www\\.)?twitter\\.com/([^/\\?\\#\\s]+)($|#|\\?)");
-
     /**
      * Returns preferences.
      *
@@ -52,30 +49,6 @@ public abstract class AbstractTwitterAction extends AbstractAction
     protected TwitterPreferences getPreferences()
     {
         return GlobalController.SINGLETON.getModel().getUserPreferences().getTwitterPreferences();
-    }
-
-    /**
-     * Returns the username from the URL or NULL.
-     *
-     * @param url URL to analyze.
-     *
-     * @return screen name.
-     */
-    public static String urlToScreenName(URL url)
-    {
-        String name = null;
-
-        String urls = url.toString();
-        Matcher m = PATTERN_SCREEN_NAME.matcher(urls);
-        try
-        {
-            if (m.find()) name = URLDecoder.decode(m.group(2), "UTF-8");
-        } catch (UnsupportedEncodingException e)
-        {
-            // Failed transformation -- ignore
-        }
-
-        return name;
     }
 
     /** Invoked when action is invoked. */

@@ -38,8 +38,8 @@ import com.salas.bb.core.GlobalController;
 import com.salas.bb.core.actions.ActionsTable;
 import com.salas.bb.twitter.FollowAction;
 import com.salas.bb.twitter.ReplyAction;
-import com.salas.bb.twitter.AbstractTwitterAction;
 import com.salas.bb.twitter.TwitterGateway;
+import com.salas.bb.twitter.SubscribeAction;
 import com.salas.bb.utils.i18n.Strings;
 
 import javax.swing.*;
@@ -62,10 +62,14 @@ public class TwitterFeedDisplay extends AbstractFeedDisplay
     private static final Map<String, String> USER_INFO_CACHE =
         Collections.synchronizedMap(new WeakHashMap<String, String>());
 
+    private static final Map<String, String> SEARCH_CACHE =
+        Collections.synchronizedMap(new WeakHashMap<String, String>());
+
     private static final Logger LOG = Logger.getLogger(TwitterFeedDisplay.class.getName());
     private IHTMLFeedDisplayConfig htmlConfig;
 
     private PopupAdapter userLinkPopupAdapter;
+    private PopupAdapter hashtagLinkPopupAdapter;
 
     /**
      * Abstract view.
@@ -127,7 +131,8 @@ public class TwitterFeedDisplay extends AbstractFeedDisplay
      */
     protected MouseListener getLinkPopupAdapter()
     {
-        return isUserLink(hoveredLink) ? getArticleUserLinkPopupAdapter() : null;
+        return isUserLink(hoveredLink) ? getArticleUserLinkPopupAdapter()
+            : isHashtagLink(hoveredLink) ? getHashtagLinkPopupAdapter() : null;
     }
 
     /**
@@ -143,7 +148,23 @@ public class TwitterFeedDisplay extends AbstractFeedDisplay
 
         String urls = link.toString();
 
-        return urls.matches("^http://(www\\.)?twitter.com/[^/]+($|\\?|#)");
+        return urls.matches("^http://(www\\.)?twitter\\.com/[^/]+($|\\?|#)");
+    }
+
+    /**
+     * Returns TRUE if it's the hashtag link that is hovered.
+     *
+     * @param link link.
+     *
+     * @return TRUE if it is.
+     */
+    private boolean isHashtagLink(URL link)
+    {
+        if (link == null) return false;
+
+        String urls = link.toString();
+
+        return urls.matches("^http://search\\.twitter\\.com/search(\\.(json|atom))?\\?q=(#|%23)[^&]+");
     }
 
     /**
@@ -182,6 +203,40 @@ public class TwitterFeedDisplay extends AbstractFeedDisplay
         return userLinkPopupAdapter;
     }
 
+    /**
+     * Returns popup adapter for article user hashtag hyper-links.
+     *
+     * @return popup adapter.
+     */
+    public synchronized PopupAdapter getHashtagLinkPopupAdapter()
+    {
+        if (hashtagLinkPopupAdapter == null)
+        {
+            hashtagLinkPopupAdapter = new PopupAdapter()
+            {
+                protected JPopupMenu buildPopupMenu(MouseEvent anevent)
+                {
+                    GlobalController controller = GlobalController.SINGLETON;
+                    MainFrame frame = controller.getMainFrame();
+                    JPopupMenu menu = frame.createNonLockingPopupMenu("Hashtag Link");
+
+                    SubscribeAction action = (SubscribeAction)ActionManager.get(ActionsTable.CMD_TWITTER_SUBSCRIBE);
+
+                    // Set links to the actions as the hovered link will be reset upon
+                    // the menu opening as the mouse pointer will move away off the link.
+                    URL link = controller.getHoveredHyperLink();
+                    action.setUserURL(link);
+                    
+                    menu.add(action);
+
+                    return menu;
+                }
+            };
+        }
+
+        return hashtagLinkPopupAdapter;
+    }
+
 
     /**
      * Returns tool-tip for a give link.
@@ -193,10 +248,62 @@ public class TwitterFeedDisplay extends AbstractFeedDisplay
      */
     protected String getHoveredLinkTooltip(URL link, final JComponent textPane)
     {
-        if (link == null || !isUserLink(link)) return null;
+        if (link == null) return null;
 
-        final String screenName = AbstractTwitterAction.urlToScreenName(link);
-        
+        return isUserLink(link) ? getUserInfoTooltipText(link, textPane)
+            : isHashtagLink(link) ? getHashtagTooltipText(link, textPane)
+            : null;
+    }
+
+    /**
+     * Returns the search info tooltip text and schedules the async
+     *
+     * @param link          link.
+     * @param textPane      pane.
+     *
+     * @return text.
+     */
+    private String getHashtagTooltipText(URL link, final JComponent textPane)
+    {
+        final String hashtag = TwitterGateway.urlToHashtag(link);
+
+        String html = SEARCH_CACHE.get(hashtag);
+        if (html == null)
+        {
+            new Thread("Twitter Hashtag Search")
+            {
+                public void run()
+                {
+                    String html;
+                    try
+                    {
+                        html = TwitterGateway.search("#" + hashtag);
+                    } catch (IOException e)
+                    {
+                        html = Strings.message("twitter.unavailable");
+                    }
+
+                    cacheAndSetHashtag(html, hashtag, textPane);
+
+                }
+            }.start();
+        }
+
+        return html;
+    }
+
+    /**
+     * Returns the user info tooltip text and schedules the async loading if necessary.
+     *
+     * @param link     link.
+     * @param textPane text pane.
+     *
+     * @return text.
+     */
+    private String getUserInfoTooltipText(URL link, final JComponent textPane)
+    {
+        final String screenName = TwitterGateway.urlToScreenName(link);
+
         String info = USER_INFO_CACHE.get(screenName);
         if (info == null)
         {
@@ -237,14 +344,44 @@ public class TwitterFeedDisplay extends AbstractFeedDisplay
             public void run()
             {
                 USER_INFO_CACHE.put(screenName, userInfo);
-                Action hideTip = textPane.getActionMap().get("hideTip");
-                if (hideTip != null) hideTip.actionPerformed(new ActionEvent(textPane, ActionEvent.ACTION_PERFORMED, "hideTip"));
-
-                textPane.setToolTipText(userInfo);
-
-                Action postTip = textPane.getActionMap().get("postTip");
-                if (postTip != null) postTip.actionPerformed(new ActionEvent(textPane, ActionEvent.ACTION_PERFORMED, "postTip"));
+                showTooltip(textPane, userInfo);
             }
         });
+    }
+
+    /**
+     * Places the results in cache and shows the tooltip.
+     *
+     * @param html          search HTML.
+     * @param hashtag       hash tag.
+     * @param textPane      pane.
+     */
+    private void cacheAndSetHashtag(final String html, final String hashtag, final JComponent textPane)
+    {
+        SwingUtilities.invokeLater(new Runnable()
+        {
+            public void run()
+            {
+                SEARCH_CACHE.put(hashtag, html);
+                showTooltip(textPane, html);
+            }
+        });
+    }
+
+    /**
+     * Makes the tooltip re-appear with the given text.
+     *
+     * @param textPane pane.
+     * @param text     text.
+     */
+    private static void showTooltip(JComponent textPane, String text)
+    {
+        Action hideTip = textPane.getActionMap().get("hideTip");
+        if (hideTip != null) hideTip.actionPerformed(new ActionEvent(textPane, ActionEvent.ACTION_PERFORMED, "hideTip"));
+
+        textPane.setToolTipText(text);
+
+        Action postTip = textPane.getActionMap().get("postTip");
+        if (postTip != null) postTip.actionPerformed(new ActionEvent(textPane, ActionEvent.ACTION_PERFORMED, "postTip"));
     }
 }

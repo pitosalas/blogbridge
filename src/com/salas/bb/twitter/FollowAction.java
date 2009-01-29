@@ -24,16 +24,10 @@
 
 package com.salas.bb.twitter;
 
-import com.salas.bb.core.GlobalController;
 import com.salas.bb.utils.i18n.Strings;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
 import java.net.URL;
-import java.net.URLDecoder;
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
-import java.io.UnsupportedEncodingException;
 import java.io.IOException;
 
 /**
@@ -125,9 +119,10 @@ public class FollowAction extends AbstractTwitterAction
         if (!TwitterFeature.isConfigured())
         {
             update(true, Strings.message("twitter.follow"));
+            return;
         }
 
-        final String name = urlToScreenName(url);
+        final String name = TwitterGateway.urlToScreenName(url);
         if (name != null)
         {
             if (name.equalsIgnoreCase(getPreferences().getScreenName()))

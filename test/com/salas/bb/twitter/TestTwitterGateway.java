@@ -24,48 +24,31 @@
 
 package com.salas.bb.twitter;
 
-import com.salas.bb.core.GlobalController;
+import junit.framework.TestCase;
 
 import java.net.URL;
+import java.net.MalformedURLException;
 
 /**
- * Reply twitter action.
+ * Tests twitter gateway.
  */
-public class ReplyAction extends AbstractTwitterAction
+public class TestTwitterGateway extends TestCase
 {
-    private static ReplyAction instance;
-    private String screenName;
-
-    /** Creates action. */
-    private ReplyAction()
+    /** Tests the extraction of the user name. */
+    public void testURLToScreenName()
+        throws MalformedURLException
     {
+        assertEquals("spyromus", TwitterGateway.urlToScreenName(new URL("http://twitter.com/spyromus")));
+        assertEquals("spyromus", TwitterGateway.urlToScreenName(new URL("http://twitter.com/spyromus?a")));
+        assertEquals("spyromus", TwitterGateway.urlToScreenName(new URL("http://twitter.com/spyromus#a")));
+        assertEquals(null, TwitterGateway.urlToScreenName(new URL("http://twitter.com/friendship/a.json")));
     }
 
-    /**
-     * Returns the instance.
-     *
-     * @return instance.
-     */
-    public static synchronized ReplyAction getInstance()
+    /** Tests the extraction of the hashtag. */
+    public void testURLToHashtag()
+        throws MalformedURLException
     {
-        if (instance == null) instance = new ReplyAction();
-        return instance;
-    }
-
-    /**
-     * Sets user URL.
-     *
-     * @param url URL.
-     */
-    public void setUserURL(URL url)
-    {
-        screenName = TwitterGateway.urlToScreenName(url);
-        setEnabled(screenName != null);
-    }
-
-    protected void customAction()
-    {
-        TweetThisDialog ttd = new TweetThisDialog(GlobalController.SINGLETON.getMainFrame());
-        ttd.open("@" + screenName + " ");
+        assertEquals("bb", TwitterGateway.urlToHashtag(new URL("http://search.twitter.com/search?q=%23bb")));
+        assertEquals("bb", TwitterGateway.urlToHashtag(new URL("http://search.twitter.com/search?q=%23bb&rpp=1")));
     }
 }

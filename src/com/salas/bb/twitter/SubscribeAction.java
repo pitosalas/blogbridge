@@ -24,23 +24,52 @@
 
 package com.salas.bb.twitter;
 
-import junit.framework.TestCase;
+import com.salas.bb.domain.QueryFeed;
+import com.salas.bb.domain.querytypes.QueryType;
+import com.salas.bb.core.GlobalController;
 
 import java.net.URL;
-import java.net.MalformedURLException;
 
 /**
- * Tests twitter action.
+ * Subscribe action.
  */
-public class TestAbstractTwitterAction extends TestCase
+public class SubscribeAction extends AbstractTwitterAction
 {
-    /** Tests extraction of the user name. */
-    public void testURLToScreenName()
-        throws MalformedURLException
+    private static SubscribeAction instance;
+    private String hashtag;
+
+    /** Creates action. */
+    private SubscribeAction()
     {
-        assertEquals("spyromus", AbstractTwitterAction.urlToScreenName(new URL("http://twitter.com/spyromus")));
-        assertEquals("spyromus", AbstractTwitterAction.urlToScreenName(new URL("http://twitter.com/spyromus?a")));
-        assertEquals("spyromus", AbstractTwitterAction.urlToScreenName(new URL("http://twitter.com/spyromus#a")));
-        assertEquals(null, AbstractTwitterAction.urlToScreenName(new URL("http://twitter.com/friendship/a.json")));
+    }
+
+    /**
+     * Returns the instance.
+     *
+     * @return instance.
+     */
+    public static synchronized SubscribeAction getInstance()
+    {
+        if (instance == null) instance = new SubscribeAction();
+        return instance;
+    }
+
+    /**
+     * Sets user URL.
+     *
+     * @param url URL.
+     */
+    public void setUserURL(URL url)
+    {
+        hashtag = TwitterGateway.urlToHashtag(url);
+        setEnabled(hashtag != null);
+    }
+
+    @Override
+    protected void customAction()
+    {
+        GlobalController controller = GlobalController.SINGLETON;
+        QueryFeed feed = controller.createQueryFeed(null, "#" + hashtag, QueryType.TYPE_TWITTER, "#" + hashtag, 30);
+        controller.selectFeed(feed, true);
     }
 }

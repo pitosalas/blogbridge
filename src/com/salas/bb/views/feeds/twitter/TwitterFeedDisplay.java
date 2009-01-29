@@ -121,7 +121,7 @@ public class TwitterFeedDisplay extends AbstractFeedDisplay
      */
     protected MouseListener getViewPopupAdapter()
     {
-        return null;
+        return GlobalController.SINGLETON.getMainFrame().getHTMLDisplayPopupAdapter();
     }
 
     /**

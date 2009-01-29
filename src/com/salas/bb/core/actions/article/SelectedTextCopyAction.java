@@ -26,7 +26,7 @@ package com.salas.bb.core.actions.article;
 
 import com.salas.bb.utils.CommonUtils;
 import com.salas.bb.utils.StringUtils;
-import com.salas.bb.views.feeds.html.HTMLFeedDisplay;
+import com.salas.bb.views.feeds.AbstractFeedDisplay;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -37,7 +37,7 @@ import java.awt.event.ActionEvent;
 public final class SelectedTextCopyAction extends AbstractAction
 {
     private static SelectedTextCopyAction instance;
-    private static HTMLFeedDisplay display;
+    private static AbstractFeedDisplay display;
 
     /**
      * Hidden singleton constructor.
@@ -72,7 +72,7 @@ public final class SelectedTextCopyAction extends AbstractAction
      *
      * @param disp display.
      */
-    public static void setDisplay(HTMLFeedDisplay disp)
+    public static void setDisplay(AbstractFeedDisplay disp)
     {
         display = disp;
         instance.setEnabled(display != null && !StringUtils.isEmpty(display.getSelectedText()));

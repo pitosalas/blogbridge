@@ -66,6 +66,7 @@ import com.salas.bb.views.ArticleListPanel;
 import com.salas.bb.views.GuidesList;
 import com.salas.bb.views.GuidesPanel;
 import com.salas.bb.views.feeds.IFeedDisplay;
+import com.salas.bb.views.feeds.AbstractFeedDisplay;
 import com.salas.bb.views.feeds.html.ArticlesGroup;
 import com.salas.bb.views.feeds.html.HTMLArticleDisplay;
 import com.salas.bb.views.feeds.html.HTMLFeedDisplay;
@@ -1230,9 +1231,14 @@ public class MainFrame extends AbstractFrame
             {
                 protected JPopupMenu buildPopupMenu(MouseEvent anevent)
                 {
-                    HTMLFeedDisplay fd = (HTMLFeedDisplay)anevent.getSource();
-                    SelectedTextCopyAction.setDisplay(fd);
-
+                    boolean canHaveSelection = false;
+                    if (anevent.getSource() instanceof AbstractFeedDisplay)
+                    {
+                        AbstractFeedDisplay fd = (AbstractFeedDisplay)anevent.getSource();
+                        SelectedTextCopyAction.setDisplay(fd);
+                        canHaveSelection = true;
+                    }
+                    
                     JPopupMenu menu = new NonlockingPopupMenu(Strings.message("ui.popup.articles"))
                     {
                         /**
@@ -1259,7 +1265,7 @@ public class MainFrame extends AbstractFrame
                     menu.addSeparator();
                     
                     menu.add(ActionManager.get(ActionsTable.CMD_ARTICLE_BROWSE));
-                    menu.add(ActionManager.get(ActionsTable.CMD_ARTICLE_COPY_TEXT));
+                    if (canHaveSelection) menu.add(ActionManager.get(ActionsTable.CMD_ARTICLE_COPY_TEXT));
                     menu.add(ActionManager.get(ActionsTable.CMD_ARTICLE_COPY_LINK));
                     menu.add(ActionManager.get(ActionsTable.CMD_ARTICLE_SEND_LINK));
                     menu.add(ActionManager.get(ActionsTable.CMD_ARTICLE_POST_TO_BLOG));

@@ -119,7 +119,21 @@ public class TwitterFeedDisplay extends AbstractFeedDisplay
      */
     protected MouseListener getLinkPopupAdapter()
     {
-        return getArticleUserLinkPopupAdapter();
+        return isUserLinkHovered() ? getArticleUserLinkPopupAdapter() : null;
+    }
+
+    /**
+     * Returns TRUE if it's the user link that is hovered.
+     *
+     * @return TRUE if it is.
+     */
+    private boolean isUserLinkHovered()
+    {
+        if (hoveredLink == null) return false;
+
+        String urls = hoveredLink.toString();
+
+        return urls.matches("^http://(www\\.)?twitter.com/[^/]+($|\\?|#)");
     }
 
     /**

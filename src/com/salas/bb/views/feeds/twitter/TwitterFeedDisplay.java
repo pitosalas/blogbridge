@@ -186,15 +186,18 @@ public class TwitterFeedDisplay extends AbstractFeedDisplay
                     JPopupMenu menu = frame.createNonLockingPopupMenu("User Link");
 
                     FollowAction actFollow = FollowAction.getInstance();
+                    SubscribeAction actSubscribe = (SubscribeAction)ActionManager.get(ActionsTable.CMD_TWITTER_SUBSCRIBE);
 
                     // Set links to the actions as the hovered link will be reset upon
                     // the menu opening as the mouse pointer will move away off the link.
                     URL link = controller.getHoveredHyperLink();
                     actFollow.setUserURL(link);
                     ReplyAction.getInstance().setUserURL(link);
+                    actSubscribe.setUserURL(link);
 
                     if (actFollow.isAvailable()) menu.add(actFollow);
                     menu.add(ActionManager.get(ActionsTable.CMD_TWITTER_MESSAGE));
+                    menu.add(actSubscribe);
 
                     return menu;
                 }

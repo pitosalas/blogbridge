@@ -96,10 +96,11 @@ public class TwitterArticleDisplay extends JPanel implements IArticleListener, I
 
         setBorder(new UpDownBorder(HTMLArticleDisplay.COLOR_BORDER_LINE));
 
+        // Order of the following lines is important (affects the layout on Win)
+        onThemeChange();
+
         setText();
         setViewMode(config.getViewMode());
-
-        onThemeChange();
     }
 
     private void setText()

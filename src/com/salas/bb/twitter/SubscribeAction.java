@@ -36,7 +36,8 @@ import java.net.URL;
 public class SubscribeAction extends AbstractTwitterAction
 {
     private static SubscribeAction instance;
-    private String hashtag;
+    private String queryname;
+    private String queryparam;
 
     /** Creates action. */
     private SubscribeAction()
@@ -61,15 +62,30 @@ public class SubscribeAction extends AbstractTwitterAction
      */
     public void setUserURL(URL url)
     {
-        hashtag = TwitterGateway.urlToHashtag(url);
-        setEnabled(hashtag != null);
+        queryparam = TwitterGateway.urlToHashtag(url);
+        if (queryparam != null)
+        {
+            queryparam = "#" + queryparam;
+            queryname  = queryparam;
+        } else
+        {
+            // Try user URL
+            queryparam = TwitterGateway.urlToScreenName(url);
+            if (queryparam != null)
+            {
+                queryname  = "@" + queryparam;
+                queryparam = "from:" + queryparam;
+            }
+        }
+
+        setEnabled(queryparam != null);
     }
 
     @Override
     protected void customAction()
     {
         GlobalController controller = GlobalController.SINGLETON;
-        QueryFeed feed = controller.createQueryFeed(null, "#" + hashtag, QueryType.TYPE_TWITTER, "#" + hashtag, 30);
+        QueryFeed feed = controller.createQueryFeed(null, queryname, QueryType.TYPE_TWITTER, queryparam, 30);
         controller.selectFeed(feed, true);
     }
 }

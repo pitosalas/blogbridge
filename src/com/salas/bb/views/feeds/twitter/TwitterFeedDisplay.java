@@ -324,8 +324,6 @@ public class TwitterFeedDisplay extends AbstractFeedDisplay
                     cacheAndSetUserInfo(userInfo, screenName, textPane);
                 }
             }.start();
-
-            return Strings.message("twitter.loading");
         }
 
         return info;
@@ -377,8 +375,8 @@ public class TwitterFeedDisplay extends AbstractFeedDisplay
      */
     private static void showTooltip(JComponent textPane, String text)
     {
-        Action hideTip = textPane.getActionMap().get("hideTip");
-        if (hideTip != null) hideTip.actionPerformed(new ActionEvent(textPane, ActionEvent.ACTION_PERFORMED, "hideTip"));
+//        Action hideTip = textPane.getActionMap().get("hideTip");
+//        if (hideTip != null) hideTip.actionPerformed(new ActionEvent(textPane, ActionEvent.ACTION_PERFORMED, "hideTip"));
 
         textPane.setToolTipText(text);
 

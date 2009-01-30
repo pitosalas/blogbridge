@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<DOCUMENT type="Advanced Installer" CreateVersion="3.9" version="4.5" modules="java" RootPath="." Language="en">
+<DOCUMENT type="Advanced Installer" CreateVersion="3.9" version="6.4.1" modules="java" RootPath="." Language="en">
   <COMPONENT cid="caphyon.advinst.msicomp.MsiPropsComponent">
+    <ROW Property="AI_FINDEXE_TITLE" Value="Select the installation package for [|ProductName]" ValueLocId="AI.Property.FindExeTitle"/>
     <ROW Property="ALLUSERS" Value="2"/>
     <ROW Property="ARPCOMMENTS" Value="Ultimate Info-Junkie System" ValueLocId="*"/>
     <ROW Property="ARPCONTACT" Value="Pito Salas"/>
@@ -17,7 +18,7 @@
     <ROW Property="ProductName" Value="BlogBridge" ValueLocId="*"/>
     <ROW Property="ProductVersion" Value="2.6"/>
     <ROW Property="RUNAPPLICATION" Value="1"/>
-    <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND"/>
+    <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND;AI_SETUPEXEPATH;SETUPEXEDIR"/>
     <ROW Property="UpgradeCode" Value="{88865EB0-39AA-4725-8E17-26BE60E1C83C}"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiDirsComponent">
@@ -29,17 +30,18 @@
     <ROW Directory="TARGETDIR" DefaultDir="SourceDir"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiCompsComponent">
-    <ROW Component="BlogBridge.exe" ComponentId="{E421AB97-AE40-4475-A9E6-E1C1295C13A6}" Directory_="APPDIR" Attributes="0" KeyPath="BlogBridge.exe" FullKeyPath="APPDIR\BlogBridge.exe"/>
-    <ROW Component="bbnative_openurl.dll" ComponentId="{4F903355-0BC3-4D59-8236-87E728349778}" Directory_="New_Folder_1_DIR" Attributes="0" KeyPath="bbnative_openurl.dll" FullKeyPath="APPDIR\lib\bbnative_openurl.dll"/>
-    <ROW Component="bbnative_taskbar.dll" ComponentId="{2B0F2B6E-BF63-4D34-AA62-DB51A72B98F3}" Directory_="New_Folder_1_DIR" Attributes="0" KeyPath="bbnative_taskbar.dll" FullKeyPath="APPDIR\lib\bbnative_taskbar.dll"/>
-    <ROW Component="hsqldb.jar" ComponentId="{1FC00C78-1314-4146-AEC6-2297E99615EF}" Directory_="New_Folder_1_DIR" Attributes="0" KeyPath="hsqldb.jar" FullKeyPath="APPDIR\lib"/>
+    <ROW Component="AI_ExePath" ComponentId="{1E8152A9-9089-43FD-B4F0-624BC864F8E2}" Directory_="APPDIR" Attributes="4" KeyPath="AI_ExePath"/>
+    <ROW Component="BlogBridge.exe" ComponentId="{E421AB97-AE40-4475-A9E6-E1C1295C13A6}" Directory_="APPDIR" Attributes="0" KeyPath="BlogBridge.exe"/>
+    <ROW Component="bbnative_openurl.dll" ComponentId="{4F903355-0BC3-4D59-8236-87E728349778}" Directory_="New_Folder_1_DIR" Attributes="0" KeyPath="bbnative_openurl.dll"/>
+    <ROW Component="bbnative_taskbar.dll" ComponentId="{2B0F2B6E-BF63-4D34-AA62-DB51A72B98F3}" Directory_="New_Folder_1_DIR" Attributes="0" KeyPath="bbnative_taskbar.dll"/>
+    <ROW Component="hsqldb.jar" ComponentId="{1FC00C78-1314-4146-AEC6-2297E99615EF}" Directory_="New_Folder_1_DIR" Attributes="0" KeyPath="hsqldb.jar" Type="0"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFeatsComponent">
-    <ROW Feature="MainFeature" Title="BlogBridge Core" Description="Ultimate Info-Junkie System" Display="1" Level="1" Directory_="APPDIR" Attributes="0" Components="BlogBridge.exe hsqldb.jar bbnative_taskbar.dll bbnative_openurl.dll"/>
+    <ROW Feature="MainFeature" Title="BlogBridge Core" Description="Ultimate Info-Junkie System" Display="1" Level="1" Directory_="APPDIR" Attributes="0" Components="BlogBridge.exe hsqldb.jar bbnative_taskbar.dll bbnative_openurl.dll AI_ExePath"/>
     <ATTRIBUTE name="CurrentFeature" value="MainFeature"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFilesComponent">
-    <ROW File="BlogBridge.exe" Component_="BlogBridge.exe" FileName="BlogBr~1.exe|BlogBridge.exe" Attributes="0" SourcePath="&lt;aijclw.exe&gt;" SelfReg="false" Sequence="1"/>
+    <ROW File="BlogBridge.exe" Component_="BlogBridge.exe" FileName="BlogBr~1.exe|BlogBridge.exe" Attributes="0" SourcePath="&lt;AI_STUBS&gt;aijclw.exe" SelfReg="false" Sequence="1"/>
     <ROW File="aelfred2.jar" Component_="hsqldb.jar" FileName="aelfred2.jar" Attributes="0" SourcePath="..\deploy\lib\aelfred2.jar" SelfReg="false" Sequence="9"/>
     <ROW File="bbmac.jar" Component_="hsqldb.jar" FileName="bbmac.jar" Attributes="0" SourcePath="..\deploy\lib\bbmac.jar" SelfReg="false" Sequence="25"/>
     <ROW File="bbmacicon.jar" Component_="hsqldb.jar" FileName="bbmaci~1.jar|bbmacicon.jar" Attributes="0" SourcePath="..\deploy\lib\bbmacicon.jar" SelfReg="false" Sequence="19"/>
@@ -59,6 +61,7 @@
     <ROW File="jcalendar_1.3.2.jar" Component_="hsqldb.jar" FileName="jcalen~1.jar|jcalendar-1.3.2.jar" Attributes="0" SourcePath="..\..\lib\jcalendar-1.3.2.jar" SelfReg="false" Sequence="27"/>
     <ROW File="jdom.jar" Component_="hsqldb.jar" FileName="jdom.jar" Attributes="0" SourcePath="..\deploy\lib\jdom.jar" SelfReg="false" Sequence="4"/>
     <ROW File="jnlp.jar" Component_="hsqldb.jar" FileName="jnlp.jar" Attributes="0" SourcePath="..\deploy\lib\jnlp.jar" SelfReg="false" Sequence="6"/>
+    <ROW File="json.jar" Component_="hsqldb.jar" FileName="json.jar" Attributes="0" SourcePath="..\deploy\lib\json.jar" SelfReg="false" Sequence="32"/>
     <ROW File="jta.jar" Component_="hsqldb.jar" FileName="jta.jar" Attributes="0" SourcePath="..\deploy\lib\jta.jar" SelfReg="false" Sequence="8"/>
     <ROW File="libGURL.jnilib" Component_="hsqldb.jar" FileName="libGUR~1.jni|libGURL.jnilib" Attributes="0" SourcePath="..\..\lib\libGURL.jnilib" SelfReg="false" Sequence="26"/>
     <ROW File="libquaqua.jnilib" Component_="hsqldb.jar" FileName="libqua~1.jni|libquaqua.jnilib" Attributes="0" SourcePath="..\..\lib\libquaqua.jnilib" SelfReg="false" Sequence="28"/>
@@ -71,19 +74,34 @@
     <ROW File="uif_extras_1.5.0.jar" Component_="hsqldb.jar" FileName="uif-ex~2.jar|uif-extras-1.5.0.jar" Attributes="0" SourcePath="..\deploy\lib\uif-extras-1.5.0.jar" SelfReg="false" Sequence="17"/>
     <ROW File="xmlrpc_1.2_b1_patched.jar" Component_="hsqldb.jar" FileName="xmlrpc~1.jar|xmlrpc-1.2-b1-patched.jar" Attributes="0" SourcePath="..\deploy\lib\xmlrpc-1.2-b1-patched.jar" SelfReg="false" Sequence="21"/>
   </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.BuildComponent">
+    <ROW BuildKey="DefaultBuild" BuildName="DefaultBuild" BuildOrder="1" BuildType="1" Languages="en" InstallationType="4" CabsLocation="1" PackageType="1" FilesInsideExe="true" ExeIconPath="blogbridge.ico"/>
+    <ROW BuildKey="DefaultBuildMacOS" BuildName="DefaultBuildMacOS" BuildOrder="2" BuildType="2" Languages="en" MacDefaultMemorySize="128"/>
+    <ATTRIBUTE name="CurrentBuild" value="DefaultBuild"/>
+  </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.DictionaryComponent">
-    <ROW Path="&lt;ui.ail&gt;"/>
-    <ROW Path="&lt;ui_en.ail&gt;"/>
+    <ROW Path="&lt;AI_DICTS&gt;ui.ail"/>
+    <ROW Path="&lt;AI_DICTS&gt;ui_en.ail"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.FragmentComponent">
-    <ROW Fragment="FolderDlg.aip" Path="&lt;FolderDlg.aip&gt;"/>
-    <ROW Fragment="StaticUIStrings.aip" Path="&lt;StaticUIStrings.aip&gt;"/>
-    <ROW Fragment="UI.aip" Path="&lt;UI.aip&gt;"/>
+    <ROW Fragment="FolderDlg.aip" Path="&lt;AI_FRAGS&gt;FolderDlg.aip"/>
+    <ROW Fragment="StaticUIStrings.aip" Path="&lt;AI_FRAGS&gt;StaticUIStrings.aip"/>
+    <ROW Fragment="UI.aip" Path="&lt;AI_FRAGS&gt;UI.aip"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiActionTextComponent">
+    <ROW Action="AI_DeleteLzma" Description="Deleting files extracted from archive" DescriptionLocId="ActionText.Description.AI_DeleteLzma" TemplateLocId="-"/>
+    <ROW Action="AI_DeleteRLzma" Description="Deleting files extracted from archive" DescriptionLocId="ActionText.Description.AI_DeleteLzma" TemplateLocId="-"/>
+    <ROW Action="AI_ExtractLzma" Description="Extracting files from archive" DescriptionLocId="ActionText.Description.AI_ExtractLzma" TemplateLocId="-"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiAppSearchComponent">
+    <ROW Property="AI_SETUPEXEPATH" Signature_="AI_EXE_PATH_CU" Builds="DefaultBuild"/>
+    <ROW Property="AI_SETUPEXEPATH" Signature_="AI_EXE_PATH_LM" Builds="DefaultBuild"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiBinaryComponent">
-    <ROW Name="launcher.dll" SourcePath="&lt;launcher.dll&gt;"/>
-    <ROW Name="style15_banner.jpg" SourcePath="&lt;style15_banner.jpg&gt;"/>
-    <ROW Name="style15_dialog.jpg" SourcePath="&lt;style15_dialog.jpg&gt;"/>
+    <ROW Name="AI_CUSTACTS_aicustact.dll" SourcePath="&lt;AI_CUSTACTS&gt;aicustact.dll"/>
+    <ROW Name="AI_CUSTACTS_lzmaextractor.dll" SourcePath="&lt;AI_CUSTACTS&gt;lzmaextractor.dll"/>
+    <ROW Name="style15_banner.jpg" SourcePath="&lt;AI_RES&gt;style15_banner.jpg"/>
+    <ROW Name="style15_dialog.jpg" SourcePath="&lt;AI_RES&gt;style15_dialog.jpg"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiControlComponent">
     <ATTRIBUTE name="FixedSizeBitmaps" value="0"/>
@@ -100,11 +118,18 @@
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiCustActComponent">
     <ROW Action="AI_DOWNGRADE" Type="19" Target="4010"/>
-    <ROW Action="AI_LaunchApp" Type="1" Source="launcher.dll" Target="[#BlogBridge.exe]"/>
-    <ROW Action="AI_PREPARE_UPGRADE" Type="1" Source="launcher.dll" Target="PrepareUpgrade"/>
-    <ROW Action="AI_RESTORE_LOCATION" Type="1" Source="launcher.dll" Target="RestoreLocation"/>
+    <ROW Action="AI_DeleteCadLzma" Type="51" Source="AI_DeleteLzma" Target="[AI_SETUPEXEPATH]"/>
+    <ROW Action="AI_DeleteLzma" Type="1025" Source="AI_CUSTACTS_lzmaextractor.dll" Target="DeleteLZMAFiles"/>
+    <ROW Action="AI_DeleteRCadLzma" Type="51" Source="AI_DeleteRLzma" Target="[AI_SETUPEXEPATH]"/>
+    <ROW Action="AI_DeleteRLzma" Type="1281" Source="AI_CUSTACTS_lzmaextractor.dll" Target="DeleteLZMAFiles"/>
+    <ROW Action="AI_ExtractCadLzma" Type="51" Source="AI_ExtractLzma" Target="[AI_SETUPEXEPATH]"/>
+    <ROW Action="AI_ExtractLzma" Type="1025" Source="AI_CUSTACTS_lzmaextractor.dll" Target="ExtractLZMAFiles"/>
+    <ROW Action="AI_FindExeLzma" Type="1" Source="AI_CUSTACTS_lzmaextractor.dll" Target="FindEXE"/>
+    <ROW Action="AI_LaunchApp" Type="1" Source="AI_CUSTACTS_aicustact.dll" Target="[#BlogBridge.exe]"/>
+    <ROW Action="AI_PREPARE_UPGRADE" Type="65" Source="AI_CUSTACTS_aicustact.dll" Target="PrepareUpgrade"/>
+    <ROW Action="AI_RESTORE_LOCATION" Type="65" Source="AI_CUSTACTS_aicustact.dll" Target="RestoreLocation"/>
     <ROW Action="AI_STORE_LOCATION" Type="51" Source="ARPINSTALLLOCATION" Target="[APPDIR]"/>
-    <ROW Action="SET_APPDIR" Type="307" Source="APPDIR" Target="[ProgramFilesFolder][ProductName]"/>
+    <ROW Action="SET_APPDIR" Type="307" Source="APPDIR" Target="[ProgramFilesFolder][Manufacturer]\[ProductName]" MultiBuildTarget="DefaultBuild:[ProgramFilesFolder][ProductName]"/>
     <ROW Action="SET_SHORTCUTDIR" Type="307" Source="SHORTCUTDIR" Target="[ProgramMenuFolder][ProductName]"/>
     <ROW Action="SET_TARGETDIR_TO_APPDIR" Type="51" Source="TARGETDIR" Target="[APPDIR]"/>
   </COMPONENT>
@@ -112,12 +137,12 @@
     <ROW Extension="opml" Component_="BlogBridge.exe" ProgId_="SalasAssociatesInc..BlogBridge.opml" MIME_="text/x-opml" Feature_="MainFeature"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiIconsComponent">
-    <ROW Name="SystemFolder_msiexec.exe" SourcePath="&lt;uninstall.ico&gt;" Index="0"/>
+    <ROW Name="SystemFolder_msiexec.exe" SourcePath="&lt;AI_RES&gt;uninstall.ico" Index="0"/>
     <ROW Name="controlPanelIcon.exe" SourcePath="blogbridge.ico" Index="0"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiIniFileComponent">
     <ROW IniFile="Application_Type" FileName="BlogBr~1.ini|BlogBridge.ini" DirProperty="APPDIR" Section="Application" Key="Application Type" Value="gui" Action="0" Component_="BlogBridge.exe"/>
-    <ROW IniFile="Class_Path" FileName="BlogBr~1.ini|BlogBridge.ini" DirProperty="APPDIR" Section="Class Path" Key="Class Path" Value="[#blogbridge.jar];[#aelfred2.jar];[#bbmacicon.jar];[#bbutilities.jar];[#commons_collections.jar];[#commons_lang.jar];[#commons_logging.jar];[#concurrent.jar];[#hsqldb.jar];[#jdom.jar];[#jnlp.jar];[#jta.jar];[#binding_1.1.jar];[#purl_org_content_0.3.jar];[#rome_0.9.jar];[#uif_1.5.0.jar];[#uif_extras_1.5.0.jar];[#xmlrpc_1.2_b1_patched.jar];[#bbnative_openurl.jar];[#bbnative_taskbar.jar];[#quaqua_combobox_only.jar];[#bbmac.jar];[#jcalendar_1.3.2.jar];[#quaqua_filechooser_only.jar];[#forms_1.1.0.jar];[#looks_2.1.4.jar];" Action="0" Component_="BlogBridge.exe"/>
+    <ROW IniFile="Class_Path" FileName="BlogBr~1.ini|BlogBridge.ini" DirProperty="APPDIR" Section="Class Path" Key="Class Path" Value="[#blogbridge.jar];[#aelfred2.jar];[#bbmacicon.jar];[#bbutilities.jar];[#commons_collections.jar];[#commons_lang.jar];[#commons_logging.jar];[#concurrent.jar];[#hsqldb.jar];[#jdom.jar];[#jnlp.jar];[#jta.jar];[#binding_1.1.jar];[#purl_org_content_0.3.jar];[#rome_0.9.jar];[#uif_1.5.0.jar];[#uif_extras_1.5.0.jar];[#xmlrpc_1.2_b1_patched.jar];[#bbnative_openurl.jar];[#bbnative_taskbar.jar];[#quaqua_combobox_only.jar];[#bbmac.jar];[#jcalendar_1.3.2.jar];[#quaqua_filechooser_only.jar];[#forms_1.1.0.jar];[#looks_2.1.4.jar];[#json.jar];" Action="0" Component_="BlogBridge.exe"/>
     <ROW IniFile="JVM_Type" FileName="BlogBr~1.ini|BlogBridge.ini" DirProperty="APPDIR" Section="Java Runtime Environment" Key="JVM Type" Value="favor_client" Action="0" Component_="BlogBridge.exe"/>
     <ROW IniFile="Library_Path" FileName="BlogBr~1.ini|BlogBridge.ini" DirProperty="APPDIR" Section="Java Runtime Environment" Key="Library Path" Value="[New_Folder_1_DIR];" Action="0" Component_="BlogBridge.exe"/>
     <ROW IniFile="Main_Class" FileName="BlogBr~1.ini|BlogBridge.ini" DirProperty="APPDIR" Section="Java Runtime Environment" Key="Main Class" Value="com.salas.bb.core.ApplicationLauncher" Action="0" Component_="BlogBridge.exe"/>
@@ -130,29 +155,32 @@
     <ROW Action="AI_RESTORE_LOCATION" Condition="APPDIR=&quot;&quot;" Sequence="740"/>
     <ROW Action="AI_STORE_LOCATION" Condition="Not Installed" Sequence="1545"/>
     <ROW Action="AI_PREPARE_UPGRADE" Condition="AI_UPGRADE=&quot;No&quot; AND (Not Installed)" Sequence="1300"/>
+    <ROW Action="AI_FindExeLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (NOT PATCH)" Sequence="196" Builds="DefaultBuild"/>
+    <ROW Action="AI_ExtractLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (NOT PATCH)" Sequence="1549" Builds="DefaultBuild"/>
+    <ROW Action="AI_ExtractCadLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (NOT PATCH)" Sequence="197" Builds="DefaultBuild"/>
+    <ROW Action="AI_DeleteRLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (NOT PATCH)" Sequence="1548" Builds="DefaultBuild"/>
+    <ROW Action="AI_DeleteRCadLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (NOT PATCH)" Sequence="198" Builds="DefaultBuild"/>
+    <ROW Action="AI_DeleteLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (NOT PATCH)" Sequence="6599" Builds="DefaultBuild"/>
+    <ROW Action="AI_DeleteCadLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (NOT PATCH)" Sequence="199" Builds="DefaultBuild"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiInstallUISequenceComponent">
     <ROW Action="AI_RESTORE_LOCATION" Condition="APPDIR=&quot;&quot;" Sequence="740"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiJavaComponent">
-    <ROW Name="BlogBridge.exe" Launcher="BlogBridge.exe" MainClass="Main_Class" ClassPath="Class_Path" VMParams="Virtual_Machine_Parameters" JREMin="Minimum_Version" JREMax="Maximum_Version" IconPath="blogbridge.ico" AppType="Application_Type" JVMType="JVM_Type" LibPath="Library_Path" PlusList="APPDIR;" MinusList="#bbnative_taskbar.dll;#bbnative_taskbar.jar;#BlogBridge.exe;#bbnative_openurl.dll;#bbnative_openurl.jar;" MacIcon="blogbridge.icns" MacVersion="10.3.0" MacDescription="Copyright (c) 2006 Salas Associates Inc." MacSignature="brid" MacBundleId="com.salas.bb"/>
-  </COMPONENT>
-  <COMPONENT cid="caphyon.advinst.msicomp.MsiMediaComponent">
-    <ATTRIBUTE name="Compress" value="1"/>
-    <ATTRIBUTE name="FirstMediaSize" value="0"/>
-    <ATTRIBUTE name="FirstMediaSizeUnit" value="0"/>
-    <ATTRIBUTE name="IconPath" value="blogbridge.ico?0"/>
-    <ATTRIBUTE name="InstallationType" value="1"/>
-    <ATTRIBUTE name="MacBuild" value="true"/>
-    <ATTRIBUTE name="MediaSize" value="0"/>
-    <ATTRIBUTE name="MediaSizeUnit" value="0"/>
-    <ATTRIBUTE name="Package" value="6"/>
+    <ROW Name="BlogBridge.exe" Launcher="BlogBridge.exe" MainClass="Main_Class" ClassPath="Class_Path" VMParams="Virtual_Machine_Parameters" JREMin="Minimum_Version" JREMax="Maximum_Version" IconPath="blogbridge.ico" AppType="Application_Type" JVMType="JVM_Type" LibPath="Library_Path" PlusList="APPDIR;" MinusList="#BlogBridge.exe;#bbnative_openurl.dll;#bbnative_taskbar.dll;" MacIcon="blogbridge.icns" MacVersion="10.3.0" MacDescription="Copyright (c) 2006 Salas Associates Inc." MacSignature="brid" MacBundleId="com.salas.bb" UACExecutionLevel="0"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiMimeComponent">
-    <ROW ContentType="text/x-opml" Extension_="opml"/>
+    <ROW ContentType="text/x-opml" Extension_="opml" Component_="BlogBridge.exe"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiProgIdComponent">
     <ROW ProgId="SalasAssociatesInc..BlogBridge.opml" Description="Reading List"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiRegLocatorComponent">
+    <ROW Signature_="AI_EXE_PATH_CU" Root="1" Key="Software\Caphyon\Advanced Installer\LZMA\[ProductCode]\[ProductVersion]" Name="AI_ExePath" Type="2"/>
+    <ROW Signature_="AI_EXE_PATH_LM" Root="2" Key="Software\Caphyon\Advanced Installer\LZMA\[ProductCode]\[ProductVersion]" Name="AI_ExePath" Type="2"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiRegsComponent">
+    <ROW Registry="AI_ExePath" Root="-1" Key="Software\Caphyon\Advanced Installer\LZMA\[ProductCode]\[ProductVersion]" Name="AI_ExePath" Value="[AI_SETUPEXEPATH]" Component_="AI_ExePath"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiShortsComponent">
     <ROW Shortcut="BlogBridge" Directory_="New_Folder_DIR" Name="BlogBr~1|BlogBridge _version_" Component_="BlogBridge.exe" Target="[#BlogBridge.exe]" Description="Ultimate Info-Junkie System" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
@@ -160,10 +188,10 @@
     <ROW Shortcut="Uninstall_BlogBridge" Directory_="New_Folder_DIR" Name="Uninst~1|Uninstall BlogBridge" Component_="BlogBridge.exe" Target="[SystemFolder]msiexec.exe" Arguments="/x [ProductCode]" Hotkey="0" Icon_="SystemFolder_msiexec.exe" IconIndex="0" ShowCmd="1"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiUpgradeComponent">
-    <ROW UpgradeCode="UpgradeCode" VersionMax="ProductVersion" Attributes="1025"/>
-    <ROW UpgradeCode="UpgradeCode" VersionMin="ProductVersion" Attributes="2"/>
+    <ROW UpgradeCode="[|UpgradeCode]" VersionMax="[|ProductVersion]" Attributes="1025" ActionProperty="OLDPRODUCTS"/>
+    <ROW UpgradeCode="[|UpgradeCode]" VersionMin="[|ProductVersion]" Attributes="2" ActionProperty="AI_NEWERPRODUCTFOUND"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiVerbComponent">
-    <ROW Extension_="opml" Verb="&amp;Open" Sequence="0" Command="&amp;Subscribe" Argument="-open &quot;%1&quot;"/>
+    <ROW Extension_="opml" Component_="BlogBridge.exe" Verb="&amp;Open" Sequence="0" Command="&amp;Subscribe" Argument="-open &quot;%1&quot;"/>
   </COMPONENT>
 </DOCUMENT>

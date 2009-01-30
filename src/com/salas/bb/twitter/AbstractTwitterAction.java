@@ -54,7 +54,7 @@ public abstract class AbstractTwitterAction extends AbstractAction
     /** Invoked when action is invoked. */
     public void actionPerformed(ActionEvent e)
     {
-        if (TwitterFeature.isConfigured())
+        if (canAct())
         {
             customAction();
         } else
@@ -63,6 +63,16 @@ public abstract class AbstractTwitterAction extends AbstractAction
                 GlobalController.SINGLETON.getMainFrame(), GlobalModel.SINGLETON);
             dialog.open(TwitterPreferencesPanel.class);
         }
+    }
+
+    /**
+     * Returns TRUE if the action can be executed. Otherwise the user preferences page will be displayed.
+     *
+     * @return TRUE if can act.
+     */
+    protected boolean canAct()
+    {
+        return TwitterFeature.isConfigured();
     }
 
     protected abstract void customAction();

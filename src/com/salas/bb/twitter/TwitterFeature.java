@@ -42,6 +42,11 @@ public class TwitterFeature
         return GlobalController.SINGLETON.getFeatureManager().isRegistered();
     }
 
+    /**
+     * Returns TRUE if the feature is configured.
+     *
+     * @return TRUE.
+     */
     public static boolean isConfigured()
     {
         TwitterPreferences p = getPreferences();

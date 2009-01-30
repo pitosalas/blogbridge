@@ -63,6 +63,15 @@ public class ReplyAction extends AbstractTwitterAction
         setEnabled(screenName != null);
     }
 
+    @Override
+    protected boolean canAct()
+    {
+        // Continue if all is good, or if the BB user account isn't registered --
+        // the dialog will explain.
+        return super.canAct() || !TwitterFeature.isAvaiable();
+    }
+
+    @Override
     protected void customAction()
     {
         TweetThisDialog ttd = new TweetThisDialog(GlobalController.SINGLETON.getMainFrame());

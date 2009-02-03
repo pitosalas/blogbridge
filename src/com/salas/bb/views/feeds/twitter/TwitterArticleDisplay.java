@@ -253,6 +253,10 @@ public class TwitterArticleDisplay extends JPanel implements IArticleListener, I
         lbDate.setFont(dateFont);
         lnReply.setFont(config.getTextFont());
 
+        HTMLDocument doc = (HTMLDocument)tfText.getDocument();
+        UifUtilities.setFontAttributes(doc, TEXT_STYLE_NAME, config.getTextFont());
+        UifUtilities.installTextStyle(tfText, TEXT_STYLE_NAME);
+
         doLayout();
     }
 

@@ -95,6 +95,7 @@ public class TwitterArticleDisplay extends JPanel implements IArticleListener, I
         initComponents();
 
         setBorder(new UpDownBorder(HTMLArticleDisplay.COLOR_BORDER_LINE));
+        initTextStyle(article, config);
 
         // Order of the following lines is important (affects the layout on Win)
         onThemeChange();
@@ -103,18 +104,21 @@ public class TwitterArticleDisplay extends JPanel implements IArticleListener, I
         setViewMode(config.getViewMode());
     }
 
-    private void setText()
+    private void initTextStyle(IArticle article, IArticleDisplayConfig config)
     {
-        String name;
-        String link = null;
-        String text = article.getHtmlText();
-
         // Create new style for article and init it with default style settings
         HTMLDocument doc = (HTMLDocument)tfText.getDocument();
         doc.setBase(article.getLink());
         Style def = doc.getStyle("default");
         doc.addStyle(TEXT_STYLE_NAME, def);
         UifUtilities.setFontAttributes(doc, TEXT_STYLE_NAME, config.getTextFont());
+    }
+
+    private void setText()
+    {
+        String name;
+        String link = null;
+        String text = article.getHtmlText();
 
         if (text != null)
         {
@@ -143,6 +147,7 @@ public class TwitterArticleDisplay extends JPanel implements IArticleListener, I
             if (SystemUtils.IS_OS_MAC) text = "<p id='start'>" + text;
         }
 
+        HTMLDocument doc = (HTMLDocument)tfText.getDocument();
         doc.putProperty(Document.StreamDescriptionProperty, ((NetworkFeed)article.getFeed()).getXmlURL());
 
         tfText.setText(text);

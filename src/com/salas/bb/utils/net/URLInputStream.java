@@ -122,6 +122,9 @@ public class URLInputStream extends InputStream
 
     private static final IRetriesPolicy DEFAULT_RETRIES_POLICY = new DirectRetriesPolicy();
 
+    private static final String MSG_EXCEPTION_IN_THE_HANDLER = Strings.error("failed.to.handle");
+    private static final String MSG_IO_ERROR = Strings.error("net.there.was.an.error.during.io");
+
     /** Unlimited bandwidth. */
     public static final int BANDWIDTH_UNLIMITED = 0;
 
@@ -173,8 +176,10 @@ public class URLInputStream extends InputStream
 
     // A user agent to use for HTTP connections.
     private String              userAgent;
-    private static final String MSG_EXCEPTION_IN_THE_HANDLER = Strings.error("failed.to.handle");
-    private static final String MSG_IO_ERROR = Strings.error("net.there.was.an.error.during.io");
+
+    // Basic HTTP Authentication info.
+    private String              username;
+    private String              password;
 
     /**
      * Creates stream out of URL.
@@ -238,6 +243,18 @@ public class URLInputStream extends InputStream
         serverTime = -1;
 
         userAgent = null;
+    }
+
+    /**
+     * Sets basic authentication info.
+     *
+     * @param username user name.
+     * @param password password
+     */
+    public void setBasicAuthenticationInfo(String username, String password)
+    {
+        this.username = username;
+        this.password = password;
     }
 
     /**
@@ -726,7 +743,7 @@ public class URLInputStream extends InputStream
     protected InputStream makeConnection(long read)
         throws IOException
     {
-        URLConnectionHolder holder = ResumingSupport.resume(sourceUrl, read, lastFetchingTime, userAgent);
+        URLConnectionHolder holder = ResumingSupport.resume(sourceUrl, read, lastFetchingTime, userAgent, username, password);
         URLConnection con = holder.getConnection();
 
         URL permRedirURL = holder.getPermanentRedirectionURL();

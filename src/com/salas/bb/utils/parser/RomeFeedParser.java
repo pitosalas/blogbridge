@@ -49,6 +49,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 /**
  * Gateway to Rome parser.
@@ -85,8 +87,21 @@ public class RomeFeedParser implements IFeedParser
 
         FeedParserResult result = new FeedParserResult();
 
+        String xmlURLS  = xmlURL.toString();
+        String username = null;
+        String password = null;
+        Pattern pattern = Pattern.compile("^(https?://)([^:]+):([^@]+)@(.+)$", Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(xmlURLS);
+        if (matcher.find())
+        {
+            username = matcher.group(2);
+            password = matcher.group(3);
+            xmlURL = new URL(matcher.group(1) + matcher.group(4));
+        }
+
         // Create stream for reading the feed and register it
         URLInputStream stream = new URLInputStream(xmlURL, lastUpdateTime);
+        stream.setBasicAuthenticationInfo(username, password);
         if (title == null) title = xmlURL.toString();
         NetManager.register(NetManager.TYPE_POLLING, title, title, stream);
         stream.setRedirectionListener(new RomeFeedParser.RedirectionRecorder(result));

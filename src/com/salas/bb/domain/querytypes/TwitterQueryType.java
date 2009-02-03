@@ -27,17 +27,25 @@ package com.salas.bb.domain.querytypes;
 import com.salas.bb.domain.FeedType;
 import com.salas.bb.utils.ResourceID;
 import com.salas.bb.utils.StringUtils;
+import com.salas.bb.utils.uif.BBFormBuilder;
 import com.salas.bb.utils.i18n.Strings;
 import com.salas.bb.views.feeds.IFeedDisplayConstants;
+import com.salas.bb.twitter.TwitterFeature;
+import com.salas.bb.twitter.TwitterPreferences;
+import com.salas.bb.core.GlobalController;
 
+import javax.swing.*;
 import java.text.MessageFormat;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 /**
  * Twitter query type.
  */
 class TwitterQueryType extends DefaultQueryType
 {
-    private static final String PATTERN = "http://search.twitter.com/search.atom?q={0}&rpp={1}";
+    private static final String PATTERN_QUERY   = "http://search.twitter.com/search.atom?q={0}&rpp={1}";
+    private static final String PATTERN_FRIENDS = "http://{0}:{1}@twitter.com/statuses/friends_timeline/{0}.rss";
 
     /**
      * Creates name query type with associated icon and URL pattern. The pattern can use the
@@ -66,9 +74,122 @@ class TwitterQueryType extends DefaultQueryType
     @Override
     protected String formURLString(String param, int limit)
     {
-        param = parameterToURLPart(param);
-        if (StringUtils.isEmpty(param)) return null;
+        String url;
 
-        return MessageFormat.format(PATTERN, param, limit);
+        if ("~~".equals(param))
+        {
+            if (!TwitterFeature.isConfigured()) return null;
+
+            TwitterPreferences tp = GlobalController.SINGLETON.getModel().getUserPreferences().getTwitterPreferences();
+            String username = tp.getScreenName();
+            String password = tp.getPassword();
+
+            url = MessageFormat.format(PATTERN_FRIENDS, username, password);
+        } else
+        {
+            param = parameterToURLPart(param);
+            if (StringUtils.isEmpty(param)) return null;
+            url = MessageFormat.format(PATTERN_QUERY, param, limit);
+        }
+
+        return url;
+    }
+
+    @Override
+    public QueryEditorPanel getEditorPanel(int labelColWidth)
+    {
+        return new QueryEditor(labelColWidth);
+    }
+
+    /**
+     * Microtag query editor.
+     */
+    private static class QueryEditor extends QueryEditorPanel
+    {
+        private static final int    FRIENDS         = 0;
+        private static final int    QUERY           = 1;
+
+        private static final String TYPE_FRIENDS    = "Friends Timeline";
+        private static final String TYPE_QUERY      = "Query";
+
+        private final JLabel     lbQuery;
+        private final JComboBox  cbType;
+        private final JTextField tfQuery;
+
+        /**
+         * Creates the editor.
+         *
+         * @param labelColWidth the width in 'dlu' of the label column.
+         */
+        private QueryEditor(int labelColWidth)
+        {
+            lbQuery = new JLabel("Query:");
+            cbType = new JComboBox();
+            tfQuery = new JTextField();
+
+            // Initialize types
+            cbType.addItem(TYPE_FRIENDS);
+            cbType.addItem(TYPE_QUERY);
+
+            BBFormBuilder b = new BBFormBuilder(labelColWidth + "dlu, 4dlu, p, p:grow", this);
+            b.append("Type:", cbType);
+            b.append(lbQuery);
+            b.append(tfQuery, 2);
+
+            cbType.addActionListener(new ActionListener()
+            {
+                public void actionPerformed(ActionEvent e)
+                {
+                    updateFieldState();
+                }
+            });
+
+            updateFieldState();
+        }
+
+        /**
+         * Updates the state of fields.
+         */
+        private void updateFieldState()
+        {
+            boolean en = cbType.getSelectedIndex() == QUERY;
+            lbQuery.setEnabled(en);
+            tfQuery.setEnabled(en);
+        }
+
+        /**
+         * Sets the value of the parameter. Initializes the internal controls with
+         * the values deciphered from the parameter given.
+         *
+         * @param text the text.
+         */
+        public void setParameter(String text)
+        {
+            int type;
+            String query;
+
+            if ("~~".equals(text))
+            {
+                type = FRIENDS;
+                query = null;
+            } else
+            {
+                type = QUERY;
+                query = text;
+            }
+
+            cbType.setSelectedIndex(type);
+            tfQuery.setText(query);
+        }
+
+        /**
+         * Returns the value of the parameter.
+         *
+         * @return the text.
+         */
+        public String getParameter()
+        {
+            return cbType.getSelectedIndex() == FRIENDS ? "~~" : tfQuery.getText();
+        }
     }
 }

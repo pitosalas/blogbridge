@@ -25,6 +25,7 @@
 package com.salas.bb.utils.net;
 
 import com.salas.bb.utils.i18n.Strings;
+import com.salas.bb.utils.StringUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -111,7 +112,7 @@ public final class ResumingSupport
     public static URLConnectionHolder resume(URL url, long position, long lastFetchTime)
         throws IOException
     {
-        return resume(url, position, lastFetchTime, null);
+        return resume(url, position, lastFetchTime, null, null, null);
     }
 
     /**
@@ -121,12 +122,15 @@ public final class ResumingSupport
      * @param position      position in the stream to start reading from.
      * @param lastFetchTime time of last successful fetching.
      * @param userAgent     HTTP user agent.
+     * @param username      Basic Authentication user name.
+     * @param password      Basic Authenticaiton user password.
      *
      * @return connection object.
      *
      * @throws IOException in case of any IO error.
      */
-    public static URLConnectionHolder resume(URL url, long position, long lastFetchTime, String userAgent)
+    public static URLConnectionHolder resume(URL url, long position, long lastFetchTime, String userAgent,
+                                             String username, String password)
         throws IOException
     {
         if (url == null) throw new IllegalArgumentException(Strings.error("unspecified.url"));
@@ -139,24 +143,26 @@ public final class ResumingSupport
             holder = fileResume(url, position, lastFetchTime);
         } else
         {
-            holder = remoteResume(url, position, lastFetchTime, userAgent);
+            holder = remoteResume(url, position, lastFetchTime, userAgent, username, password);
         }
 
         return holder;
     }
 
-    private static URLConnectionHolder remoteResume(URL url, long position, long lastFetchTime, String userAgent)
+    private static URLConnectionHolder remoteResume(URL url, long position, long lastFetchTime, String userAgent,
+                                                    String username, String password)
         throws IOException
     {
         URLConnection con = url.openConnection();
 
         URLConnectionHolder holder = new URLConnectionHolder(con, null);
 
-        return remoteResume(holder, position, lastFetchTime, userAgent);
+        return remoteResume(holder, position, lastFetchTime, userAgent, username, password);
     }
 
     private static URLConnectionHolder remoteResume(URLConnectionHolder aHolder, long position,
-                                                    long lastFetchTime, String userAgent) throws IOException
+                                                    long lastFetchTime, String userAgent, String username,
+                                                    String password) throws IOException
     {
         URL url = aHolder.getConnection().getURL();
 
@@ -166,7 +172,7 @@ public final class ResumingSupport
 
         if (aHolder.getConnection() instanceof HttpURLConnection)
         {
-            return httpResume(aHolder, position, lastFetchTime, userAgent);
+            return httpResume(aHolder, position, lastFetchTime, userAgent, username, password);
         } else
         {
             return otherResume(aHolder, position);
@@ -174,9 +180,15 @@ public final class ResumingSupport
     }
 
     private static URLConnectionHolder httpResume(URLConnectionHolder holder, long aPosition,
-                                                  long aLastFetchTime, String userAgent) throws IOException, CyclicRedirectionException
+                                                  long aLastFetchTime, String userAgent, String username,
+                                                  String password) throws IOException, CyclicRedirectionException
     {
         HttpURLConnection httpCon = (HttpURLConnection)holder.getConnection();
+
+        if (StringUtils.isNotEmpty(username) && StringUtils.isNotEmpty(password))
+        {
+            httpCon.setRequestProperty("Authorization", StringUtils.createBasicAuthToken(username, password));
+        }
 
         httpCon.setInstanceFollowRedirects(false);
         httpCon.setAllowUserInteraction(false);
@@ -228,7 +240,7 @@ public final class ResumingSupport
             // Make another loop with new URL
             holder = new URLConnectionHolder(newURL.openConnection(),
                 perm ? newURL : holder.getPermanentRedirectionURL());
-            holder = remoteResume(holder, aPosition, aLastFetchTime, userAgent);
+            holder = remoteResume(holder, aPosition, aLastFetchTime, userAgent, username, password);
         } else if (responseCode == HttpURLConnection.HTTP_OK)
         {
             skipToPosition(httpCon, aPosition);

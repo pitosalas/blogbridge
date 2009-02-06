@@ -41,7 +41,7 @@ import java.awt.*;
 public class HeaderPanelExt extends GradientBackgroundPanel
 {
     private static final String COLUMNS             = "pref:grow";
-    private static final String ROWS                = "pref, pref";
+    private static final String ROWS                = "pref, 7px";
     private static final Font FONT_LUCIDA_GRANDE    = new Font("Lucida Grande", Font.PLAIN, 10);
 
     /**
@@ -200,7 +200,7 @@ public class HeaderPanelExt extends GradientBackgroundPanel
         setLayout(new FormLayout(COLUMNS, ROWS));
         CellConstraints cc = new CellConstraints();
         add(buildCenterComponent(), cc.xy(1, 1));
-        add(buildBottomComponent(), cc.xy(1, 2));
+        add(buildBottomComponent(), cc.xy(1, 2, CellConstraints.FILL, CellConstraints.BOTTOM));
     }
 
     /**

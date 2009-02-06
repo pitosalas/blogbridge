@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.net.URL;
 
 /**
  * Converts domain objects into OPML equivalents.
@@ -247,7 +248,8 @@ public final class Converter
             int queryType = qt.getType();
             String title = aFeed.getBaseTitle();
             String queryParam = aFeed.getParameter();
-            String xmlURL = aFeed.getXmlURL().toString();
+            URL url = aFeed.getXmlURL();
+            String xmlURL = url == null ? null : url.toString();
             String readArticlesKeys = aFeed.getReadArticlesKeys();
             String pinnedArticlesKeys = aFeed.getPinnedArticlesKeys();
             int purgeLimit = aFeed.getPurgeLimit();

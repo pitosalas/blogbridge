@@ -28,7 +28,6 @@ import com.jgoodies.forms.factories.ButtonBarFactory;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.uif.AbstractDialog;
 import com.jgoodies.uif.util.ResourceUtils;
-import com.salas.bb.utils.Constants;
 import com.salas.bb.utils.ResourceID;
 import com.salas.bb.utils.StringUtils;
 import com.salas.bb.utils.i18n.Strings;
@@ -49,19 +48,18 @@ import java.io.IOException;
  */
 public class TweetThisDialog extends AbstractDialog
 {
-    private static final int WIDTH_AVAILABLE = 500;
+    private static final int WIDTH_AVAILABLE = 400;
     private static final int WIDTH_UNAVAILABLE = 450;
     private static final String THREAD_SHORTEN_LINK = "Shorten Link";
 
-    private JTextArea taMessage;
-    private JTextField tfLink;
-    private JButton btnShorten;
-    private JLabel lbCharsLeft;
-    private JButton btnSend;
+    private JTextArea   taMessage;
+    private JButton     btnPasteLink;
+    private JLabel      lbCharsLeft;
+    private JButton     btnSend;
     private JScrollPane spMessage;
 
     private String initialText;
-    private String initialLink;
+    private String link;
 
     /**
      * Creates the dialog.
@@ -71,15 +69,6 @@ public class TweetThisDialog extends AbstractDialog
     public TweetThisDialog(Frame frame)
     {
         super(frame, Strings.message("tweetthis.dialog.title"));
-    }
-
-    @Override
-    protected JComponent buildHeader()
-    {
-        return new HeaderPanelExt(
-            Strings.message("tweetthis.dialog.title"),
-            Strings.message("tweetthis.dialog.header"),
-            IconSource.getIcon(ResourceID.ICON_TWITTER));
     }
 
     /**
@@ -109,14 +98,19 @@ public class TweetThisDialog extends AbstractDialog
         {
             btnSend = createOKButton(true);
             btnSend.setText(Strings.message("tweetthis.send"));
-            bar = ButtonBarFactory.buildOKCancelBar(btnSend, createCancelButton());
+            btnPasteLink = new JButton(new PasteLinkAction());
+            btnPasteLink.setEnabled(StringUtils.isNotEmpty(link));
+
+            BBFormBuilder b = new BBFormBuilder("p, 4dlu:grow, p, 2dlu, p");
+            b.append(btnPasteLink);
+            b.append(btnSend);
+            b.append(createCancelButton());
+            bar = b.getPanel();
         } else
         {
             bar = buildButtonBarWithClose();
         }
 
-        bar.setBorder(Constants.DIALOG_BUTTON_BAR_BORDER);
-        
         return bar;
     }
 
@@ -169,19 +163,13 @@ public class TweetThisDialog extends AbstractDialog
     {
         initComponents();
 
-        BBFormBuilder builder = new BBFormBuilder("right:pref, 4dlu, 100dlu:grow, 2dlu, pref");
-        builder.setDefaultDialogBorder();
+        BBFormBuilder builder = new BBFormBuilder("pref, 10dlu, 20dlu:grow, 2dlu, pref");
 
         // Build shifted label
-        BBFormBuilder pb = new BBFormBuilder("right:pref");
-        pb.appendRow("3px");
-        pb.nextLine();
-        pb.append(Strings.message("tweetthis.your.message"));
-        pb.append(lbCharsLeft);
-
-        builder.append(pb.getPanel(), 1, CellConstraints.LEFT, CellConstraints.TOP);
-        builder.append(spMessage, 3);
-        builder.append(Strings.message("tweetthis.shorten.link"), tfLink, btnShorten);
+        builder.append(Strings.message("tweetthis.your.message"), 1, CellConstraints.LEFT, CellConstraints.BOTTOM);
+        builder.append(lbCharsLeft, 1, CellConstraints.LEFT, CellConstraints.BOTTOM);
+        builder.append(new JLabel(IconSource.getIcon(ResourceID.ICON_TWITTER)));
+        builder.append(spMessage, 5);
 
         return builder;
     }
@@ -191,9 +179,7 @@ public class TweetThisDialog extends AbstractDialog
      */
     private void initComponents()
     {
-        tfLink      = new JTextField(initialLink);
         taMessage   = new JTextArea(5, 70);
-        btnShorten  = new JButton(new ShortenAction());
         lbCharsLeft = new JLabel();
         spMessage   = new JScrollPane(taMessage);
 
@@ -225,17 +211,6 @@ public class TweetThisDialog extends AbstractDialog
         lbCharsLeft.setForeground(Color.DARK_GRAY);
         updateCharsCount();
 
-        if (StringUtils.isNotEmpty(initialLink))
-        {
-            SwingUtilities.invokeLater(new Runnable()
-            {
-                public void run()
-                {
-                    onShorten();
-                }
-            });
-        }
-
         taMessage.requestFocusInWindow();
     }
 
@@ -252,7 +227,7 @@ public class TweetThisDialog extends AbstractDialog
 
     public void open(String text, String link)
     {
-        initialLink = link;
+        this.link = link;
         open(text);
     }
 
@@ -310,8 +285,8 @@ public class TweetThisDialog extends AbstractDialog
         lbCharsLeft.setText(Integer.toString(TwitterMessage.MAX_LENGTH - current));
         final boolean over = current > TwitterMessage.MAX_LENGTH;
 
-        taMessage.setBackground(over ? Color.RED : tfLink.getBackground());
-        taMessage.setForeground(over ? Color.WHITE : tfLink.getForeground());
+        taMessage.setBackground(over ? Color.RED : Color.WHITE);
+        taMessage.setForeground(over ? Color.WHITE : Color.BLACK);
         btnSend.setEnabled(!over && current > 0);
     }
 
@@ -329,8 +304,19 @@ public class TweetThisDialog extends AbstractDialog
     /**
      * Invoked when shortening should be performed.
      */
-    private void onShorten()
+    private void onPasteLink()
     {
+        // If empty, do nothing
+        if (StringUtils.isEmpty(link)) return;
+
+        // If already shortened, do pasting
+        if (link.matches("^http://(www\\.)?is\\.gd\\/.*"))
+        {
+            doPasteLink(link);
+            return;
+        }
+
+        // If not compressed, compress and do pasting
         componentsEnabled(false);
 
         new Thread(THREAD_SHORTEN_LINK)
@@ -342,7 +328,7 @@ public class TweetThisDialog extends AbstractDialog
 
                 try
                 {
-                    aLink = LinkShortener.process(tfLink.getText());
+                    aLink = LinkShortener.process(link);
                 } catch (LinkShorteningException e)
                 {
                     anErrorMessage = e.getMessage();
@@ -359,7 +345,8 @@ public class TweetThisDialog extends AbstractDialog
                         {
                             if (link != null)
                             {
-                                onShortenSuccess(link);
+                                TweetThisDialog.this.link = link;
+                                doPasteLink(link);
                             } else
                             {
                                 onShortenFailure(errorMessage);
@@ -381,8 +368,7 @@ public class TweetThisDialog extends AbstractDialog
      */
     private void componentsEnabled(boolean enabled)
     {
-        btnShorten.setEnabled(enabled);
-        tfLink.setEnabled(enabled);
+        btnPasteLink.setEnabled(enabled);
     }
 
     /**
@@ -390,9 +376,10 @@ public class TweetThisDialog extends AbstractDialog
      *
      * @param link link.
      */
-    private void onShortenSuccess(String link)
+    private void doPasteLink(String link)
     {
-        tfLink.setText(link);
+        taMessage.append(link);
+        taMessage.requestFocusInWindow();
     }
 
     /**
@@ -403,23 +390,23 @@ public class TweetThisDialog extends AbstractDialog
     private void onShortenFailure(String error)
     {
         JOptionPane.showMessageDialog(this, error,
-            Strings.message("tweetthis.dialog.title") + " - " + Strings.message("tweetthis.shorten.btn"),
+            Strings.message("tweetthis.dialog.title") + " - " + Strings.message("tweetthis.paste.link.btn"),
             JOptionPane.WARNING_MESSAGE);
     }
 
     /**
      * Shorten link action.
      */
-    private class ShortenAction extends AbstractAction
+    private class PasteLinkAction extends AbstractAction
     {
-        public ShortenAction()
+        public PasteLinkAction()
         {
-            super(Strings.message("tweetthis.shorten.btn"));
+            super(Strings.message("tweetthis.paste.link.btn"));
         }
 
         public void actionPerformed(ActionEvent e)
         {
-            onShorten();
+            onPasteLink();
         }
     }
 }

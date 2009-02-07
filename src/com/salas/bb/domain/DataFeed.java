@@ -969,7 +969,8 @@ public abstract class DataFeed extends AbstractFeed
         String channelLanguage = channel.getLanguage();
         if (channelLanguage != null) setLanguage(channelLanguage);
 
-        setUpdatePeriod(channel.getUpdatePeriod());
+        long newUpdatePeriod = channel.getUpdatePeriod();
+        if (getUpdatePeriod() == -1 && newUpdatePeriod != -1) setUpdatePeriod(newUpdatePeriod);
         setLastUpdateServerTime(channel.getLastUpdateServerTime());
     }
 

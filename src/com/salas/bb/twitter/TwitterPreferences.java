@@ -37,16 +37,19 @@ public class TwitterPreferences extends Model
     public static final String PROP_TWITTER_SCREEN_NAME     = "twitter.screenName";
     public static final String PROP_TWITTER_PASSWORD        = "twitter.password";
     public static final String PROP_TWITTER_PROFILE_PICS    = "twitter.profile.pics";
+    public static final String PROP_TWITTER_PASTE_LINK      = "twitter.paste.link";
 
     public static final String PROP_ENABLED                 = "enabled";
     public static final String PROP_SCREEN_NAME             = "screenName";
     public static final String PROP_PASSWORD                = "password";
     public static final String PROP_PROFILE_PICS            = "profilePics";
+    public static final String PROP_PASTE_LINK              = "pasteLink";
 
     private boolean enabled;
     private String  screenName;
     private String  password;
     private boolean profilePics;
+    private boolean pasteLink;
 
     /**
      * Returns TRUE when the Twitter support is enabled.
@@ -90,6 +93,28 @@ public class TwitterPreferences extends Model
         boolean old = this.profilePics;
         this.profilePics = profilePics;
         firePropertyChange(PROP_PROFILE_PICS, old, profilePics);
+    }
+
+    /**
+     * Returns TRUE when automatic link pasting is enabled.
+     *
+     * @return TRUE when automatic link pasting is enabled.
+     */
+    public boolean isPasteLink()
+    {
+        return pasteLink;
+    }
+
+    /**
+     * Enables / disables automatic link pasting.
+     *
+     * @param pasteLink TRUE to enable.
+     */
+    public void setPasteLink(boolean pasteLink)
+    {
+        boolean old = pasteLink;
+        this.pasteLink = pasteLink;
+        firePropertyChange(PROP_PASTE_LINK, old, pasteLink);
     }
 
     /**
@@ -151,6 +176,7 @@ public class TwitterPreferences extends Model
         if (getScreenName() == null) prefs.remove(PROP_TWITTER_SCREEN_NAME); else prefs.put(PROP_TWITTER_SCREEN_NAME, getScreenName());
         if (getPassword() == null) prefs.remove(PROP_TWITTER_PASSWORD); else prefs.put(PROP_TWITTER_PASSWORD, getPassword());
         prefs.putBoolean(PROP_PROFILE_PICS, isProfilePics());
+        prefs.putBoolean(PROP_PASTE_LINK, isPasteLink());
     }
 
     /**
@@ -164,6 +190,7 @@ public class TwitterPreferences extends Model
         setScreenName(prefs.get(PROP_TWITTER_SCREEN_NAME, null));
         setPassword(prefs.get(PROP_TWITTER_PASSWORD, null));
         setProfilePics(prefs.getBoolean(PROP_PROFILE_PICS, true));
+        setPasteLink(prefs.getBoolean(PROP_PASTE_LINK, true));
     }
 
     /**

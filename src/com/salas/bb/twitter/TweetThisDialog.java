@@ -34,6 +34,7 @@ import com.salas.bb.utils.i18n.Strings;
 import com.salas.bb.utils.net.LinkShortener;
 import com.salas.bb.utils.net.LinkShorteningException;
 import com.salas.bb.utils.uif.*;
+import com.salas.bb.core.GlobalController;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -211,6 +212,9 @@ public class TweetThisDialog extends AbstractDialog
         lbCharsLeft.setForeground(Color.DARK_GRAY);
         updateCharsCount();
 
+        TwitterPreferences prefs = GlobalController.SINGLETON.getModel().getUserPreferences().getTwitterPreferences();
+        if (StringUtils.isNotEmpty(link) && prefs.isPasteLink()) onPasteLink();
+        
         taMessage.requestFocusInWindow();
     }
 
@@ -379,6 +383,7 @@ public class TweetThisDialog extends AbstractDialog
     private void doPasteLink(String link)
     {
         taMessage.append(link);
+        taMessage.append(" ");
         taMessage.requestFocusInWindow();
     }
 

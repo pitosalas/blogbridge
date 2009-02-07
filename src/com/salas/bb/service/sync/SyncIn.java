@@ -1666,6 +1666,7 @@ public class SyncIn extends AbstractSynchronization
         tp.setScreenName(getString(prefs, TwitterPreferences.PROP_TWITTER_SCREEN_NAME, tp.getScreenName()));
         tp.setPassword(getString(prefs, TwitterPreferences.PROP_TWITTER_PASSWORD, tp.getPassword()));
         tp.setProfilePics(getBoolean(prefs, TwitterPreferences.PROP_TWITTER_PROFILE_PICS, tp.isProfilePics()));
+        tp.setPasteLink(getBoolean(prefs, TwitterPreferences.PROP_TWITTER_PASTE_LINK, tp.isPasteLink()));
     }
 
     /**

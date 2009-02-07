@@ -74,6 +74,12 @@ public class TwitterPreferencesPanel extends JPanel
                 new PropertyAdapter(preferences, TwitterPreferences.PROP_PROFILE_PICS),
                 trigger)));
 
+        JCheckBox chPasteLink = ComponentsFactory.createCheckBox(
+            Strings.message("userprefs.tab.twitter.paste.link"),
+            new ToggleButtonAdapter(new BufferedValueModel(
+                new PropertyAdapter(preferences, TwitterPreferences.PROP_PASTE_LINK),
+                trigger)));
+
         JLabel lbScreenName = new JLabel(Strings.message("userprefs.tab.twitter.screenname"));
         JLabel lbPassword   = new JLabel(Strings.message("userprefs.tab.twitter.password"));
 
@@ -99,5 +105,6 @@ public class TwitterPreferencesPanel extends JPanel
         builder.setLeadingColumnOffset(3);
         builder.nextLine();
         builder.append(chProfilePics);
+        builder.append(chPasteLink);
     }
 }

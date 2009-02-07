@@ -554,6 +554,7 @@ public class SyncOut extends AbstractSynchronization
         setString(prefs, TwitterPreferences.PROP_TWITTER_SCREEN_NAME, tp.getScreenName());
         setString(prefs, TwitterPreferences.PROP_TWITTER_PASSWORD, tp.getPassword());
         setBoolean(prefs, TwitterPreferences.PROP_TWITTER_PROFILE_PICS, tp.isProfilePics());
+        setBoolean(prefs, TwitterPreferences.PROP_TWITTER_PASTE_LINK, tp.isPasteLink());
     }
 
     /**

@@ -219,22 +219,28 @@ public final class Helper
         List feeds = aOPMLGuide.getFeeds();
         for (Object ofeed : feeds)
         {
-            IFeed feed;
-            if (ofeed instanceof DirectOPMLFeed)
+            try
             {
-                feed = createDirectFeed(baseURL, (DirectOPMLFeed)ofeed);
-            } else if (ofeed instanceof QueryOPMLFeed)
-            {
-                feed = createQueryFeed((QueryOPMLFeed)ofeed);
-            } else
-            {
-                feed = createSearchFeed((SearchOPMLFeed)ofeed);
-            }
+                IFeed feed;
+                if (ofeed instanceof DirectOPMLFeed)
+                {
+                    feed = createDirectFeed(baseURL, (DirectOPMLFeed)ofeed);
+                } else if (ofeed instanceof QueryOPMLFeed)
+                {
+                    feed = createQueryFeed((QueryOPMLFeed)ofeed);
+                } else
+                {
+                    feed = createSearchFeed((SearchOPMLFeed)ofeed);
+                }
 
-            if (feed != null)
+                if (feed != null)
+                {
+                    feed.setLastUpdateTime(serviceTime);
+                    guide.add(feed);
+                }
+            } catch (Throwable e)
             {
-                feed.setLastUpdateTime(serviceTime);
-                guide.add(feed);
+                LOG.log(Level.SEVERE, "Error unserializing a feed from OPML:", e);
             }
         }
 

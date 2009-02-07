@@ -32,6 +32,7 @@ import com.salas.bb.sentiments.SentimentsFeature;
 import com.salas.bb.utils.ThreadedAction;
 import com.salas.bb.utils.uif.UifUtilities;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.Arrays;
@@ -90,7 +91,15 @@ public abstract class AbstractSyncAction extends ThreadedAction
 
             if (!stats.hasFailed()) GlobalController.SINGLETON.getFeatureManager().registerSync();
 
-            if (SentimentsFeature.isAvailable() && sentimentsConfigChanged()) RecalculateAction.perform(false);
+            if (SentimentsFeature.isAvailable() && sentimentsConfigChanged())
+            {
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run()
+                    {
+                        RecalculateAction.perform(false);
+                    }
+                });
+            }
         } finally
         {
             enableSyncActions(true);

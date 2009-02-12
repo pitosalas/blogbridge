@@ -86,6 +86,7 @@ public class TwitterGateway
 
         Map<String, String> data = new HashMap<String, String>();
         data.put("status", status);
+        data.put("source", "blogbridge");
         if (replyToId != null) data.put("in_reply_to_status_id", replyToId);
 
         post(url, data);

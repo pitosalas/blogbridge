@@ -46,6 +46,7 @@ import com.salas.bb.views.feeds.IFeedDisplayConstants;
 import com.salas.bb.views.feeds.html.HTMLArticleDisplay;
 import com.salas.bb.views.feeds.html.IArticleDisplayConfig;
 import com.salas.bb.twitter.ReplyAction;
+import com.salas.bb.twitter.TwitterFeature;
 
 import javax.swing.*;
 import javax.swing.event.HyperlinkListener;
@@ -135,11 +136,17 @@ public class TwitterArticleDisplay extends JPanel implements IArticleListener, I
             }
             link = "http://twitter.com/" + name;
 
-            text = "<a href='" + link + "' rel='twitter'>" + name + "</a>: " + text;
+            if (TwitterFeature.areAdvancedFeaturesAvailable())
+            {
+                text = "<a href='" + link + "' rel='twitter'>" + name + "</a>: " + text;
 
-            // Wrap "@name" and "#tag" with links
-            text = text.replaceAll("@([\\w\\d]+)", "<a href=\"http://twitter.com/$1\">@$1</a>");
-            text = text.replaceAll("#([\\w\\d]+)", "<a href=\"http://search.twitter.com/search?q=%23$1\">#$1</a>");
+                // Wrap "@name" and "#tag" with links
+                text = text.replaceAll("@([\\w\\d]+)", "<a href=\"http://twitter.com/$1\">@$1</a>");
+                text = text.replaceAll("#([\\w\\d]+)", "<a href=\"http://search.twitter.com/search?q=%23$1\">#$1</a>");
+            } else
+            {
+                text = name + ": " + text;
+            }
 
             // This is the special trick to outsmart Mac OS implementation of HTMLEditorKit.
             // Otherwise under some conditions the height will be equal to zero and

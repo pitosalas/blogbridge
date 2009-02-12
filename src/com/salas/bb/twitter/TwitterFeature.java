@@ -43,6 +43,16 @@ public class TwitterFeature
     }
 
     /**
+     * Returns TRUE if advanced features (like floating windows and #... / @... as links and menus) are available.
+     *
+     * @return TRUE if advanced features are available.
+     */
+    public static boolean areAdvancedFeaturesAvailable()
+    {
+        return isAvaiable() && GlobalController.SINGLETON.getFeatureManager().isPaidPlan(); 
+    }
+
+    /**
      * Returns TRUE if the feature is configured.
      *
      * @return TRUE.

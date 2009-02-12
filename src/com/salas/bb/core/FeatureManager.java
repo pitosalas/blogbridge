@@ -615,6 +615,16 @@ public final class FeatureManager implements Runnable
     }
 
     /**
+     * Returns TRUE if the plain is the paid one.
+     *
+     * @return TRUE if the plain is the paid one. 
+     */
+    public boolean isPaidPlan()
+    {
+        return planName != null && !"free".equalsIgnoreCase(planName);
+    }
+
+    /**
      * Sets plan price.
      *
      * @param price price.

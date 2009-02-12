@@ -36,10 +36,7 @@ import com.salas.bb.views.feeds.html.IHTMLFeedDisplayConfig;
 import com.salas.bb.views.mainframe.MainFrame;
 import com.salas.bb.core.GlobalController;
 import com.salas.bb.core.actions.ActionsTable;
-import com.salas.bb.twitter.FollowAction;
-import com.salas.bb.twitter.ReplyAction;
-import com.salas.bb.twitter.TwitterGateway;
-import com.salas.bb.twitter.SubscribeAction;
+import com.salas.bb.twitter.*;
 import com.salas.bb.utils.i18n.Strings;
 
 import javax.swing.*;
@@ -131,9 +128,15 @@ public class TwitterFeedDisplay extends AbstractFeedDisplay
      */
     protected MouseListener getLinkPopupAdapter()
     {
-        return isUserLink(hoveredLink) ? getArticleUserLinkPopupAdapter()
-            : isHashtagLink(hoveredLink) ? getHashtagLinkPopupAdapter()
-            : htmlConfig.getLinkPopupAdapter();
+        MouseListener listener = null;
+
+        if (TwitterFeature.areAdvancedFeaturesAvailable())
+        {
+            listener = isUserLink(hoveredLink) ? getArticleUserLinkPopupAdapter()
+            : isHashtagLink(hoveredLink) ? getHashtagLinkPopupAdapter() : null;
+        }
+
+        return listener != null ? listener : htmlConfig.getLinkPopupAdapter();
     }
 
     /**
@@ -252,7 +255,7 @@ public class TwitterFeedDisplay extends AbstractFeedDisplay
      */
     protected String getHoveredLinkTooltip(URL link, final JComponent textPane)
     {
-        if (link == null) return null;
+        if (link == null || !TwitterFeature.areAdvancedFeaturesAvailable()) return null;
 
         return isUserLink(link) ? getUserInfoTooltipText(link, textPane)
             : isHashtagLink(link) ? getHashtagTooltipText(link, textPane)

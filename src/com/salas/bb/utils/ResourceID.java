@@ -99,14 +99,10 @@ public class ResourceID extends ResourceIDs
     /** URL of license welcome message text. */
     public static final String LICENSE_WELCOME_TEXT_URL = "license.welcome.text.url";
 
-    /** Icon for query feed Feedster. */
-    public static final String ICON_QUERYFEED_FEEDSTER = "queryfeed.feedster.icon";
     /** Icon for query feed Technorati. */
     public static final String ICON_QUERYFEED_TECHNORATI = "queryfeed.technorati.icon";
     /** Icon for query feed Flickr. */
     public static final String ICON_QUERYFEED_FLICKR = "queryfeed.flickr.icon";
-    /** Icon for query feed Findory. */
-    public static final String ICON_QUERYFEED_FINDORY = "queryfeed.findory.icon";
     /** Icon for query feed Delicious. */
     public static final String ICON_QUERYFEED_DELICIOUS = "queryfeed.delicious.icon";
     /** Icon for query feed Connotea. */

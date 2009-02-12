@@ -119,7 +119,7 @@ public class TestHsqlFeedsPM extends AbstractHsqlPersistenceTestCase
         // Set feed properties
         setFeedProperties(feed, "IR", 2, 3, false, null, null, true, "1", "2");
         setDataFeedProperties(feed, "F", 2, "L", 4, false, 5, 6, 7, 8);
-        setQueryFeedProperties(feed, "T", QueryType.getQueryType(QueryType.TYPE_FEEDSTER), "a b", true, 5, 6);
+        setQueryFeedProperties(feed, "T", QueryType.getQueryType(QueryType.TYPE_AMAZON_BOOKS), "a b", true, 5, 6);
 
         // Insert query feed
         guide.add(feed);
@@ -137,7 +137,7 @@ public class TestHsqlFeedsPM extends AbstractHsqlPersistenceTestCase
         QueryFeed loadedFeed = (QueryFeed)guide.getFeedAt(0);
         verifyFeedProperties(loadedFeed, "IR", 2, 3, false, null, null, true, "1", "2");
         verifyDataFeedProperties(loadedFeed, false, "F", 2, "L", 4, false, 5, 6, 7, 8);
-        verifyQueryFeedProperties(loadedFeed, "T", QueryType.getQueryType(QueryType.TYPE_FEEDSTER), "a b", true, 5, 6);
+        verifyQueryFeedProperties(loadedFeed, "T", QueryType.getQueryType(QueryType.TYPE_AMAZON_BOOKS), "a b", true, 5, 6);
     }
 
     /**
@@ -551,7 +551,7 @@ public class TestHsqlFeedsPM extends AbstractHsqlPersistenceTestCase
         // Set feed properties
         setFeedProperties(feed, "IR", 4, 5, false, null, null, false, null, null);
         setDataFeedProperties(feed, "F", 2, "L", 4, false, 5, 6, 7, 8);
-        setQueryFeedProperties(feed, "T", QueryType.getQueryType(QueryType.TYPE_FEEDSTER), "a b", true, 1, 2);
+        setQueryFeedProperties(feed, "T", QueryType.getQueryType(QueryType.TYPE_AMAZON_BOOKS), "a b", true, 1, 2);
 
         // Update feed
         manager.updateFeed(feed, null);
@@ -567,7 +567,7 @@ public class TestHsqlFeedsPM extends AbstractHsqlPersistenceTestCase
         QueryFeed loadedFeed = (QueryFeed)guide.getFeedAt(0);
         verifyFeedProperties(loadedFeed, "IR", 4, 5, false, null, null, false, null, null);
         verifyDataFeedProperties(loadedFeed, false, "F", 2, "L", 4, false, 5, 6, 7, 8);
-        verifyQueryFeedProperties(loadedFeed, "T", QueryType.getQueryType(QueryType.TYPE_FEEDSTER), "a b", true, 1, 2);
+        verifyQueryFeedProperties(loadedFeed, "T", QueryType.getQueryType(QueryType.TYPE_AMAZON_BOOKS), "a b", true, 1, 2);
     }
 
     /**

@@ -44,14 +44,10 @@ import java.util.Map;
  */
 public abstract class QueryType
 {
-    /** Feedster query. */
-    public static final int TYPE_FEEDSTER       = 0;
     /** Flickr query. */
     public static final int TYPE_FLICKR         = 1;
     /** Technorati query. */
     public static final int TYPE_TECHNORATI     = 2;
-    /** Findory related articles query. */
-    public static final int TYPE_FINDORY_RAS    = 6;
     /** Delicious query. */
     public static final int TYPE_DELICIOUS      = 7;
     /** Connotea query. */
@@ -59,7 +55,7 @@ public abstract class QueryType
     /** Amazon books search. */
     public static final int TYPE_AMAZON_BOOKS   = 9;
     /** Google blogs search. */
-    public static final int TYPE_GOOGLE_BLOGSEARCH   = 10;
+    public static final int TYPE_GOOGLE_BLOGSEARCH = 10;
     /** Digg search. */
     public static final int TYPE_DIGG           = 11;
     /** Monster job search. */
@@ -81,15 +77,6 @@ public abstract class QueryType
 
     static
     {
-        QueryType feedster = new DefaultQueryType(TYPE_FEEDSTER, FeedType.TEXT,
-            Strings.message("queryfeed.type.feedster.name"),
-            ResourceID.ICON_QUERYFEED_FEEDSTER,
-            "http://feedster.com/search.php?q={0}" +
-                "&sort=date&ie=UTF-8&hl=&content=full&type=rss&limit={1}",
-            Strings.message("queryfeed.type.feedster.parameter"),
-            Strings.message("queryfeed.type.feedster.description"),
-            IFeedDisplayConstants.MODE_BRIEF);
-
         QueryType technorati = new DefaultQueryType(TYPE_TECHNORATI, FeedType.TEXT,
             Strings.message("queryfeed.type.technorati.name"),
             ResourceID.ICON_QUERYFEED_TECHNORATI,
@@ -104,14 +91,6 @@ public abstract class QueryType
             "http://www.flickr.com/services/feeds/photos_public.gne?format=rss_200&tags={0}",
             Strings.message("queryfeed.type.flickr.parameter"),
             Strings.message("queryfeed.type.flickr.description"),
-            IFeedDisplayConstants.MODE_BRIEF);
-
-        QueryType findoryRAS = new DefaultQueryType(TYPE_FINDORY_RAS, FeedType.TEXT,
-            Strings.message("queryfeed.type.findory.name"),
-            ResourceID.ICON_QUERYFEED_FINDORY,
-            "http://rss.findory.com/rss/Blogs?ras={0}",
-            Strings.message("queryfeed.type.findory.parameter"),
-            Strings.message("queryfeed.type.findory.description"),
             IFeedDisplayConstants.MODE_BRIEF);
 
         QueryType delicious = new DeliciousQueryType();
@@ -164,10 +143,8 @@ public abstract class QueryType
         QueryType twitter = new TwitterQueryType();
         
         TYPES = new HashMap<Integer, QueryType>();
-        registerType(feedster);
         registerType(technorati);
         registerType(flickr);
-        registerType(findoryRAS);
         registerType(delicious);
         registerType(connotea);
         registerType(amazonBooks);
@@ -321,10 +298,8 @@ public abstract class QueryType
      *
      * @return query type or NULL if not supported.
      *
-     * @see #TYPE_FEEDSTER
      * @see #TYPE_FLICKR
      * @see #TYPE_TECHNORATI
-     * @see #TYPE_FINDORY_RAS
      * @see #TYPE_DELICIOUS
      */
     public static QueryType getQueryType(int type)

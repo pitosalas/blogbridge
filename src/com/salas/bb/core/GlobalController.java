@@ -2338,6 +2338,10 @@ public final class GlobalController implements IIPCListener
                     feeds[i++] = createDirectFeed(guide, StringUtils.fixURL(url));
                 } catch (MalformedURLException e)
                 {
+                    JOptionPane.showMessageDialog(getMainFrame(),
+                        Strings.message("invalid.url.message"),
+                        Strings.message("invalid.url"),
+                        JOptionPane.WARNING_MESSAGE);
                     LOG.warning(MessageFormat.format(Strings.error("invalid.url"), url));
                 }
             }

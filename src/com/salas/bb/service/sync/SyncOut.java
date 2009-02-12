@@ -522,8 +522,7 @@ public class SyncOut extends AbstractSynchronization
         setInt(prefs, StarzPreferences.PROP_TOP_HIGHLIGHTS, sp.getTopHighlights());
 
         setBoolean(prefs, UserPreferences.PROP_SHOW_TOOLBAR_LABELS, up.isShowToolbarLabels());
-        setBoolean(prefs, UserPreferences.PROP_SHOW_UNREAD_BUTTON_MENU,
-            up.isShowUnreadButtonMenu());
+        setBoolean(prefs, UserPreferences.PROP_SHOW_UNREAD_BUTTON_MENU, up.isShowUnreadButtonMenu());
         setInt(prefs, UserPreferences.PROP_FEED_IMPORT_LIMIT, up.getFeedImportLimit());
     }
 
@@ -595,7 +594,8 @@ public class SyncOut extends AbstractSynchronization
 
     public static void setString(Map prefs, String name, String value)
     {
-        prefs.put(name, StringUtils.toUTF8(value));
+        byte[] bytes = StringUtils.toUTF8(value);
+        prefs.put(name, bytes == null ? new byte[0] : bytes);
     }
 
     // -----------------------------------------------------------------------------------------------------------------

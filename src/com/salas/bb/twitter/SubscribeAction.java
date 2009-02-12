@@ -28,12 +28,14 @@ import com.salas.bb.domain.QueryFeed;
 import com.salas.bb.domain.querytypes.QueryType;
 import com.salas.bb.core.GlobalController;
 
+import javax.swing.*;
 import java.net.URL;
+import java.awt.event.ActionEvent;
 
 /**
  * Subscribe action.
  */
-public class SubscribeAction extends AbstractTwitterAction
+public class SubscribeAction extends AbstractAction
 {
     private static SubscribeAction instance;
     private String queryname;
@@ -81,8 +83,7 @@ public class SubscribeAction extends AbstractTwitterAction
         setEnabled(queryparam != null);
     }
 
-    @Override
-    protected void customAction()
+    public void actionPerformed(ActionEvent e)
     {
         GlobalController controller = GlobalController.SINGLETON;
         QueryFeed feed = controller.createQueryFeed(null, queryname, QueryType.TYPE_TWITTER, queryparam, 30);

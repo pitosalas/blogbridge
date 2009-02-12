@@ -421,7 +421,13 @@ public class TwitterArticleDisplay extends JPanel implements IArticleListener, I
     {
         if (IArticle.PROP_READ.equals(property))
         {
-            updateReadState();
+            SwingUtilities.invokeLater(new Runnable()
+            {
+                public void run()
+                {
+                    updateReadState();
+                }
+            });
         }
     }
 }

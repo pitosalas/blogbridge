@@ -398,10 +398,22 @@ class ImageArticleDisplay extends JPanel implements IArticleListener, IArticleDi
     {
         if (IArticle.PROP_READ.equals(property))
         {
-            updateReadState();
+            SwingUtilities.invokeLater(new Runnable()
+            {
+                public void run()
+                {
+                    updateReadState();
+                }
+            });
         } else if (IArticle.PROP_PINNED.equals(property))
         {
-            updatePinnedState();
+            SwingUtilities.invokeLater(new Runnable()
+            {
+                public void run()
+                {
+                    updatePinnedState();
+                }
+            });
         }
     }
 }

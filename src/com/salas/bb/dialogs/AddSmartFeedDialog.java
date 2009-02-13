@@ -35,6 +35,8 @@ import java.awt.*;
  */
 public class AddSmartFeedDialog extends SmartFeedDialog
 {
+    private static Object previousService;
+
     /**
      * Creates dialog for the parent frame.
      *
@@ -65,7 +67,11 @@ public class AddSmartFeedDialog extends SmartFeedDialog
     {
         initComponents();
 
+        if (previousService != null) cbService.setSelectedItem(previousService);
+
         tfArticlesLimit.setText(Integer.toString(defaultLimit));
         super.open();
+
+        previousService = cbService.getSelectedItem();
     }
 }

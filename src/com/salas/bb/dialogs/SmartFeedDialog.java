@@ -115,8 +115,6 @@ public abstract class SmartFeedDialog extends AbstractDialog
     {
         initComponents();
 
-        displayTab = new DisplayPropertiesTabPanel(feed);
-
         JTabbedPane tp = new JTabbedPane();
         tp.addTab("Basic", createBasicTab());
         tp.addTab("Display", displayTab);
@@ -249,6 +247,8 @@ public abstract class SmartFeedDialog extends AbstractDialog
         spnDedupTo = createSpinner();
         chDedupEnabled = new JCheckBox(chunks[0]);
         StateUpdatingToggleListener.install(chDedupEnabled, spnDedupFrom, spnDedupTo);
+
+        displayTab = new DisplayPropertiesTabPanel(feed);
     }
 
     @Override

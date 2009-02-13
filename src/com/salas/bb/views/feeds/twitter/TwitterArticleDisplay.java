@@ -57,6 +57,7 @@ import java.awt.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.net.URL;
 import java.net.MalformedURLException;
 
@@ -69,6 +70,8 @@ public class TwitterArticleDisplay extends JPanel implements IArticleListener, I
     /** Name of the style we use to apply customized fonts. */
     private static final String TEXT_STYLE_NAME = "normal";
     private static final CellConstraints CELL_CONSTRAINTS = new CellConstraints();
+    private static final Pattern PATTERN_USERNAME =
+        Pattern.compile("^\\s*(<b>)?\\s*([^\\s<:]+)\\s*(</b>)?\\s*:\\s*(.*)$", Pattern.CASE_INSENSITIVE);
 
     private final IArticleDisplayConfig config;
     private final IArticle              article;
@@ -123,12 +126,12 @@ public class TwitterArticleDisplay extends JPanel implements IArticleListener, I
 
         if (text != null)
         {
-            if (text.matches("^[^:\\s+]+:.*$"))
+            Matcher m = PATTERN_USERNAME.matcher(text);
+            if (m.find())
             {
                 // There's the user name at the beginning of the line, like "username: ...."
-                int i = text.indexOf(':');
-                name = StringUtils.substring(text, 0, i);
-                text = StringUtils.substring(text, i + 2);
+                name = m.group(2);
+                text = m.group(4);
             } else
             {
                 // Take the author

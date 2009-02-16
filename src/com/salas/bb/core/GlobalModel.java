@@ -694,7 +694,7 @@ public class GlobalModel
                     if (index > -1) guideModel.fireContentsChanged(guideModel, index, index);
                 }
 
-                GlobalController.SINGLETON.getMainFrame().updateTitle(feed);
+                if (getSelectedFeed() == feed) GlobalController.SINGLETON.getMainFrame().updateTitle(feed);
             } else
             {
                 guideModel.contentsChangedAt(feed);

@@ -150,6 +150,8 @@ public class FeedsList
      */
     public QueryFeed findQueryFeed(QueryType type, String parameter)
     {
+        if (type == null) return null;
+        
         QueryFeed feed = null;
 
         for (int i = 0; feed == null && i < feeds.size(); i++)
@@ -162,7 +164,7 @@ public class FeedsList
                 QueryType qfeedType = qfeed.getQueryType();
                 String qfeedParameter = qfeed.getParameter();
 
-                if (type.getType() == qfeedType.getType() &&
+                if (qfeedType != null && type.getType() == qfeedType.getType() &&
                     ((parameter == null && qfeedParameter == null) ||
                      (parameter != null && parameter.equals(qfeedParameter)))) feed = qfeed;
             }

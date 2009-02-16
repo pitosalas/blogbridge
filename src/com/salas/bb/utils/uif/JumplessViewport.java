@@ -73,21 +73,24 @@ public class JumplessViewport extends JViewport
                 // Get the list item under the given coordinates
                 Component panel = list.getComponentAt(pos);
 
-                // Convert coordinates into the item space
-                Point panelPos = SwingUtilities.convertPoint(list, pos, panel);
-                int panelHeight = panel.getHeight();
-
-                // Calculate the offset relative to the head or the tail of the item
-                boolean head = true;
-                int offset = panelPos.y;
-                if (offset > panelHeight / 2)
+                if (panel != null)
                 {
-                    head = false;
-                    offset = panelHeight - offset;
-                }
+                    // Convert coordinates into the item space
+                    Point panelPos = SwingUtilities.convertPoint(list, pos, panel);
+                    int panelHeight = panel.getHeight();
 
-                // Record it for the future reference
-                setStoredPosition(panel, head, offset);
+                    // Calculate the offset relative to the head or the tail of the item
+                    boolean head = true;
+                    int offset = panelPos.y;
+                    if (offset > panelHeight / 2)
+                    {
+                        head = false;
+                        offset = panelHeight - offset;
+                    }
+
+                    // Record it for the future reference
+                    setStoredPosition(panel, head, offset);
+                }
             }
         }
         super.setViewPosition(p);

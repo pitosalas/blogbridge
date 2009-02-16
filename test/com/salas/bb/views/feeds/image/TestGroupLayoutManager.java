@@ -151,24 +151,24 @@ public class TestGroupLayoutManager extends TestCase
         cont.setSize(width, 1);
         layout.layoutContainer(cont);
         assertEquals(new Rectangle(0, 0, width, dh), div0.getBounds());
-        assertEquals(new Rectangle(gh, dh + gv, iw, ih), pan01.getBounds());
-        assertEquals(new Rectangle(gh, dh + gv + ih + gv, iw, ih), pan02.getBounds());
-        assertEquals(new Rectangle(gh, dh + gv + ih + gv + ih + gv, iw, ih), pan03.getBounds());
+        assertEquals(new Rectangle(0, dh + gv, iw, ih), pan01.getBounds());
+        assertEquals(new Rectangle(0, dh + gv + ih + gv, iw, ih), pan02.getBounds());
+        assertEquals(new Rectangle(0, dh + gv + ih + gv + ih + gv, iw, ih), pan03.getBounds());
         assertEquals(new Rectangle(0, dh + gv + ih + gv + ih + gv + ih + gv, width, dh), div1.getBounds());
-        assertEquals(new Rectangle(0, dh + gv + ih + gv + ih + gv + ih + gv + dh, width, dh), div2.getBounds());
-        assertEquals(new Rectangle(gh, dh + gv + ih + gv + ih + gv + ih + gv + dh + dh + gv, iw, ih), pan21.getBounds());
+        assertEquals(new Rectangle(0, dh + gv + ih + gv + ih + gv + ih + gv + dh + gv, width, dh), div2.getBounds());
+        assertEquals(new Rectangle(0, dh + gv + ih + gv + ih + gv + ih + gv + dh + gv + dh + gv, iw, ih), pan21.getBounds());
 
         // Container can fit two columns
         width = gh + iw + gh + iw + gh;
         cont.setSize(width, 1);
         layout.layoutContainer(cont);
         assertEquals(new Rectangle(0, 0, width, dh), div0.getBounds());
-        assertEquals(new Rectangle(gh, dh + gv, iw, ih), pan01.getBounds());
-        assertEquals(new Rectangle(gh + iw + gh, dh + gv, iw, ih), pan02.getBounds());
-        assertEquals(new Rectangle(gh, dh + gv + ih + gv, iw, ih), pan03.getBounds());
+        assertEquals(new Rectangle(0, dh + gv, iw, ih), pan01.getBounds());
+        assertEquals(new Rectangle(iw + gh, dh + gv, iw, ih), pan02.getBounds());
+        assertEquals(new Rectangle(0, dh + gv + ih + gv, iw, ih), pan03.getBounds());
         assertEquals(new Rectangle(0, dh + gv + ih + gv + ih + gv, width, dh), div1.getBounds());
-        assertEquals(new Rectangle(0, dh + gv + ih + gv + ih + gv + dh, width, dh), div2.getBounds());
-        assertEquals(new Rectangle(gh, dh + gv + ih + gv + ih + gv + dh + dh + gv, iw, ih), pan21.getBounds());
+        assertEquals(new Rectangle(0, dh + gv + ih + gv + ih + gv + dh + gv, width, dh), div2.getBounds());
+        assertEquals(new Rectangle(0, dh + gv + ih + gv + ih + gv + dh + gv + dh + gv, iw, ih), pan21.getBounds());
 
         // Container can fit two columns and div1 & div2 become invisible, so the two groups should be merged
         width = gh + iw + gh + iw + gh;
@@ -177,9 +177,9 @@ public class TestGroupLayoutManager extends TestCase
         cont.setSize(width, 1);
         layout.layoutContainer(cont);
         assertEquals(new Rectangle(0, 0, width, dh), div0.getBounds());
-        assertEquals(new Rectangle(gh, dh + gv, iw, ih), pan01.getBounds());
-        assertEquals(new Rectangle(gh + iw + gh, dh + gv, iw, ih), pan02.getBounds());
-        assertEquals(new Rectangle(gh, dh + gv + ih + gv, iw, ih), pan03.getBounds());
-        assertEquals(new Rectangle(gh + iw + gh, dh + gv + ih + gv, iw, ih), pan21.getBounds());
+        assertEquals(new Rectangle(0, dh + gv, iw, ih), pan01.getBounds());
+        assertEquals(new Rectangle(iw + gh, dh + gv, iw, ih), pan02.getBounds());
+        assertEquals(new Rectangle(0, dh + gv + ih + gv, iw, ih), pan03.getBounds());
+        assertEquals(new Rectangle(iw + gh, dh + gv + ih + gv, iw, ih), pan21.getBounds());
     }
 }

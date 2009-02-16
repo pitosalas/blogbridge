@@ -146,9 +146,7 @@ public class TestFeedSelectionListener extends TestCase
         actualDelay = listener.waitForEvent(delay + error);
 
         long minDelay = waitTime + (delay - error);
-        assertFalse("The feed wasn't selected in time: delay=" + delay, actualDelay == -2);
-        assertTrue("Too fast selection: min=" + minDelay + ", actual=" + actualDelay,
-            actualDelay > minDelay);
+        assertTrue("Too fast selection: min=" + minDelay + ", actual=" + actualDelay, actualDelay > minDelay);
         assertTrue("Wrong feed selected.", feed1 == list.getSelectedValue());
     }
 

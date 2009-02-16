@@ -77,8 +77,9 @@ public abstract class NetworkFeed extends DataFeed
                 String message = e.getMessage();
                 setInvalidnessReason(message == null
                     ? Strings.message("feed.invalidness.reason.failed.to.fetch") : message);
-                LOG.log(Level.WARNING, MessageFormat.format(Strings.error("feed.fetching.errored"),
-                    toString()), e);
+
+                LOG.warning(MessageFormat.format(Strings.error("feed.fetching.errored"), toString()));
+                LOG.log(Level.FINE, "Details:", e);
             }
         }
 

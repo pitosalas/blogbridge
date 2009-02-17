@@ -164,21 +164,6 @@ public class DNDList extends JList
         boolean released = e.getID() == MouseEvent.MOUSE_RELEASED;
         boolean pressed = e.getID() == MouseEvent.MOUSE_PRESSED;
 
-        // Do not allow clicks on empty areas.
-/*
-        if (pressed)
-        {
-            boolean skip = true;
-            int index = locationToIndex(e.getPoint());
-            if (index != -1)
-            {
-                Rectangle bounds = getCellBounds(index, index);
-                skip = !bounds.contains(e.getPoint());
-            }
-
-            if (skip) return;
-        }
-*/
 
         // Skip processing of event when entering the list in dragging mode
         if (!entered || !isDragging()) super.processMouseEvent(e);

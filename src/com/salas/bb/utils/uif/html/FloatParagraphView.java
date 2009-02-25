@@ -402,11 +402,13 @@ public class FloatParagraphView extends UnjustifiedParagraphView
 
             // Add bottom margin to row if it ends with a clearing break
             int bottom = 0;
+            int dist;
             if (row.isClearLeft())
             {
                 while (!fpv.fmm.isEmpty(LEFT))
                 {
-                    int dist = fpv.fmm.getRemainingActiveLength(LEFT);
+                    dist = fpv.fmm.getRemainingActiveLength(LEFT);
+                    if (dist == 0) break;
                     fpv.fmm.moveDown(dist, fpv);
                     bottom += dist;
                 }
@@ -415,7 +417,8 @@ public class FloatParagraphView extends UnjustifiedParagraphView
             {
                 while (!fpv.fmm.isEmpty(RIGHT))
                 {
-                    int dist = fpv.fmm.getRemainingActiveLength(RIGHT);
+                    dist = fpv.fmm.getRemainingActiveLength(RIGHT);
+                    if (dist == 0) break;
                     fpv.fmm.moveDown(dist, fpv);
                     bottom += dist;
                 }
@@ -762,6 +765,16 @@ public class FloatParagraphView extends UnjustifiedParagraphView
          */
         protected boolean isEmpty(int margin)
         {
+            return isEmpty(margin, false);
+        }
+
+        /**
+         * Checks if there are currently any active (or waiting) images in the specified margin.
+         * @param margin The margin to check. <code>LEFT</code> or <code>RIGHT</code>.
+         * @return True if there are no active or waiting floated images.
+         */
+        protected boolean isEmpty(int margin, boolean onlyFloating)
+        {
             Iterator it = floating.iterator();
             while (it.hasNext())
             {
@@ -770,6 +783,8 @@ public class FloatParagraphView extends UnjustifiedParagraphView
                     return false;
                 }
             }
+            if (onlyFloating) return true;
+            
             it = waiting.iterator();
             while (it.hasNext())
             {

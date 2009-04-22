@@ -720,6 +720,7 @@ public final class GlobalController implements IIPCListener
         {
             public void run()
             {
+                model.setSelectedArticles(new IArticle[] { aArticle });
                 model.setSelectedArticle(aArticle);
                 fireArticleSelected(aArticle);
             }

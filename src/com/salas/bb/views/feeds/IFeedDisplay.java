@@ -176,4 +176,14 @@ public interface IFeedDisplay
      * @param size size of the page.
      */
     void setPageSize(int size);
+
+    /**
+     * Cycles view mode forward.
+     */
+    void cycleViewModeForward();
+
+    /**
+     * Cycles view mode backward.
+     */
+    void cycleViewModeBackward();
 }

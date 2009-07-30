@@ -78,8 +78,8 @@ class StartingPointsPage extends DefaultWizardPage
     private JComponent buildButtonBar(ActionListener aFinish, ActionListener aPrev, ActionListener aCancel)
     {
         JPanel bar = ButtonBarFactory.buildRightAlignedBar(
-            WizardUIHelper.createFinishButton(aFinish),
             WizardUIHelper.createPreviousButton(aPrev),
+            WizardUIHelper.createFinishButton(aFinish),
             WizardUIHelper.createCancelButton(aCancel));
 
         bar.setBorder(Borders.BUTTON_BAR_GAP_BORDER);

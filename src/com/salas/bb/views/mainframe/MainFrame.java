@@ -65,12 +65,10 @@ import com.salas.bb.views.ActivityIndicatorView;
 import com.salas.bb.views.ArticleListPanel;
 import com.salas.bb.views.GuidesList;
 import com.salas.bb.views.GuidesPanel;
-import com.salas.bb.views.feeds.IFeedDisplay;
 import com.salas.bb.views.feeds.AbstractFeedDisplay;
+import com.salas.bb.views.feeds.IFeedDisplay;
 import com.salas.bb.views.feeds.html.ArticlesGroup;
 import com.salas.bb.views.feeds.html.HTMLArticleDisplay;
-import com.salas.bb.views.feeds.html.HTMLFeedDisplay;
-import com.salas.bb.twitter.TweetThisDialog;
 import com.salas.bbnative.Taskbar;
 
 import javax.swing.*;
@@ -607,6 +605,11 @@ public class MainFrame extends AbstractFrame
             clIMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, KeyEvent.SHIFT_DOWN_MASK), "cutFeeds");
             clIMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_INSERT, KeyEvent.SHIFT_DOWN_MASK), "pasteFeeds");
         }
+
+        clAMap.put("cycleViewModeForward", CycleViewModeForwardAction.getInstance());
+        clIMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, KeyEvent.CTRL_DOWN_MASK), "cycleViewModeForward");
+        clAMap.put("cycleViewModeBackward", CycleViewModeBackwardAction.getInstance());
+        clIMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, KeyEvent.CTRL_DOWN_MASK), "cycleViewModeBackward");
     }
 
     /**

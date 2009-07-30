@@ -35,7 +35,6 @@ import com.salas.bb.sentiments.ArticleFilterProtector;
 import com.salas.bb.utils.IdentityList;
 import com.salas.bb.utils.i18n.Strings;
 import com.salas.bb.utils.uif.JumplessViewport;
-import com.salas.bb.utils.uif.UifUtilities;
 import com.salas.bb.views.INavigationModes;
 import static com.salas.bb.views.feeds.IFeedDisplayConstants.MODE_FULL;
 import static com.salas.bb.views.feeds.IFeedDisplayConstants.MODE_MINIMAL;
@@ -1098,9 +1097,32 @@ public abstract class AbstractFeedDisplay extends JPanel
         }
     }
 
+    /**
+     * Cycles view mode forward.
+     */
+    public void cycleViewModeForward()
+    {
+        cycleViewMode(true, true);
+    }
+
+    /**
+     * Cycles view mode backward.
+     */
+    public void cycleViewModeBackward()
+    {
+        cycleViewMode(true, false);
+    }
+
     protected void cycleViewMode(boolean global, boolean forward)
     {
-        int cvm = selectedDisplay != null ? selectedDisplay.getViewMode() : config.getViewMode();
+        int cvm = 0;
+        if (selectedDisplay != null) {
+            cvm = selectedDisplay.getViewMode();
+        } else {
+            IArticleDisplay display = findNextDisplay(null, INavigationModes.MODE_NORMAL);
+            cvm = (display != null) ? display.getViewMode() : config.getViewMode();
+        }
+
         int nvm = cvm + (forward ? 1 : -1);
         if (nvm < MODE_MINIMAL) nvm = MODE_FULL; else
         if (nvm > MODE_FULL) nvm = MODE_MINIMAL;

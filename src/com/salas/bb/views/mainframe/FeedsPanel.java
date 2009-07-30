@@ -473,8 +473,8 @@ public class FeedsPanel extends CoolInternalFrame
     static class UnreadActivityController extends ComponentAdapter
         implements ListDataListener, ActionListener
     {
-        private final static String TOOLTIP_MSG_SINGLE = Strings.message("panel.feeds.unread.one");
-        private final static String TOOLTIP_MSG_MANY = Strings.message("panel.feeds.unread.many");
+        private static final String TOOLTIP_MSG_SINGLE = Strings.message("panel.feeds.unread.one");
+        private static final String TOOLTIP_MSG_MANY = Strings.message("panel.feeds.unread.many");
 
         private JList feedsList;
         private ArticleActivityMeter activityMeter;

@@ -115,6 +115,12 @@ public class CompositeFeedDisplay extends AbstractFeedDisplay
         scrollableView.setViewport(aViewport);
     }
 
+    @Override
+    protected void cycleViewMode(boolean global, boolean forward)
+    {
+        if (currentDisplay != null) currentDisplay.cycleViewMode(global, forward);
+    }
+
     /**
      * Returns displayable feed view component.
      *

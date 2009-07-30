@@ -183,9 +183,9 @@ public class HTMLFeedDisplay extends AbstractFeedDisplay
             LOG.warning("Number of components: " + cs.length);
             for (Component c : cs)
             {
-                if (c instanceof HTMLArticleDisplay)
+                if (c instanceof AbstractArticleDisplay)
                 {
-                    LOG.warning("  " + ((HTMLArticleDisplay)c).getArticle().getTitle());
+                    LOG.warning("  " + ((AbstractArticleDisplay)c).getArticle().getTitle());
                 } else
                 {
                     LOG.warning("  - Group: " + c.getName());

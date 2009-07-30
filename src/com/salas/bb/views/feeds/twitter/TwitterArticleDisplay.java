@@ -26,27 +26,26 @@ package com.salas.bb.views.feeds.twitter;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.uif.util.SystemUtils;
 import com.jgoodies.uif.action.ActionManager;
+import com.jgoodies.uif.util.SystemUtils;
 import com.salas.bb.core.GlobalModel;
 import com.salas.bb.core.actions.ActionsTable;
 import com.salas.bb.domain.IArticle;
 import com.salas.bb.domain.IArticleListener;
 import com.salas.bb.domain.NetworkFeed;
+import com.salas.bb.twitter.ReplyAction;
+import com.salas.bb.twitter.TwitterFeature;
 import com.salas.bb.utils.i18n.Strings;
 import com.salas.bb.utils.uif.DelegatingMouseListener;
 import com.salas.bb.utils.uif.LinkLabel;
 import com.salas.bb.utils.uif.UifUtilities;
 import com.salas.bb.utils.uif.UpDownBorder;
 import com.salas.bb.utils.uif.html.CustomHTMLEditorKit;
-import com.salas.bb.utils.StringUtils;
 import com.salas.bb.views.feeds.ArticlePinControl;
-import com.salas.bb.views.feeds.IArticleDisplay;
 import com.salas.bb.views.feeds.IFeedDisplayConstants;
+import com.salas.bb.views.feeds.html.AbstractArticleDisplay;
 import com.salas.bb.views.feeds.html.HTMLArticleDisplay;
 import com.salas.bb.views.feeds.html.IArticleDisplayConfig;
-import com.salas.bb.twitter.ReplyAction;
-import com.salas.bb.twitter.TwitterFeature;
 
 import javax.swing.*;
 import javax.swing.event.HyperlinkListener;
@@ -54,19 +53,18 @@ import javax.swing.text.Document;
 import javax.swing.text.Style;
 import javax.swing.text.html.HTMLDocument;
 import java.awt.*;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.net.URL;
-import java.net.MalformedURLException;
 
 /**
  * Twitter article display.
  */
-public class TwitterArticleDisplay extends JPanel implements IArticleListener, IArticleDisplay
+public class TwitterArticleDisplay extends AbstractArticleDisplay implements IArticleListener
 {
-
     /** Name of the style we use to apply customized fonts. */
     private static final String TEXT_STYLE_NAME = "normal";
     private static final CellConstraints CELL_CONSTRAINTS = new CellConstraints();
@@ -360,6 +358,7 @@ public class TwitterArticleDisplay extends JPanel implements IArticleListener, I
     {
         if (selected != sel)
         {
+            handleAutoOpeningOnSelection(sel);
             selected = sel;
             updateBackgrounds();
         }

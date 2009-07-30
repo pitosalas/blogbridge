@@ -44,7 +44,6 @@ import com.salas.bb.utils.swinghtml.TextProcessor;
 import com.salas.bb.utils.uif.*;
 import com.salas.bb.utils.uif.html.CustomImageView;
 import com.salas.bb.views.feeds.ArticlePinControl;
-import com.salas.bb.views.feeds.IArticleDisplay;
 import com.salas.bb.views.feeds.IFeedDisplayConstants;
 import com.salas.bb.views.feeds.IHighlightsAdvisor;
 import com.salas.bb.views.mainframe.MainFrame;
@@ -74,7 +73,7 @@ import java.util.logging.Logger;
 /**
  * A view for article.
  */
-public class HTMLArticleDisplay extends JPanel implements IArticleListener, IArticleDisplay
+public class HTMLArticleDisplay extends AbstractArticleDisplay implements IArticleListener
 {
     private static final Logger LOG = Logger.getLogger(HTMLArticleDisplay.class.getName());
 
@@ -691,6 +690,8 @@ public class HTMLArticleDisplay extends JPanel implements IArticleListener, IArt
     {
         if (selected != sel)
         {
+            handleAutoOpeningOnSelection(sel);
+
             selected = sel;
             updateBackgrounds();
             updateForegrounds();

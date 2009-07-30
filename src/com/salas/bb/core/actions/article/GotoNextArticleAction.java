@@ -25,9 +25,10 @@
 package com.salas.bb.core.actions.article;
 
 import com.salas.bb.core.GlobalController;
-import com.salas.bb.views.mainframe.MainFrame;
+import com.salas.bb.core.IArticleListNavigationListener;
 import com.salas.bb.views.INavigationModes;
 import com.salas.bb.views.feeds.IFeedDisplay;
+import com.salas.bb.views.mainframe.MainFrame;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -67,9 +68,15 @@ public final class GotoNextArticleAction extends AbstractAction
      */
     public void actionPerformed(ActionEvent e)
     {
-        final MainFrame mainFrame = GlobalController.SINGLETON.getMainFrame();
+        GlobalController controller = GlobalController.SINGLETON;
+        final MainFrame mainFrame = controller.getMainFrame();
         IFeedDisplay feedDisplay = mainFrame.getArticlesListPanel().getFeedView();
 
-        feedDisplay.selectNextArticle(INavigationModes.MODE_NORMAL);
+        boolean selected = feedDisplay.selectNextArticle(INavigationModes.MODE_NORMAL);
+        if (!selected)
+        {
+            IArticleListNavigationListener nav = controller.getNavigationListener();
+            nav.nextFeed(INavigationModes.MODE_NORMAL);
+        }
     }
 }

@@ -306,7 +306,7 @@ public final class CleanupWizardDialog extends AbstractDialog
         JPanel optionsPanel = builder.getPanel();
 
         builder = new BBFormBuilder("p, 4dlu, p");
-        builder.append(buildGuideSelection());
+        builder.append(buildGuideSelection(), 3);
         builder.append(optionsPanel, 1, CellConstraints.FILL, CellConstraints.TOP);
         builder.append(buildResultsTable(), 1, CellConstraints.FILL, CellConstraints.FILL);
 

@@ -70,7 +70,7 @@ public final class CleanupWizardDialog extends AbstractDialog
     // constants
     private static final int PURGE_LIMIT        = 10;
     private static final int PURGE_LIMIT_MAX    = 40;
-    private static final int PURGE_LIMIT_MIN    = 1;
+    private static final int PURGE_LIMIT_MIN    = 0;
     // 'Article Publish Period' constants
     private static final int AP_PERIOD          = 5;
     private static final int AP_PERIOD_MAX      = 40;
@@ -121,10 +121,14 @@ public final class CleanupWizardDialog extends AbstractDialog
     private GuidesSet               guidesSet;
     private ScoresCalculator        scoresCalculator;
 
-    private JCheckBox chArticleAge;
-    private JSpinner spArticleAge;
-    private JCheckBox chNotPinned;
+    private JCheckBox               chArticleAge;
+    private JSpinner                spArticleAge;
+
+    private JCheckBox               chNotPinned;
+    private JCheckBox               chNotUnread;
+
     private boolean notPinned;
+    private boolean notUnread;
 
 
     /**
@@ -331,6 +335,7 @@ public final class CleanupWizardDialog extends AbstractDialog
         formBuilder.append(chPurgeLimit, 3, CellConstraints.FILL, CellConstraints.CENTER);
         formBuilder.append(spPurgeLimit, 1, CellConstraints.FILL, CellConstraints.CENTER);
         formBuilder.append(Strings.message("cleanup.wizard.articles"), 1);
+        formBuilder.append(chNotUnread, 7);
         formBuilder.append(chNotPinned, 7);
         formBuilder.append(chArticleAge, 3);
         formBuilder.append(spArticleAge);
@@ -413,6 +418,10 @@ public final class CleanupWizardDialog extends AbstractDialog
         // Not pinned only
         chNotPinned = createCheckBox(Strings.message("cleanup.wizard.articles.not.pinned"), false, null);
         chNotPinned.addItemListener(new NotPinnedListener());
+
+        // Not unread only
+        chNotUnread = createCheckBox(Strings.message("cleanup.wizard.articles.not.unread"), false, null);
+        chNotUnread.addItemListener(new NotUnreadListener());
 
         // 'Rating' widgets/listeners
         cRating = createStarsSelectionComponent(2);
@@ -642,6 +651,18 @@ public final class CleanupWizardDialog extends AbstractDialog
     }
 
     /**
+     * Invoked when 'don't remove unread articles' flag is set / reset.
+     *
+     * @param selected <code>TRUE</code> not to remove unread articles.
+     */
+    private void onNotUnreadChange(boolean selected)
+    {
+        notUnread = selected;
+
+        updateSelectionInfo();
+    }
+
+    /**
      * Invoked when rating(stars) value is changed or selected/deselected.
      * 
      * @param selected  is selected.
@@ -775,7 +796,7 @@ public final class CleanupWizardDialog extends AbstractDialog
                 IArticle[] articles = feed.getArticles();
                 for (IArticle article : articles)
                 {
-                    if (!notPinned || !article.isPinned())
+                    if ((!notPinned || !article.isPinned()) && (!notUnread || article.isRead()))
                     {
                         // We can remove this article if we need
                         if (articleAge != -1 &&
@@ -1101,6 +1122,20 @@ public final class CleanupWizardDialog extends AbstractDialog
         public void itemStateChanged(ItemEvent e)
         {
             onNotPinnedChange(chNotPinned.isSelected());
+        }
+    }
+
+    /**
+     * Article not unread listener.
+     */
+    private class NotUnreadListener implements ItemListener
+    {
+        /**
+         * @see java.awt.event.ItemListener#itemStateChanged(java.awt.event.ItemEvent)
+         */
+        public void itemStateChanged(ItemEvent e)
+        {
+            onNotUnreadChange(chNotUnread.isSelected());
         }
     }
 

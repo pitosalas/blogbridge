@@ -127,8 +127,8 @@ public final class CleanupWizardDialog extends AbstractDialog
     private JCheckBox               chNotPinned;
     private JCheckBox               chNotUnread;
 
-    private boolean notPinned;
-    private boolean notUnread;
+    private boolean                 notPinned;
+    private boolean                 notUnread;
 
 
     /**
@@ -300,27 +300,33 @@ public final class CleanupWizardDialog extends AbstractDialog
     {
         initComponents();
 
-        BBFormBuilder builder =
-            new BBFormBuilder("40dlu, 2dlu, 95dlu, 2dlu, 72px, 2dlu, max(20dlu;p)");
-
-        appendGuideSelection(builder);
+        BBFormBuilder builder = new BBFormBuilder("40dlu, 2dlu, 95dlu, 2dlu, 72px, 2dlu, max(20dlu;p)");
         appendDeleteArticleSelection(builder);
         appendDeleteFeedSelection(builder);
-        appendResultTable(builder);
+        JPanel optionsPanel = builder.getPanel();
+
+        builder = new BBFormBuilder("p, 4dlu, p");
+        builder.append(buildGuideSelection());
+        builder.append(optionsPanel, 1, CellConstraints.FILL, CellConstraints.TOP);
+        builder.append(buildResultsTable(), 1, CellConstraints.FILL, CellConstraints.FILL);
 
         return builder.getPanel();
     }
 
     /**
-     * Appends 'Guide' selection subcomponent to content panel.
+     * Builds 'Guide' selection subcomponent to content panel.
      * 
-     * @param formBuilder   form builder.
+     * @return component.
      */
-    private void appendGuideSelection(BBFormBuilder formBuilder)
+    private JComponent buildGuideSelection()
     {
+        BBFormBuilder formBuilder =
+            new BBFormBuilder("40dlu, 2dlu, 95dlu, 2dlu, 72px, 2dlu, max(20dlu;p)");
+
         formBuilder.append(Strings.message("cleanup.wizard.select.guide"), 1);
         formBuilder.append(cbGuides, 1, CellConstraints.FILL, CellConstraints.CENTER);
-        formBuilder.nextColumn(4);
+
+        return formBuilder.getPanel(); 
     }
 
     /**
@@ -370,18 +376,23 @@ public final class CleanupWizardDialog extends AbstractDialog
     }
 
     /**
-     * Appends 'Delete feed that:' selection subcomponent to content panel.
+     * Builds 'Delete feed that:' selection subcomponent to content panel.
      * 
-     * @param formBuilder   form builder.
+     * @return component.
      */
-    private void appendResultTable(BBFormBuilder formBuilder)
+    private JComponent buildResultsTable()
     {
-        formBuilder.appendSeparator("");
+        BBFormBuilder formBuilder = new BBFormBuilder("190dlu");
+
+        formBuilder.appendRow("16dlu");
+        formBuilder.appendSeparator("Preview:");
         formBuilder.appendRow("120dlu");
-        formBuilder.append(createScrollPane(createFeedsTable(modelFeeds)), 7,
+        formBuilder.append(createScrollPane(createFeedsTable(modelFeeds)), 1,
             CellConstraints.FILL, CellConstraints.FILL);
 
-        formBuilder.append(lblInfo, 7);
+        formBuilder.append(lblInfo, 1);
+
+        return formBuilder.getPanel();
     }
 
     /**

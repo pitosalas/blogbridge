@@ -30,8 +30,8 @@ import com.salas.bb.domain.AbstractArticle;
 import com.salas.bb.domain.FeedClass;
 import com.salas.bb.domain.ReadingList;
 import com.salas.bb.remixfeeds.prefs.BloggingPreferences;
-import com.salas.bb.utils.Constants;
 import com.salas.bb.twitter.TwitterPreferences;
+import com.salas.bb.utils.Constants;
 
 import java.util.Date;
 import java.util.HashSet;
@@ -536,6 +536,16 @@ public final class UserPreferences extends Model
     public static final String PROP_WH_SETTINGS_CHANGE_TIME = "whSettingsChangeTime";
     private static final long DEFAULT_WH_SETTINGS_CHANGE_TIME = 0;
     private long whSettingsChangeTime = DEFAULT_WH_SETTINGS_CHANGE_TIME;
+
+    /** Cleanup wizard auto-mode frequency (millisecs). */
+    public static final String PROP_CW_FREQUENCY = "cwFrequency";
+    private static final long DEFAULT_CW_FREQUENCY = 0;
+    private long cwFrequency = DEFAULT_CW_FREQUENCY;
+
+    /** Cleanup wizard last cleanup timestamp. */
+    public static final String PROP_CW_LAST_CLEANUP = "cwLastCleanup";
+    private static final long DEFAULT_CW_LAST_CLEANUP = 0;
+    private long cwLastCleanup = DEFAULT_CW_LAST_CLEANUP;
 
     /**
      * Returns view mode preferences.
@@ -2117,6 +2127,50 @@ public final class UserPreferences extends Model
     }
 
     /**
+     * Returns the time Cleanup Wizard auto-cleanup frequency.
+     *
+     * @return milliseconds.
+     */
+    public long getCwFrequency()
+    {
+        return cwFrequency;
+    }
+
+    /**
+     * Sets the time Cleanup Wizard auto-cleanup frequency.
+     *
+     * @param time time in milliseconds.
+     */
+    public void setCwFrequncy(long time)
+    {
+        long old = cwFrequency;
+        cwFrequency = time;
+        firePropertyChange(PROP_CW_FREQUENCY, old, time);
+    }
+
+    /**
+     * Returns the time Cleanup Wizard last cleanup.
+     *
+     * @return timestamp.
+     */
+    public long getCwLastCleanup()
+    {
+        return cwLastCleanup;
+    }
+
+    /**
+     * Sets the time Cleanup Wizard last cleanup.
+     *
+     * @param time time in milliseconds.
+     */
+    public void setCwLastCleanup(long time)
+    {
+        long old = cwLastCleanup;
+        cwLastCleanup = time;
+        firePropertyChange(PROP_CW_LAST_CLEANUP, old, time);
+    }
+
+    /**
      * Returns TRUE if the language setting is to be overriden.
      *
      * @return TRUE to use English.
@@ -2271,6 +2325,9 @@ public final class UserPreferences extends Model
         setWhSettingsChangeTime(prefs.getLong(PROP_WH_SETTINGS_CHANGE_TIME, DEFAULT_WH_SETTINGS_CHANGE_TIME));
 
         setAlwaysUseEnglish(prefs.getBoolean(PROP_ALWAYS_USE_ENGLISH, DEFAULT_ALWAYS_USE_ENGLISH));
+
+        setCwFrequncy(prefs.getLong(PROP_CW_FREQUENCY, DEFAULT_CW_FREQUENCY));
+        setCwLastCleanup(prefs.getLong(PROP_CW_LAST_CLEANUP, DEFAULT_CW_LAST_CLEANUP));
     }
 
     /**
@@ -2372,6 +2429,9 @@ public final class UserPreferences extends Model
         prefs.putLong(PROP_WH_SETTINGS_CHANGE_TIME, getWhSettingsChangeTime());
 
         prefs.putBoolean(PROP_ALWAYS_USE_ENGLISH, isAlwaysUseEnglish());
+
+        prefs.putLong(PROP_CW_FREQUENCY, getCwFrequency());
+        prefs.putLong(PROP_CW_LAST_CLEANUP, getCwLastCleanup());
     }
 
     /**

@@ -2288,7 +2288,7 @@ public final class GlobalController implements IIPCListener
     /**
      * Parses string with multiple URL's delimitered by URL separator char defined in
      * constants. The set of URL's returned may be empty if source multi-URL was NULL
-     * or empty string. The resulting set contains no duplicate URL's and all URL's in
+     * or empty string. The resulting set contains no duplicate URL's and all URL's in                             Ê
      * it are already "fixed".
      *
      * @param multiURL multi-URL or NULL.

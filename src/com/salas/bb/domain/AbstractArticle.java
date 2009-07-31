@@ -58,6 +58,7 @@ public abstract class AbstractArticle implements IArticle
     private long    id;
     private String  simpleMatchKey;
     private IFeed   feed;
+    private IFeed   candidateFeed; // Used during checks to see if the article fits the feed
     private boolean read;
     private boolean pinned;
     private String  title;
@@ -433,6 +434,16 @@ public abstract class AbstractArticle implements IArticle
     }
 
     /**
+     * Sets the candidate feed.
+     *
+     * @param feed parent feed.
+     */
+    public void setCandidateFeed(IFeed feed)
+    {
+        candidateFeed = feed;
+    }
+
+    /**
      * Returns all links (absolute and relative) found in the article text.
      *
      * @return links.
@@ -582,23 +593,18 @@ public abstract class AbstractArticle implements IArticle
      */
     public void computeSimpleMatchKey()
     {
-        setSimpleMatchKey(computeSimpleMatchKey(getLink(), getTitle()));
-    }
+        FeedHandlingType handlingType = null;
+        if (feed != null)
+        {
+            handlingType = feed.getHandlingType();
+        } else if (candidateFeed != null)
+        {
+            handlingType = candidateFeed.getHandlingType();
+        }
 
-    /**
-     * Computes simple match key.
-     *
-     * @param anUrl     URL to use for computations.
-     * @param aTitle    title of an article
-     *
-     * @return key value.
-     */
-    public static String computeSimpleMatchKey(URL anUrl, String aTitle)
-    {
-        long code = (anUrl == null) ? 0 : Math.abs(anUrl.toString().hashCode());
-        code = code * 29L + (aTitle == null ? 0 : Math.abs(aTitle.hashCode()));
+        if (handlingType == null) handlingType = FeedHandlingType.DEFAULT;
 
-        return Long.toHexString(code);
+        setSimpleMatchKey(handlingType.generateArticleMatchKey(this));
     }
 
     /**

@@ -34,6 +34,7 @@ import com.salas.bb.core.GlobalController;
 import com.salas.bb.core.GlobalModel;
 import com.salas.bb.core.ScoresCalculator;
 import com.salas.bb.domain.DirectFeed;
+import com.salas.bb.domain.FeedHandlingType;
 import com.salas.bb.domain.prefs.StarzPreferences;
 import com.salas.bb.utils.BrowserLauncher;
 import com.salas.bb.utils.Constants;
@@ -94,12 +95,13 @@ public class DirectFeedPropertiesDialog extends AbstractDialog
     private int                 initialPurgeLimit;
     private long                initialUpdatePeriod;
 
-    private JButton             btnCancel;
-    private LinkLabel           tfSiteUrl;
-    private JButton             btnSendEmail;
-    private DisplayPropertiesTabPanel displayTab;
-    private FeedUpdatePeriodPanel pnlFeedUpdatePeriod;
-    private FeedAutoSavePanel   pnlFeedAutoSave;
+    private JButton                     btnCancel;
+    private LinkLabel                   tfSiteUrl;
+    private JButton                     btnSendEmail;
+    private DisplayPropertiesTabPanel   displayTab;
+    private FeedUpdatePeriodPanel       pnlFeedUpdatePeriod;
+    private FeedAutoSavePanel           pnlFeedAutoSave;
+    private JComboBox                   cbHandlingType;
 
     /**
      * Creates new properties dialog.
@@ -252,6 +254,8 @@ public class DirectFeedPropertiesDialog extends AbstractDialog
         // Feed type
         displayTab.commitChanges();
         if (pnlFeedAutoSave != null) pnlFeedAutoSave.commitChanges(feed);
+
+        feed.setHandlingType((FeedHandlingType)cbHandlingType.getSelectedItem());
 
         // Put XML url if the feed is not initialized
         if (!feed.isInitialized())
@@ -452,6 +456,9 @@ public class DirectFeedPropertiesDialog extends AbstractDialog
      */
     private Component createAdvancedTab()
     {
+        cbHandlingType = new JComboBox(FeedHandlingType.ALL_TYPES);
+        cbHandlingType.setSelectedItem(feed.getHandlingType());
+
         initialPurgeLimit = feed.getPurgeLimitCombined();
         tfPurgeLimit = new JTextField();
         setFormPurgeLimit(initialPurgeLimit);
@@ -469,6 +476,9 @@ public class DirectFeedPropertiesDialog extends AbstractDialog
         builder.append(Strings.message("show.feed.properties.tab.advanced.last.update"), lbLastUpdate, 3);
         builder.append(Strings.message("show.feed.properties.tab.advanced.format"), lbFormat, 3);
         builder.append(Strings.message("show.feed.properties.tab.advanced.purge.limit"), tfPurgeLimit);
+        builder.nextLine();
+        builder.append(Strings.message("show.feed.properties.tab.advanced.handling.type"));
+        builder.append(cbHandlingType, 3);
         builder.nextLine();
         builder.append(Strings.message("show.feed.properties.tab.advanced.update.period"), 1,
                 CellConstraints.LEFT, CellConstraints.TOP);

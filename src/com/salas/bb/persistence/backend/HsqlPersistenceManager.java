@@ -94,7 +94,8 @@ public final class HsqlPersistenceManager implements IPersistenceManager, IStati
     {
         null,
         new Schema01(), new Schema02(), new Schema03(), new Schema04(), new Schema05(),
-        new Schema06(), new Schema07(), new Schema08(), new Schema09(), new Schema10()
+        new Schema06(), new Schema07(), new Schema08(), new Schema09(), new Schema10(),
+        new Schema11()
     };
 
     /** <code>TRUE</code> if there's GUI and it's OK to display messages in dialog boxes. */
@@ -429,7 +430,8 @@ public final class HsqlPersistenceManager implements IPersistenceManager, IStati
         PreparedStatement psLoadAllFeeds = getPreparedStatement(
             "SELECT ID, INVALIDNESSREASON, TYPE, LASTVISITTIME, " +
                 "FEEDTYPE, CUSTOMVIEWMODEENABLED, CUSTOMVIEWMODE, LASTUPDATETIME, VIEWS, CLICKTHROUGHS, " +
-                "ASCENDINGSORTING, ASA, ASA_FOLDER, ASA_NAMEFORMAT, ASE, ASE_FOLDER, ASE_NAMEFORMAT " +
+                "ASCENDINGSORTING, ASA, ASA_FOLDER, ASA_NAMEFORMAT, ASE, ASE_FOLDER, ASE_NAMEFORMAT, " +
+                "HANDLING_TYPE " +
             "FROM FEEDS F LEFT JOIN FEEDSPROPERTIES P ON P.FEEDID=F.ID");
 
         IFeed[] allFeeds = loadFeeds(psLoadAllFeeds);
@@ -626,6 +628,8 @@ public final class HsqlPersistenceManager implements IPersistenceManager, IStati
                     // Warning: This one should be the last because the previous sets will update
                     // this property automatically and we need to reset it correctly
                     feed.setLastUpdateTime(rs.getLong("LASTUPDATETIME"));
+
+                    feed.setHandlingType(FeedHandlingType.toObject(rs.getInt("HANDLING_TYPE")));
 
                     feeds.add(feed);
                 }

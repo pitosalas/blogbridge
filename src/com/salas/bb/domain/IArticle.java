@@ -250,4 +250,11 @@ public interface IArticle
      * Recalculates connotation.
      */
     void recalculateConnotation();
+
+    /**
+     * Sets the candidate feed.
+     *
+     * @param feed parent feed.
+     */
+    void setCandidateFeed(IFeed feed);
 }

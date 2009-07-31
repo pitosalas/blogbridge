@@ -28,6 +28,7 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.uif.AbstractDialog;
 import com.salas.bb.core.GlobalController;
 import com.salas.bb.domain.DataFeed;
+import com.salas.bb.domain.FeedHandlingType;
 import com.salas.bb.domain.FeedType;
 import com.salas.bb.domain.IFeed;
 import com.salas.bb.domain.query.articles.Query;
@@ -69,12 +70,13 @@ public abstract class SmartFeedDialog extends AbstractDialog
     protected QueryBuilder      queryBuilder;
     protected Query             query;
 
-    private boolean             queryFeed;
-    private JPanel              pnlOptions;
-    private QueryEditorPanel    queryEditor;
-    private DisplayPropertiesTabPanel displayTab;
-    private FeedUpdatePeriodPanel pnlFeedUpdatePeriod;
-    private FeedAutoSavePanel   pnlFeedAutoSave;
+    private boolean                     queryFeed;
+    private JPanel                      pnlOptions;
+    private QueryEditorPanel            queryEditor;
+    private DisplayPropertiesTabPanel   displayTab;
+    private FeedUpdatePeriodPanel       pnlFeedUpdatePeriod;
+    private FeedAutoSavePanel           pnlFeedAutoSave;
+    private JComboBox                   cbHandlingType;
 
     /**
      * Creates dialog.
@@ -191,6 +193,9 @@ public abstract class SmartFeedDialog extends AbstractDialog
 
             pnlFeedUpdatePeriod = new FeedUpdatePeriodPanel(initialUpdatePeriod);
 
+            builder.append(Strings.message("show.feed.properties.tab.advanced.handling.type"));
+            builder.append(cbHandlingType, 6);
+            builder.nextLine();
             builder.append(Strings.message("show.feed.properties.tab.advanced.update.period"), 1,
                     CellConstraints.LEFT, CellConstraints.TOP);
             builder.append(pnlFeedUpdatePeriod, 6);
@@ -226,6 +231,9 @@ public abstract class SmartFeedDialog extends AbstractDialog
         lbDescription = ComponentsFactory.createWrappedMultilineLabel("");
         UifUtilities.smallerFont(lbDescription);
         cbService = new JComboBox();
+
+        cbHandlingType = new JComboBox(FeedHandlingType.ALL_TYPES);
+        cbHandlingType.setSelectedItem(feed.getHandlingType());
 
         panelMyOwnFeed = buildMyOwnFeedsPanel();
         queryFeed = false;
@@ -365,7 +373,11 @@ public abstract class SmartFeedDialog extends AbstractDialog
         if (msg == null)
         {
             displayTab.commitChanges();
-            if (feed != null) if (pnlFeedAutoSave != null) pnlFeedAutoSave.commitChanges(feed);
+            if (feed != null)
+            {
+                feed.setHandlingType((FeedHandlingType)cbHandlingType.getSelectedItem());
+                if (pnlFeedAutoSave != null) pnlFeedAutoSave.commitChanges(feed);
+            }
 
             // Propagate the update period
             if (feed instanceof DataFeed)
@@ -374,6 +386,7 @@ public abstract class SmartFeedDialog extends AbstractDialog
                 dfeed.setUpdatePeriod(pnlFeedUpdatePeriod.getUpdatePeriod());
             }
 
+            
             super.doAccept();
         } else
         {

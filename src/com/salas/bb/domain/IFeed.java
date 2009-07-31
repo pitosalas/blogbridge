@@ -51,6 +51,9 @@ public interface IFeed
     /** Name of the feed type property. */
     String PROP_TYPE                    = "type";
 
+    /** Type of handling to use for the feed. */
+    String PROP_HANDLING_TYPE           = "handlingType";
+
     /** Name of the custom view mode flag. */
     String PROP_CUSTOM_VIEW_MODE_ENABLED = "customViewModeEnabled";
 
@@ -281,6 +284,20 @@ public interface IFeed
      * @param type type.
      */
     void setType(FeedType type);
+
+    /**
+     * Gets feed handling type.
+     *
+     * @return type.
+     */
+    FeedHandlingType getHandlingType();
+
+    /**
+     * Sets feed handling type.
+     *
+     * @param type type.
+     */
+    void setHandlingType(FeedHandlingType type);
 
     /**
      * When <code>TRUE</code> the feed has preferred view mode set.

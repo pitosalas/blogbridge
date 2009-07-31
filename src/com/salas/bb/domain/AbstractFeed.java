@@ -71,6 +71,9 @@ public abstract class AbstractFeed implements IFeed
     /** Type of the feed. */
     private FeedType type;
 
+    /** Feed handling type. */
+    private FeedHandlingType handlingType;
+
     /** When <code>TRUE</code> the feed has custom view mode assigned. */
     private boolean customViewModeEnabled;
     private int customViewMode;
@@ -112,6 +115,7 @@ public abstract class AbstractFeed implements IFeed
         id = -1;
         rating = RATING_NOT_SET;
         type = FeedType.TEXT;
+        handlingType = FeedHandlingType.DEFAULT;
         customViewModeEnabled = false;
         customViewMode = IFeedDisplayConstants.MODE_BRIEF;
 
@@ -547,6 +551,30 @@ public abstract class AbstractFeed implements IFeed
         type = aType;
 
         firePropertyChanged(PROP_TYPE, oldType, type, true, false);
+    }
+
+    /**
+     * Gets feed handling type.
+     *
+     * @return type.
+     */
+    public FeedHandlingType getHandlingType()
+    {
+        return handlingType;
+    }
+
+    /**
+     * Sets feed handling type.
+     *
+     * @param type type.
+     */
+    public void setHandlingType(FeedHandlingType type)
+    {
+        if (type == null) type = FeedHandlingType.DEFAULT;
+        FeedHandlingType oldType = handlingType;
+        handlingType = type;
+
+        firePropertyChanged(PROP_HANDLING_TYPE, oldType, handlingType, true, false);
     }
 
     /**

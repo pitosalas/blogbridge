@@ -87,6 +87,7 @@ public class TestHsqlFeedsPM extends AbstractHsqlPersistenceTestCase
             data, 1, false, 1, null, true);
         setDataFeedProperties(feed, "F", initTime, "L", lastPollTime, false, 5, 6, 7, updatePeriod);
         setFeedProperties(feed, "IR", 1, 2, true, "1", "2", false, null, null);
+        feed.setHandlingType(FeedHandlingType.LINK_TITLE_PUBDATE);
 
         // Insert direct feed
         guide.add(feed);
@@ -102,7 +103,7 @@ public class TestHsqlFeedsPM extends AbstractHsqlPersistenceTestCase
         assertEquals("There should be the only feed in list.", 1, guide.getFeedsCount());
 
         DirectFeed loadedFeed = (DirectFeed)guide.getFeedAt(0);
-        verifyFeedProperties(loadedFeed, "IR", 1, 2, true, "1", "2", false, null, null);
+        verifyFeedProperties(loadedFeed, "IR", 1, 2, true, "1", "2", false, null, null, FeedHandlingType.LINK_TITLE_PUBDATE);
         verifyDataFeedProperties(loadedFeed, false, "F", initTime, "L", lastPollTime, false, 5, 6, 7, updatePeriod);
         verifyDirectFeedProperties(loadedFeed, "BA", "BD", "BT", "CA", "CD", "CT", false, 3, 1,
             site, data, 1, false, 1, null, true);
@@ -120,6 +121,7 @@ public class TestHsqlFeedsPM extends AbstractHsqlPersistenceTestCase
         setFeedProperties(feed, "IR", 2, 3, false, null, null, true, "1", "2");
         setDataFeedProperties(feed, "F", 2, "L", 4, false, 5, 6, 7, 8);
         setQueryFeedProperties(feed, "T", QueryType.getQueryType(QueryType.TYPE_AMAZON_BOOKS), "a b", true, 5, 6);
+        feed.setHandlingType(FeedHandlingType.LINK_TITLE_PUBDATE);
 
         // Insert query feed
         guide.add(feed);
@@ -135,7 +137,7 @@ public class TestHsqlFeedsPM extends AbstractHsqlPersistenceTestCase
         assertEquals("There should be the only feed in list.", 1, guide.getFeedsCount());
 
         QueryFeed loadedFeed = (QueryFeed)guide.getFeedAt(0);
-        verifyFeedProperties(loadedFeed, "IR", 2, 3, false, null, null, true, "1", "2");
+        verifyFeedProperties(loadedFeed, "IR", 2, 3, false, null, null, true, "1", "2", FeedHandlingType.LINK_TITLE_PUBDATE);
         verifyDataFeedProperties(loadedFeed, false, "F", 2, "L", 4, false, 5, 6, 7, 8);
         verifyQueryFeedProperties(loadedFeed, "T", QueryType.getQueryType(QueryType.TYPE_AMAZON_BOOKS), "a b", true, 5, 6);
     }
@@ -159,7 +161,7 @@ public class TestHsqlFeedsPM extends AbstractHsqlPersistenceTestCase
         IGuide guide = set.getGuideAt(0);
 
         assertEquals("One feed was added.", 1, guide.getFeedsCount());
-        verifyFeedProperties(guide.getFeedAt(0), null, 0, 0, false, null, null, false, null, null);
+        verifyFeedProperties(guide.getFeedAt(0), null, 0, 0, false, null, null, false, null, null, FeedHandlingType.DEFAULT);
         verifySearchFeedProperties(feed, (SearchFeed)guide.getFeedAt(0));
     }
 
@@ -194,7 +196,7 @@ public class TestHsqlFeedsPM extends AbstractHsqlPersistenceTestCase
         IGuide guide = set.getGuideAt(0);
 
         assertEquals("One feed was added.", 1, guide.getFeedsCount());
-        verifyFeedProperties(guide.getFeedAt(0), null, 0, 0, false, null, null, false, null, null);
+        verifyFeedProperties(guide.getFeedAt(0), null, 0, 0, false, null, null, false, null, null, FeedHandlingType.DEFAULT);
         verifySearchFeedProperties(feed, (SearchFeed)guide.getFeedAt(0));
     }
 
@@ -222,7 +224,7 @@ public class TestHsqlFeedsPM extends AbstractHsqlPersistenceTestCase
         IGuide guide = set.getGuideAt(0);
 
         assertEquals("One feed was added.", 1, guide.getFeedsCount());
-        verifyFeedProperties(guide.getFeedAt(0), null, 0, 0, false, null, null, false, null, null);
+        verifyFeedProperties(guide.getFeedAt(0), null, 0, 0, false, null, null, false, null, null, FeedHandlingType.DEFAULT);
         verifySearchFeedProperties(feed, (SearchFeed)guide.getFeedAt(0));
     }
 
@@ -268,7 +270,8 @@ public class TestHsqlFeedsPM extends AbstractHsqlPersistenceTestCase
      * Verifies properties of the general feed.
      */
     private void verifyFeedProperties(IFeed feed, String invalidnessReason, int views, int clickthroughs,
-                                      boolean asa, String asaf, String asanf, boolean ase, String asef, String asenf)
+                                      boolean asa, String asaf, String asanf, boolean ase, String asef, String asenf,
+                                      FeedHandlingType handlingType)
     {
         assertEquals("Wrong invalidnessReason.", invalidnessReason, feed.getInvalidnessReason());
         assertEquals(views, feed.getViews());
@@ -280,6 +283,7 @@ public class TestHsqlFeedsPM extends AbstractHsqlPersistenceTestCase
         assertEquals(ase, feed.isAutoSaveEnclosures());
         assertEquals(asef, feed.getAutoSaveEnclosuresFolder());
         assertEquals(asenf, feed.getAutoSaveEnclosuresNameFormat());
+        assertEquals(handlingType, feed.getHandlingType());
     }
 
     /**
@@ -514,6 +518,7 @@ public class TestHsqlFeedsPM extends AbstractHsqlPersistenceTestCase
             data, 2, true, 2, null, false);
         setDataFeedProperties(feed, "F", 2, "L", 4, false, 5, 6, 7, 8);
         setFeedProperties(feed, "IR", 3, 4, true, "1", "2", true, "3", "4");
+        feed.setHandlingType(FeedHandlingType.LINK_TITLE_PUBDATE);
 
         // Update feed
         manager.updateFeed(feed, null);
@@ -527,7 +532,7 @@ public class TestHsqlFeedsPM extends AbstractHsqlPersistenceTestCase
         assertEquals("There should be the only feed in list.", 1, guide.getFeedsCount());
 
         DirectFeed loadedFeed = (DirectFeed)guide.getFeedAt(0);
-        verifyFeedProperties(loadedFeed, "IR", 3, 4, true, "1", "2", true, "3", "4");
+        verifyFeedProperties(loadedFeed, "IR", 3, 4, true, "1", "2", true, "3", "4", FeedHandlingType.LINK_TITLE_PUBDATE);
         verifyDataFeedProperties(loadedFeed, false, "F", 2, "L", 4, false, 5, 6, 7, 8);
         verifyDirectFeedProperties(loadedFeed, "BA", "BD", "BT", "CA", "CD", "CT", false, 3, 1,
             site, data, 2, true, 2, list, false);
@@ -552,6 +557,7 @@ public class TestHsqlFeedsPM extends AbstractHsqlPersistenceTestCase
         setFeedProperties(feed, "IR", 4, 5, false, null, null, false, null, null);
         setDataFeedProperties(feed, "F", 2, "L", 4, false, 5, 6, 7, 8);
         setQueryFeedProperties(feed, "T", QueryType.getQueryType(QueryType.TYPE_AMAZON_BOOKS), "a b", true, 1, 2);
+        feed.setHandlingType(FeedHandlingType.LINK_TITLE_PUBDATE);
 
         // Update feed
         manager.updateFeed(feed, null);
@@ -565,7 +571,7 @@ public class TestHsqlFeedsPM extends AbstractHsqlPersistenceTestCase
         assertEquals("There should be the only feed in list.", 1, guide.getFeedsCount());
 
         QueryFeed loadedFeed = (QueryFeed)guide.getFeedAt(0);
-        verifyFeedProperties(loadedFeed, "IR", 4, 5, false, null, null, false, null, null);
+        verifyFeedProperties(loadedFeed, "IR", 4, 5, false, null, null, false, null, null, FeedHandlingType.LINK_TITLE_PUBDATE);
         verifyDataFeedProperties(loadedFeed, false, "F", 2, "L", 4, false, 5, 6, 7, 8);
         verifyQueryFeedProperties(loadedFeed, "T", QueryType.getQueryType(QueryType.TYPE_AMAZON_BOOKS), "a b", true, 1, 2);
     }

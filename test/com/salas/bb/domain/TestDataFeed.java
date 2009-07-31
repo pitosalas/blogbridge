@@ -28,6 +28,8 @@ import com.salas.bb.utils.parser.Channel;
 import com.salas.bb.utils.parser.Item;
 import junit.framework.TestCase;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -313,6 +315,47 @@ public class TestDataFeed extends TestCase
         {
             // Expected
         }
+    }
+
+    /**
+     * Tests appending articles with the same Link-Title-Pubdates.
+     */
+    public void testAppendWikiArticlesDuplicate()
+    {
+        // wiki feed
+        feed = new DummyNetworkFeed();
+        feed.setHandlingType(FeedHandlingType.LINK_TITLE_PUBDATE);
+
+        Date today = new Date();
+        StandardArticle art1 = article("1", "http://localhost/1", today);
+        StandardArticle art2 = article("1", "http://localhost/1", today);
+
+        feed.appendArticle(art1);
+        assertEquals("Should add article", 1, feed.getArticlesCount());
+
+        feed.appendArticle(art2);
+        assertEquals("Should not add duplicate", 1, feed.getArticlesCount());
+    }
+
+    /**
+     * Tests appending articles with the same Link-Title but different Pubdates.
+     */
+    public void testAppendWikiArticlesNonDuplicate()
+    {
+        // wiki feed
+        feed = new DummyNetworkFeed();
+        feed.setHandlingType(FeedHandlingType.LINK_TITLE_PUBDATE);
+
+        Date today = new Date();
+        Date yesterday = new Date(today.getTime() - 24 * 60 * 60 * 1000);
+        StandardArticle art1 = article("1", "http://localhost/1", yesterday);
+        StandardArticle art2 = article("1", "http://localhost/1", today);
+
+        feed.appendArticle(art1);
+        assertEquals("Should add article", 1, feed.getArticlesCount());
+
+        feed.appendArticle(art2);
+        assertEquals("Should add non-duplicate", 2, feed.getArticlesCount());
     }
 
     /**
@@ -1173,4 +1216,29 @@ public class TestDataFeed extends TestCase
         assertEquals(readKeys, feed.getReadArticlesKeys());
         assertEquals(pinnedKeys, feed.getPinnedArticlesKeys());
     }
+
+    /** Article factory.
+     *
+     * @param title title.
+     * @param link  link.
+     * @param date  date.
+     *
+     * @return article
+     */
+    private static StandardArticle article(String title, String link, Date date)
+    {
+        StandardArticle art = new StandardArticle("");
+        try
+        {
+            art.setLink(new URL(link));
+            art.setTitle(title);
+            art.setPublicationDate(date);
+        } catch (MalformedURLException e)
+        {
+            fail("Bad link: " + link);
+        }
+
+        return art;
+    }
+
 }

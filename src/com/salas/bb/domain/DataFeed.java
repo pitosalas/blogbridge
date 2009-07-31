@@ -281,7 +281,17 @@ public abstract class DataFeed extends AbstractFeed
     {
         if (article == null) throw new NullPointerException(Strings.error("unspecified.article"));
 
-        return insertArticle(getArticlesCount(), article);
+        article.setCandidateFeed(this);
+
+        // Register this feed as candidate to have proper key checks
+        article.setCandidateFeed(this);
+
+        boolean result = insertArticle(getArticlesCount(), article);
+
+        // Release candidate feed
+        article.setCandidateFeed(null);
+
+        return result;
     }
 
     /**
@@ -307,6 +317,7 @@ public abstract class DataFeed extends AbstractFeed
             throw new IndexOutOfBoundsException(Strings.error("index.is.out.of.bounds.of.article.list"));
 
         boolean added = false;
+
         if (article.getID() > 0 || !articles.contains(article))
         {
             articles.add(index, article);
@@ -840,6 +851,12 @@ public abstract class DataFeed extends AbstractFeed
             setInitTime(updateTime);
             setRetrievals(getRetrievals() + 1);
         }
+
+        // Release candidate feed references after the checks
+        if (articles != null)
+        {
+            for (StandardArticle article : articles) article.setCandidateFeed(null);
+        }
     }
 
     /**
@@ -1168,6 +1185,10 @@ public abstract class DataFeed extends AbstractFeed
         article.setPublicationDate(item.getPublicationDate());
         article.setSubject(StringUtils.unescape(item.getSubject()));
         article.getPlainText(); // stimulate plain text creation
+
+        // Register this feed as candidate to have proper key checks
+        article.setCandidateFeed(this);
+
         article.computeSimpleMatchKey();
 
         return article;

@@ -350,8 +350,9 @@ final class HsqlFeedsPM
         PreparedStatement stmt = context.getPreparedStatement(
             "INSERT INTO FEEDSPROPERTIES (FEEDID, LASTVISITTIME, " +
                 "CUSTOMVIEWMODEENABLED, CUSTOMVIEWMODE, VIEWS, CLICKTHROUGHS, " +
-                "ASCENDINGSORTING, ASA, ASA_FOLDER, ASA_NAMEFORMAT, ASE, ASE_FOLDER, ASE_NAMEFORMAT) " +
-                "VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                "ASCENDINGSORTING, ASA, ASA_FOLDER, ASA_NAMEFORMAT, ASE, ASE_FOLDER, ASE_NAMEFORMAT, " +
+                "HANDLING_TYPE) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
         try
         {
@@ -368,6 +369,8 @@ final class HsqlFeedsPM
             stmt.setBoolean(11, aFeed.isAutoSaveEnclosures());
             stmt.setString(12, aFeed.getAutoSaveEnclosuresFolder());
             stmt.setString(13, aFeed.getAutoSaveEnclosuresNameFormat());
+            FeedHandlingType handlingType = aFeed.getHandlingType();
+            stmt.setInt(14, handlingType == null ? FeedHandlingType.DEFAULT.toInteger() : handlingType.toInteger());
 
             int rows = stmt.executeUpdate();
             if (rows == 0) throw new SQLException(Strings.error("db.row.was.not.added.at.feedsproperties"));
@@ -643,7 +646,7 @@ final class HsqlFeedsPM
                     "LASTVISITTIME=?, CUSTOMVIEWMODEENABLED=?," +
                     "CUSTOMVIEWMODE=?, LASTUPDATETIME=?, VIEWS=?, CLICKTHROUGHS=?, " +
                     "ASCENDINGSORTING=?, ASA=?, ASA_FOLDER=?, ASA_NAMEFORMAT=?, " +
-                    "ASE=?, ASE_FOLDER=?, ASE_NAMEFORMAT=? WHERE FEEDID=?");
+                    "ASE=?, ASE_FOLDER=?, ASE_NAMEFORMAT=?, HANDLING_TYPE=? WHERE FEEDID=?");
 
                 stmt.setLong(1, feed.getLastVisitTime());
                 stmt.setBoolean(2, feed.isCustomViewModeEnabled());
@@ -658,7 +661,9 @@ final class HsqlFeedsPM
                 stmt.setBoolean(11, feed.isAutoSaveEnclosures());
                 stmt.setString(12, feed.getAutoSaveEnclosuresFolder());
                 stmt.setString(13, feed.getAutoSaveEnclosuresNameFormat());
-                stmt.setLong(14, feed.getID());
+                FeedHandlingType handlingType = feed.getHandlingType();
+                stmt.setInt(14, handlingType == null ? FeedHandlingType.DEFAULT.toInteger() : handlingType.toInteger());
+                stmt.setLong(15, feed.getID());
 
                 int rows = stmt.executeUpdate();
                 if (rows == 0)

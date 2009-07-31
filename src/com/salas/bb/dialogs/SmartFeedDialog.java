@@ -194,7 +194,7 @@ public abstract class SmartFeedDialog extends AbstractDialog
             pnlFeedUpdatePeriod = new FeedUpdatePeriodPanel(initialUpdatePeriod);
 
             builder.append(Strings.message("show.feed.properties.tab.advanced.handling.type"));
-            builder.append(cbHandlingType, 6);
+            builder.append(cbHandlingType, 5);
             builder.nextLine();
             builder.append(Strings.message("show.feed.properties.tab.advanced.update.period"), 1,
                     CellConstraints.LEFT, CellConstraints.TOP);
@@ -233,7 +233,7 @@ public abstract class SmartFeedDialog extends AbstractDialog
         cbService = new JComboBox();
 
         cbHandlingType = new JComboBox(FeedHandlingType.ALL_TYPES);
-        cbHandlingType.setSelectedItem(feed.getHandlingType());
+        cbHandlingType.setSelectedItem(feed == null ? FeedHandlingType.DEFAULT : feed.getHandlingType());
 
         panelMyOwnFeed = buildMyOwnFeedsPanel();
         queryFeed = false;

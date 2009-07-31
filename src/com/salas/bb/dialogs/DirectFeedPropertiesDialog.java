@@ -477,8 +477,7 @@ public class DirectFeedPropertiesDialog extends AbstractDialog
         builder.append(Strings.message("show.feed.properties.tab.advanced.format"), lbFormat, 3);
         builder.append(Strings.message("show.feed.properties.tab.advanced.purge.limit"), tfPurgeLimit);
         builder.nextLine();
-        builder.append(Strings.message("show.feed.properties.tab.advanced.handling.type"));
-        builder.append(cbHandlingType, 3);
+        builder.append(Strings.message("show.feed.properties.tab.advanced.handling.type"), cbHandlingType);
         builder.nextLine();
         builder.append(Strings.message("show.feed.properties.tab.advanced.update.period"), 1,
                 CellConstraints.LEFT, CellConstraints.TOP);

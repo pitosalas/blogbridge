@@ -114,7 +114,7 @@ public abstract class FeedHandlingType
         /** Constructor. */
         protected LinkTitleFH()
         {
-            super("Default", T_LINK_TITLE);
+            super("Standard", T_LINK_TITLE);
         }
 
         /**

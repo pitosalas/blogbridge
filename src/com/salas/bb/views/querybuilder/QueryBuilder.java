@@ -31,9 +31,9 @@ import com.salas.bb.domain.query.ICriteria;
 import com.salas.bb.domain.query.IProperty;
 import com.salas.bb.domain.query.IQuery;
 import com.salas.bb.domain.query.articles.ArticleTextProperty;
+import com.salas.bb.utils.i18n.Strings;
 import com.salas.bb.utils.uif.BBFormBuilder;
 import com.salas.bb.utils.uif.UifUtilities;
-import com.salas.bb.utils.i18n.Strings;
 
 import javax.swing.*;
 import java.awt.*;
@@ -147,6 +147,11 @@ public class QueryBuilder extends JPanel
     {
         initComponents();
 
+        JPanel contentPane = new JPanel(new FlowLayout());
+        contentPane.add(criteriaPanel);
+        JScrollPane criteriaPane = new JScrollPane(contentPane,
+            JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
         String columnsLayout = "max(25dlu;p), 2dlu, max(30dlu;p), 4dlu, 0dlu:grow, 4dlu, " +
             CONTROL_BUTTON_WIDTH + "dlu";
 
@@ -157,9 +162,9 @@ public class QueryBuilder extends JPanel
         UifUtilities.smallerFont(builder.append(Strings.message("querybuilder.of.the.following.conditions"), 1));
         builder.append(btnAdd);
         builder.appendRelatedComponentsGapRow();
-        builder.appendRow("pref");
+        builder.appendRow("95dlu");
         builder.nextLine(2);
-        builder.append(criteriaPanel, 7, CellConstraints.FILL, CellConstraints.FILL);
+        builder.append(criteriaPane, 7, CellConstraints.FILL, CellConstraints.FILL);
     }
 
     private void initComponents()

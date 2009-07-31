@@ -40,6 +40,7 @@ public class FeedUpdatePeriodPanel extends JPanel
 
     private final JRadioButton  rbUPCustom;
     private final JTextField    tfUPValue;
+    private JRadioButton rbUPManual;
 
     /**
      * Creates the period manipulation panel.
@@ -50,19 +51,25 @@ public class FeedUpdatePeriodPanel extends JPanel
     {
         initialUpdatePeriod = period;
         JRadioButton rbUPGlobal = new JRadioButton(Strings.message("show.feed.properties.tab.advanced.global"));
+        rbUPManual = new JRadioButton(Strings.message("show.feed.properties.tab.advanced.manual"));
         rbUPCustom = new JRadioButton(Strings.message("show.feed.properties.tab.advanced.every"));
         ButtonGroup bg = new ButtonGroup();
         bg.add(rbUPGlobal);
+        bg.add(rbUPManual);
         bg.add(rbUPCustom);
         tfUPValue = new JTextField();
 
         StateUpdatingToggleListener.install(rbUPCustom, tfUPValue);
 
         // Calculate period of updates
-        if (period <= 0)
+        if (period < 0)
         {
             // Global
             rbUPGlobal.setSelected(true);
+            tfUPValue.setText("");
+        } else if (period == 0)
+        {
+            rbUPManual.setSelected(true);
             tfUPValue.setText("");
         } else
         {
@@ -72,6 +79,7 @@ public class FeedUpdatePeriodPanel extends JPanel
 
         BBFormBuilder builder = new BBFormBuilder("p, 2dlu, 30dlu", this);
         builder.append(rbUPGlobal, 3);
+        builder.append(rbUPManual, 3);
         builder.append(rbUPCustom, tfUPValue);
     }
 
@@ -97,6 +105,9 @@ public class FeedUpdatePeriodPanel extends JPanel
                 // Use the initial value
                 period = initialUpdatePeriod;
             }
+        } else if (rbUPManual.isSelected())
+        {
+            period = 0;
         }
 
         return period;

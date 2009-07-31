@@ -559,6 +559,20 @@ public class TestDataFeed extends TestCase
         assertTrue("Direct updates are allowed at any moment.", feed.isUpdatable(true));
     }
 
+    /** Tests manual-mode updates reporting. */
+    public void testIsUpdatableManual()
+    {
+        // Setting the last update time to yesterday
+        long base = System.currentTimeMillis();
+        feed.setLastPollTime(base - 24*60*60*1000);
+        feed.setID(1);
+
+        // Setting manual period
+        feed.setUpdatePeriod(0);
+        assertFalse("In manual mode, can't be auto-updated.", feed.isUpdatable(false));
+        assertTrue("Direct updates are allowed at any moment.", feed.isUpdatable(true));
+    }
+
     /**
      * Tests updating the feed data from parsed channel object.
      */

@@ -744,6 +744,16 @@ public abstract class DataFeed extends AbstractFeed
     }
 
     /**
+     * Returns TRUE if the feed is in the Manual update mode.
+     *
+     * @return TRUE if in manual mode.
+     */
+    protected boolean isOnlyManual()
+    {
+        return getUpdatePeriod() == 0;
+    }
+
+    /**
      * Returns TRUE if this feed is updatable, meaning that it's not invalid for some reason
      * and it's proper time to call <code>update()</code> method. The behaviod may differ
      * if the update operation was called manually to this particular feed and not as a part
@@ -786,7 +796,7 @@ public abstract class DataFeed extends AbstractFeed
      */
     protected boolean isUpdatable(boolean manual)
     {
-        return manual || (!isInvalid() && getLastPollTime() + getUpdatePeriodCombined() < System.currentTimeMillis());
+        return manual || (!isInvalid() && !isOnlyManual() && (getLastPollTime() + getUpdatePeriodCombined()) < System.currentTimeMillis());
     }
 
     /**
@@ -1252,7 +1262,7 @@ public abstract class DataFeed extends AbstractFeed
      */
     public long getUpdatePeriodCombined()
     {
-        return updatePeriod <= 0 ? getGlobalUpdatePeriod() : updatePeriod;
+        return updatePeriod < 0 ? getGlobalUpdatePeriod() : updatePeriod;
     }
 
     /**

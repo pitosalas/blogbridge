@@ -380,6 +380,7 @@ public class SyncIn extends AbstractSynchronization
         guide.setPublishingRating(pattern.getPublishingRating());
         guide.setAutoFeedsDiscovery(pattern.isAutoFeedsDiscovery());
         guide.setNotificationsAllowed(pattern.isNotificationsAllowed());
+        guide.setMobile(pattern.isMobile());
     }
 
     /**

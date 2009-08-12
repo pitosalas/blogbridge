@@ -93,6 +93,9 @@ public abstract class AbstractGuide implements IGuide
     /** The flag showing whether the notifications are enabled or not. */
     private boolean notificationsAllowed;
 
+    /** The flag showing whether this guide is accessible from mobile. */
+    private boolean mobile;
+
     /**
      * Creates the guide.
      */
@@ -108,6 +111,7 @@ public abstract class AbstractGuide implements IGuide
         lastUpdateTime = -1;
         publishingRating = 0;
         notificationsAllowed = true;
+        mobile = false;
     }
 
     /**
@@ -208,6 +212,28 @@ public abstract class AbstractGuide implements IGuide
         boolean oldValue = autoFeedsDiscovery;
         autoFeedsDiscovery = value;
         firePropertyChanged(PROP_AUTO_FEEDS_DISCOVERY, oldValue, value, true);
+    }
+
+    /**
+     * Returns <code>TRUE</code> if this guide is mobile.
+     *
+     * @return <code>TRUE</code> if this guide is mobile.
+     */
+    public boolean isMobile()
+    {
+        return mobile;
+    }
+
+    /**
+     * Sets the mobility state of the guide.
+     *
+     * @param value <code>TRUE</code> to make it mobile.
+     */
+    public void setMobile(boolean value)
+    {
+        boolean oldValue = mobile;
+        mobile = value;
+        firePropertyChanged(PROP_MOBILE, oldValue, value, true);
     }
 
     /**

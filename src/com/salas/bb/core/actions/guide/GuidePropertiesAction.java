@@ -126,6 +126,8 @@ public final class GuidePropertiesAction extends AbstractAction
         guide.setPublishingTags(dialog.getPublishingTags());
         guide.setPublishingPublic(dialog.isPublishingPublic());
         guide.setPublishingRating(dialog.getPublishingRating() - 1);
+
+        guide.setMobile(dialog.isMobile());
         
         // Repositioning
         int newPosition = dialog.getPosition();

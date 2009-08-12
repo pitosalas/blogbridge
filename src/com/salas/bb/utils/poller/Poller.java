@@ -442,7 +442,7 @@ public final class Poller implements Runnable
 
             return opmlGuide == null ? null
                 : opmlGuide.length == 0
-                    ? new OPMLGuide("", "", false, null, null, false, 0, false, false)
+                    ? new OPMLGuide("", "", false, null, null, false, 0, false, false, false)
                     : opmlGuide[0];
         }
 

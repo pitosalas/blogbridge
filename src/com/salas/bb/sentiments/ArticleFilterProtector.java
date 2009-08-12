@@ -100,6 +100,8 @@ public class ArticleFilterProtector implements PropertyChangeListener
      */
     public static void switchToSafeIfUnsafe()
     {
+        if (GlobalModel.SINGLETON == null) return;
+        
         int mode = renderingSettings().getArticleFilter();
         if (!isSafeMode(mode))
         {

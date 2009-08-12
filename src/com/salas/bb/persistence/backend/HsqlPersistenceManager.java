@@ -95,7 +95,7 @@ public final class HsqlPersistenceManager implements IPersistenceManager, IStati
         null,
         new Schema01(), new Schema02(), new Schema03(), new Schema04(), new Schema05(),
         new Schema06(), new Schema07(), new Schema08(), new Schema09(), new Schema10(),
-        new Schema11()
+        new Schema11(), new Schema12()
     };
 
     /** <code>TRUE</code> if there's GUI and it's OK to display messages in dialog boxes. */
@@ -345,7 +345,7 @@ public final class HsqlPersistenceManager implements IPersistenceManager, IStati
             PreparedStatement psGuides = getPreparedStatement(
                 "SELECT ID, TITLE, ICONKEY, AUTOFEEDSDISCOVERY, " +
                     "PUBLISHINGENABLED, PUBLISHINGTITLE, PUBLISHINGTAGS, PUBLISHINGPUBLIC, " +
-                    "PUBLISHINGURL, LASTPUBLISHINGTIME, PUBLISHINGRATING, LASTUPDATETIME, NOTIFICATIONSALLOWED " +
+                    "PUBLISHINGURL, LASTPUBLISHINGTIME, PUBLISHINGRATING, LASTUPDATETIME, NOTIFICATIONSALLOWED, MOBILE " +
                 "FROM GUIDES ORDER BY POS");
 
             List<IGuide> guides = new ArrayList<IGuide>();
@@ -370,6 +370,7 @@ public final class HsqlPersistenceManager implements IPersistenceManager, IStati
                     guide.setLastPublishingTime(rs.getLong("LASTPUBLISHINGTIME"));
                     guide.setPublishingRating(rs.getInt("PUBLISHINGRATING"));
                     guide.setNotificationsAllowed(rs.getBoolean("NOTIFICATIONSALLOWED"));
+                    guide.setMobile(rs.getBoolean("MOBILE"));
 
                     // Warning: This one should be the last because the previous sets will update
                     // this property automatically and we need to reset it correctly

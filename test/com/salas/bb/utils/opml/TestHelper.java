@@ -53,7 +53,7 @@ public class TestHelper extends TestCase
         OPMLReadingList opmlRL = new OPMLReadingList("ReadingList", "file://test");
         opmlRL.setFeeds(Arrays.asList(opmlFeed));
 
-        OPMLGuide opmlGuide = new OPMLGuide("Guide", "", false, null, null, false, 0, false, false);
+        OPMLGuide opmlGuide = new OPMLGuide("Guide", "", false, null, null, false, 0, false, false, false);
         opmlGuide.add(opmlRL);
 
         // Checking
@@ -70,7 +70,7 @@ public class TestHelper extends TestCase
      */
     public void testCreateGuideWithPublicationProperties()
     {
-        OPMLGuide opmlGuide = new OPMLGuide("Guide", "", true, "title", "tags", true, 2, false, false);
+        OPMLGuide opmlGuide = new OPMLGuide("Guide", "", true, "title", "tags", true, 2, false, false, true);
 
         // Checking
         StandardGuide guide = (StandardGuide)Helper.createGuide(null, opmlGuide, new Date());
@@ -79,6 +79,7 @@ public class TestHelper extends TestCase
         assertEquals(opmlGuide.getPublishingTitle(), guide.getPublishingTitle());
         assertEquals(opmlGuide.getPublishingTags(), guide.getPublishingTags());
         assertEquals(opmlGuide.getPublishingRating(), guide.getPublishingRating());
+        assertEquals(opmlGuide.isMobile(), guide.isMobile());
     }
 
     /**
@@ -86,13 +87,13 @@ public class TestHelper extends TestCase
      */
     public void testCreateGuideWithNotificationProperties()
     {
-        OPMLGuide opmlGuide = new OPMLGuide("Guide", "", true, "title", "tags", true, 0, false, false);
+        OPMLGuide opmlGuide = new OPMLGuide("Guide", "", true, "title", "tags", true, 0, false, false, false);
 
         // Checking
         StandardGuide guide = (StandardGuide)Helper.createGuide(null, opmlGuide, new Date());
         assertEquals(opmlGuide.isNotificationsAllowed(), guide.isNotificationsAllowed());
 
-        opmlGuide = new OPMLGuide("Guide", "", true, "title", "tags", true, 0, false, true);
+        opmlGuide = new OPMLGuide("Guide", "", true, "title", "tags", true, 0, false, true, false);
 
         // Checking
         guide = (StandardGuide)Helper.createGuide(null, opmlGuide, new Date());

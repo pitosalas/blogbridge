@@ -126,7 +126,7 @@ public final class Converter
             aGuide.isPublishingEnabled(), aGuide.getPublishingTitle(),
             aGuide.getPublishingTags(), aGuide.isPublishingPublic(),
             aGuide.getPublishingRating(), aGuide.isAutoFeedsDiscovery(),
-            aGuide.isNotificationsAllowed());
+            aGuide.isNotificationsAllowed(), aGuide.isMobile());
 
         // Reading lists
         ReadingList[] lists = aGuide.getReadingLists();

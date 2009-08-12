@@ -85,8 +85,8 @@ final class HsqlGuidesPM
         PreparedStatement stmt = context.getPreparedStatement(
             "INSERT INTO GUIDES (TITLE, ICONKEY, TYPE, POS, AUTOFEEDSDISCOVERY, " +
                 "PUBLISHINGENABLED, PUBLISHINGTITLE, PUBLISHINGTAGS, PUBLISHINGPUBLIC, " +
-                "PUBLISHINGURL, LASTPUBLISHINGTIME, PUBLISHINGRATING, NOTIFICATIONSALLOWED)" +
-            " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                "PUBLISHINGURL, LASTPUBLISHINGTIME, PUBLISHINGRATING, NOTIFICATIONSALLOWED, MOBILE)" +
+            " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
         try
         {
@@ -103,6 +103,7 @@ final class HsqlGuidesPM
             stmt.setLong(11, guide.getLastPublishingTime());
             stmt.setInt(12, guide.getPublishingRating());
             stmt.setBoolean(13, guide.isNotificationsAllowed());
+            stmt.setBoolean(14, guide.isMobile());
 
             int rows = stmt.executeUpdate();
             if (rows == 0) throw new SQLException(Strings.error("db.failed.to.insert.row.for.guide"));
@@ -210,7 +211,7 @@ final class HsqlGuidesPM
             "UPDATE GUIDES SET TITLE=?, ICONKEY=?, POS=?, AUTOFEEDSDISCOVERY=?, " +
                 "PUBLISHINGENABLED=?, PUBLISHINGTITLE=?, PUBLISHINGTAGS=?, PUBLISHINGPUBLIC=?, " +
                 "PUBLISHINGURL=?, LASTPUBLISHINGTIME=?, PUBLISHINGRATING=?, LASTUPDATETIME=?, " +
-                "NOTIFICATIONSALLOWED=? " +
+                "NOTIFICATIONSALLOWED=?, MOBILE=? " +
             "WHERE ID=?");
 
         try
@@ -228,7 +229,8 @@ final class HsqlGuidesPM
             stmt.setInt(11, guide.getPublishingRating());
             stmt.setLong(12, guide.getLastUpdateTime());
             stmt.setBoolean(13, guide.isNotificationsAllowed());
-            stmt.setLong(14, guide.getID());
+            stmt.setBoolean(14, guide.isMobile());
+            stmt.setLong(15, guide.getID());
 
             int rows = stmt.executeUpdate();
             if (rows == 0)

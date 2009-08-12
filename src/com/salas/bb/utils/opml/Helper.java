@@ -185,6 +185,7 @@ public final class Helper
         guide.setAutoFeedsDiscovery(aOPMLGuide.isAutoFeedsDiscovery());
 
         guide.setNotificationsAllowed(aOPMLGuide.isNotificationsAllowed());
+        guide.setMobile(aOPMLGuide.isMobile());
 
         OPMLReadingList[] lists = aOPMLGuide.getReadingLists();
         for (OPMLReadingList list : lists)

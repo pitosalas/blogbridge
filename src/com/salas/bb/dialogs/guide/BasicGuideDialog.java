@@ -97,6 +97,7 @@ public abstract class BasicGuideDialog extends AbstractDialog
     protected ValueHolder           vhPublishingRating;
     protected JButton               btnCopyToClipboard;
     protected JCheckBox             chAllowNotifications;
+    protected JCheckBox             chMobile;
 
     protected GuidesSet             guidesSet;
 
@@ -158,6 +159,8 @@ public abstract class BasicGuideDialog extends AbstractDialog
         lbPublishingTitle.setLabelFor(tfPublishingTitle);
         tfPublishingTags = new JTextField();
         lbPublishingTags.setLabelFor(tfPublishingTags);
+
+        chMobile = ComponentsFactory.createCheckBox(Strings.message("guide.dialog.mobile"));
 
         vhPublishingRating = new ValueHolder(1);
         sscPublishingRating = new StarsSelectionComponent(new BoundedRangeAdapter(vhPublishingRating, 0, 1, 5));
@@ -271,6 +274,16 @@ public abstract class BasicGuideDialog extends AbstractDialog
     public String getGuideTitle()
     {
         return tfTitle.getText();
+    }
+
+    /**
+     * Returns <code>TRUE</code> if mobility is on.
+     *
+     * @return <code>TRUE</code> if mobility is on.
+     */
+    public boolean isMobile()
+    {
+        return chMobile.isSelected();
     }
 
     /**
@@ -546,6 +559,7 @@ public abstract class BasicGuideDialog extends AbstractDialog
         builder.append(aWording, 7);
         builder.appendUnrelatedComponentsGapRow(2);
 
+        builder.append(chMobile, 7);
         builder.append(chPublishingEnabled, 7);
         builder.setLeadingColumnOffset(1);
         builder.append(lbPublishingTitle, tfPublishingTitle);

@@ -56,6 +56,8 @@ public interface IGuide
     String PROP_LAST_UPDATE_TIME        = "lastUpdateTime";
     /** The name of the notifications enabled flag property. */
     String PROP_NOTIFICATIONS_ALLOWED   = "notificationsAllowed";
+    /** The name of the mobile flag. */
+    String PROP_MOBILE                  = "mobile";
 
     /**
      * Returns the feed at given position. If the position is out of range [0;size) the IOOB
@@ -397,4 +399,18 @@ public interface IGuide
      * @return mask.
      */
     int getClassesMask();
+
+    /**
+     * Returns <code>TRUE</code> if this guide is mobile.
+     *
+     * @return <code>TRUE</code> if this guide is mobile.
+     */
+    boolean isMobile();
+
+    /**
+     * Sets the mobility state of the guide.
+     *
+     * @param value <code>TRUE</code> to make it mobile.
+     */
+    void setMobile(boolean value);
 }

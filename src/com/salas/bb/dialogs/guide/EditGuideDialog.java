@@ -245,6 +245,7 @@ public class EditGuideDialog extends BasicGuideDialog
         setPublishingURL(aGuide.getPublishingURL());
         setLastPublishingDate(aGuide.getLastPublishingTime());
         vhPublishingRating.setValue(aGuide.getPublishingRating() + 1);
+        chMobile.setSelected(aGuide.isMobile());
 
         boolean en = GlobalModel.SINGLETON.getUserPreferences().isNotificationsEnabled();
         chAllowNotifications.setSelected(guide.isNotificationsAllowed());

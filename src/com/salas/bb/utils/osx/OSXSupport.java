@@ -26,6 +26,7 @@ package com.salas.bb.utils.osx;
 
 import com.jgoodies.uif.osx.OSXApplicationMenu;
 import com.jgoodies.uif.util.SystemUtils;
+import com.jgoodies.uif.util.ResourceUtils;
 import com.salas.bb.utils.apple.AppleApplication;
 import com.salas.bb.utils.apple.IAppleApplicationListener;
 import com.salas.bb.utils.i18n.Strings;
@@ -34,6 +35,7 @@ import com.salas.bb.utils.uif.laf.MacLookAndFeel;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
+import java.awt.*;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -204,7 +206,8 @@ public final class OSXSupport
      */
     public static void setApplicationIcon()
     {
-        DockIcon.setApplicationIcon("blogbridge.icns");
+        Image image = ResourceUtils.readImage("blogbridge.icns");
+        DockIcon.setApplicationIcon(image);
     }
 
     /**

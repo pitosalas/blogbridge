@@ -92,7 +92,7 @@ abstract class GrowlNotificationHandler implements INotificationHandler
             initOK = true;
         } catch (Throwable e)
         {
-            LOG.log(Level.WARNING, Strings.error("notify.failed.to.initialize.growl.notifications"), e);
+            // LOG.log(Level.WARNING, Strings.error("notify.failed.to.initialize.growl.notifications"), e);
         }
     }
 

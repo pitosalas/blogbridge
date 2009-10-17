@@ -486,7 +486,8 @@ public final class Poller implements Runnable
                     QueryFeed qFeed = Helper.createQueryFeed((QueryOPMLFeed)feed);
                     feed = new DirectOPMLFeed(feed.getTitle(), qFeed.getXmlURL().toString(), null,
                         feed.getRating(), feed.getReadArticlesKeys(), feed.getPinnedArticlesKeys(), feed.getLimit(),
-                        null, null, null, null, null, null, false, qFeed.getType().getType(), false, 0, null);
+                        null, null, null, null, null, null, false, qFeed.getType().getType(), false, 0, null,
+                        qFeed.getHandlingType().toInteger());
                 }
 
                 if (feed instanceof DirectOPMLFeed)

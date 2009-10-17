@@ -69,7 +69,7 @@ public class TestImportGuidesAction extends TestCase
 
         final OPMLGuide guide1 = new OPMLGuide("guide1", null, false, null, null, false, 0, false, false, false);
         final ArrayList<DefaultOPMLFeed> al1 = new ArrayList<DefaultOPMLFeed>();
-        al1.add(new DirectOPMLFeed("1", "1", "1", 0, null, null, -1, null, null, null, null, null, null, false, 1, false, 0, false));
+        al1.add(new DirectOPMLFeed("1", "1", "1", 0, null, null, -1, null, null, null, null, null, null, false, 1, false, 0, false, 0));
         guide1.setFeeds(al1);
 
         final OPMLGuide[] guides = {emptyGuide, guide1};
@@ -91,14 +91,14 @@ public class TestImportGuidesAction extends TestCase
 
         g1 = new OPMLGuide("g1", "icon1", false, null, null, false, 0, false, false, false);
         a1 = new ArrayList<DefaultOPMLFeed>();
-        a1.add(new DirectOPMLFeed("1", "file://1", "file://1", 0, null, null, -1, null, null, null, null, null, null, false, 1, false, 0, false));
-        a1.add(new DirectOPMLFeed("2", "file://2", "file://2", 0, null, null, -1, null, null, null, null, null, null, false, 1, false, 0, false));
+        a1.add(new DirectOPMLFeed("1", "file://1", "file://1", 0, null, null, -1, null, null, null, null, null, null, false, 1, false, 0, false, 0));
+        a1.add(new DirectOPMLFeed("2", "file://2", "file://2", 0, null, null, -1, null, null, null, null, null, null, false, 1, false, 0, false, 0));
         g1.setFeeds(a1);
 
         g2 = new OPMLGuide("g2", null, false, null, null, false, 0, false, false, false);
         a2 = new ArrayList<DefaultOPMLFeed>();
-        a2.add(new DirectOPMLFeed("3", "file://3", "file://3", 0, null, null, -1, null, null, null, null, null, null, false, 1, false, 0, false));
-        a2.add(new DirectOPMLFeed("4", "file://4", "file://4", 0, null, null, -1, null, null, null, null, null, null, false, 1, false, 0, false));
+        a2.add(new DirectOPMLFeed("3", "file://3", "file://3", 0, null, null, -1, null, null, null, null, null, null, false, 1, false, 0, false, 0));
+        a2.add(new DirectOPMLFeed("4", "file://4", "file://4", 0, null, null, -1, null, null, null, null, null, null, false, 1, false, 0, false, 0));
         g2.setFeeds(a2);
 
         final OPMLGuide[] guides = {g1, g2};
@@ -173,14 +173,14 @@ public class TestImportGuidesAction extends TestCase
 
         g1 = new OPMLGuide("g1", "icon1", false, null, null, false, 0, false, false, false);
         a1 = new ArrayList<DefaultOPMLFeed>();
-        a1.add(new DirectOPMLFeed("1", "file://1", "file://1", 0, null, null, -1, null, null, null, null, null, null, false, 1, false, 0, false));
-        a1.add(new DirectOPMLFeed("2", "file://2", "file://2", 0, null, null, -1, null, null, null, null, null, null, false, 1, false, 0, false));
+        a1.add(new DirectOPMLFeed("1", "file://1", "file://1", 0, null, null, -1, null, null, null, null, null, null, false, 1, false, 0, false, 0));
+        a1.add(new DirectOPMLFeed("2", "file://2", "file://2", 0, null, null, -1, null, null, null, null, null, null, false, 1, false, 0, false, 0));
         g1.setFeeds(a1);
 
         g2 = new OPMLGuide("g1", null, false, null, null, false, 0, false, false, false);
         a2 = new ArrayList<DefaultOPMLFeed>();
-        a2.add(new DirectOPMLFeed("3", "file://3", "file://3", 0, null, null, -1, null, null, null, null, null, null, false, 1, false, 0, false));
-        a2.add(new DirectOPMLFeed("4", "file://4", "file://4", 0, null, null, -1, null, null, null, null, null, null, false, 1, false, 0, false));
+        a2.add(new DirectOPMLFeed("3", "file://3", "file://3", 0, null, null, -1, null, null, null, null, null, null, false, 1, false, 0, false, 0));
+        a2.add(new DirectOPMLFeed("4", "file://4", "file://4", 0, null, null, -1, null, null, null, null, null, null, false, 1, false, 0, false, 0));
         g2.setFeeds(a2);
 
         final OPMLGuide[] guides = {g1, g2};
@@ -238,14 +238,14 @@ public class TestImportGuidesAction extends TestCase
 
         g1 = new OPMLGuide("g1", "icon1", false, null, null, false, 0, false, false, false);
         a1 = new ArrayList<DefaultOPMLFeed>();
-        a1.add(new DirectOPMLFeed("1", "file://1", "file://1", 0, null, null, -1, null, null, null, null, null, null, false, 1, false, 0, false));
-        a1.add(new DirectOPMLFeed("2", "file://2", "file://2", 0, null, null, -1, null, null, null, null, null, null, false, 1, false, 0, false));
+        a1.add(new DirectOPMLFeed("1", "file://1", "file://1", 0, null, null, -1, null, null, null, null, null, null, false, 1, false, 0, false, 0));
+        a1.add(new DirectOPMLFeed("2", "file://2", "file://2", 0, null, null, -1, null, null, null, null, null, null, false, 1, false, 0, false, 0));
         g1.setFeeds(a1);
 
         g2 = new OPMLGuide("g1", null, false, null, null, false, 0, false, false, false);
         a2 = new ArrayList<DefaultOPMLFeed>();
-        a2.add(new DirectOPMLFeed("3", "file://3", "file://3", 0, null, null, -1, null, null, null, null, null, null, false, 1, false, 0, false));
-        a2.add(new DirectOPMLFeed("4", "file://4", "file://4", 0, null, null, -1, null, null, null, null, null, null, false, 1, false, 0, false));
+        a2.add(new DirectOPMLFeed("3", "file://3", "file://3", 0, null, null, -1, null, null, null, null, null, null, false, 1, false, 0, false, 0));
+        a2.add(new DirectOPMLFeed("4", "file://4", "file://4", 0, null, null, -1, null, null, null, null, null, null, false, 1, false, 0, false, 0));
         g2.setFeeds(a2);
 
         final OPMLGuide[] guides = {g1, g2};
@@ -312,8 +312,8 @@ public class TestImportGuidesAction extends TestCase
 
         final OPMLGuide guide = new OPMLGuide("g1", "icon", false, null, null, false, 0, false, false, false);
         final ArrayList<DefaultOPMLFeed> a1 = new ArrayList<DefaultOPMLFeed>();
-        a1.add(new DirectOPMLFeed("1", "file://1", "file://1", 0, null, null, -1, null, null, null, null, null, null, false, 1, false, 0, false));
-        a1.add(new DirectOPMLFeed("2", "file://2", "file://2", 0, null, null, 1, "A", "B", "C", "D", "E", "F", false, 1, false, 0, false));
+        a1.add(new DirectOPMLFeed("1", "file://1", "file://1", 0, null, null, -1, null, null, null, null, null, null, false, 1, false, 0, false, 0));
+        a1.add(new DirectOPMLFeed("2", "file://2", "file://2", 0, null, null, 1, "A", "B", "C", "D", "E", "F", false, 1, false, 0, false, 0));
         guide.setFeeds(a1);
 
         // Put in GuidesSet guide with duplicate name to check how dedupe works

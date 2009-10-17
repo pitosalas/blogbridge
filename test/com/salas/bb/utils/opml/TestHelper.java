@@ -48,7 +48,7 @@ public class TestHelper extends TestCase
     public void testCreateGuideWithRL()
     {
         DirectOPMLFeed opmlFeed = new DirectOPMLFeed("Feed", "file://test", "", 1, null, null, -1,
-            null, null, null, null, null, null, false, 0, false, 1, false);
+            null, null, null, null, null, null, false, 0, false, 1, false, 0);
 
         OPMLReadingList opmlRL = new OPMLReadingList("ReadingList", "file://test");
         opmlRL.setFeeds(Arrays.asList(opmlFeed));
@@ -108,7 +108,7 @@ public class TestHelper extends TestCase
     public void testCreateFeedWithCustomModeAndType() throws MalformedURLException
     {
         DirectOPMLFeed opmlFeed = new DirectOPMLFeed("Feed", "file://test", "", 1, null, null, -1,
-            null, null, null, null, null, null, false, 1, true, 2, false);
+            null, null, null, null, null, null, false, 1, true, 2, false, 0);
 
         DirectFeed feed = Helper.createDirectFeed(new URL("file://test"), opmlFeed);
 

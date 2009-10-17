@@ -135,6 +135,7 @@ public final class Helper
         int viewMode = opmlFeed.getViewMode();
         if (viewMode != -1) feed.setCustomViewMode(viewMode);
 
+        feed.setHandlingType(FeedHandlingType.toObject(opmlFeed.getHandlingType()));
         feed.setAscendingSorting(opmlFeed.getAscendingSorting());
     }
 

@@ -411,6 +411,7 @@ public class SyncIn extends AbstractSynchronization
             localFeed.setCustomViewModeEnabled(remoteFeed.isCustomViewModeEnabled());
             localFeed.setRating(remoteFeed.getRating());
             localFeed.setType(remoteFeed.getType());
+            localFeed.setHandlingType(remoteFeed.getHandlingType());
 
             // Feed type specific operations
             if (localFeed instanceof DirectFeed)

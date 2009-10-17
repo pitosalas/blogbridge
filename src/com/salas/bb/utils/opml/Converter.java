@@ -206,10 +206,12 @@ public final class Converter
             boolean viewModeEnabled = aFeed.isCustomViewModeEnabled();
             int viewMode = aFeed.getCustomViewMode();
 
+            int handlingType = aFeed.getHandlingType().toInteger();
+
             opmlFeed = new DirectOPMLFeed(title, xmlURL, htmlURL, rating,
                 readArticlesKeys, pinnedArticlesKeys, purgeLimit, customTitle, customAuthor,
                 customDescription, tags, tagsDescription, tagsExtended, aFeed.isDisabled(),
-                viewType, viewModeEnabled, viewMode, aFeed.getAscendingSorting());
+                viewType, viewModeEnabled, viewMode, aFeed.getAscendingSorting(), handlingType);
 
             fillDataFeedProperties(opmlFeed, aFeed);
         }
@@ -261,7 +263,7 @@ public final class Converter
 
             opmlFeed = new QueryOPMLFeed(title, queryType, queryParam, xmlURL, readArticlesKeys,
                 pinnedArticlesKeys, purgeLimit, rating, viewType, viewModeEnabled, viewMode,
-                aFeed.getAscendingSorting());
+                aFeed.getAscendingSorting(), aFeed.getHandlingType().toInteger());
 
             opmlFeed.setDedupEnabled(aFeed.isDedupEnabled());
             opmlFeed.setDedupFrom(aFeed.getDedupFrom());
@@ -294,7 +296,7 @@ public final class Converter
         int viewMode = aFeed.getCustomViewMode();
 
         SearchOPMLFeed feed = new SearchOPMLFeed(title, query.serializeToString(), articlesLimit, rating,
-            viewType, viewModeEnabled, viewMode, aFeed.getAscendingSorting());
+            viewType, viewModeEnabled, viewMode, aFeed.getAscendingSorting(), aFeed.getHandlingType().toInteger());
 
         feed.setDedupEnabled(aFeed.isDedupEnabled());
         feed.setDedupFrom(aFeed.getDedupFrom());

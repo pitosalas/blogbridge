@@ -105,7 +105,7 @@ public class ApplicationLauncher extends DefaultApplicationStarter
     private static final String MINIMAL_COMPATIBLE_VERSION  = "1.9";
 
     /** Current version. */
-    private static final String CURRENT_VERSION             = "6.7";
+    private static final String CURRENT_VERSION             = "6.7.1";
 
     private static final int DEFAULT_ICON_WIDTH             = 18;
     private static final int DEFAULT_ICON_HEIGHT            = 18;

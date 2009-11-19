@@ -514,7 +514,7 @@ public class ApplicationLauncher extends DefaultApplicationStarter
         configureAntiAliasing();
 
         // Configure Mac OS X dock icon (we had problems with JWS dock icon: ugly and cannot be badged)
-        OSXSupport.setApplicationIcon();
+        if (isMac()) OSXSupport.setApplicationIcon();
 
         // Images cache
         Cache imagesCache = new Cache(new File(getContextPath() + "cache"), 20000000);

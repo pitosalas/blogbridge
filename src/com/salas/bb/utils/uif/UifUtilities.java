@@ -357,11 +357,22 @@ public final class UifUtilities
         return str.toString();
     }
 
+
+    public static void setTextColor(HTMLDocument doc, String styleName, Color color)
+    {
+        StyleConstants.setForeground(doc.getStyle(styleName), color);
+    }
+
     public static void setFontAttributes(HTMLDocument doc, String styleName, Font font)
     {
         setFontAttributes(doc.getStyle(styleName), font);
 
         String css = "ul, ol { font: normal " + font.getSize() + "pt " + font.getFamily() + " }";
+        loadStyles(doc, css);
+    }
+
+    private static void loadStyles(HTMLDocument doc, String css)
+    {
         try
         {
             doc.getStyleSheet().loadRules(new StringReader(css), null);
@@ -474,13 +485,7 @@ public final class UifUtilities
             HTMLDocument htmlDocument = (HTMLDocument)document;
 
             String css = "body { font: normal " + font.getSize() + "pt " + font.getFamily() + " }";
-            try
-            {
-            htmlDocument.getStyleSheet().loadRules(new StringReader(css), null);
-            } catch (IOException e)
-            {
-                LOG.log(Level.SEVERE, "Couldn't load new stylesheet", e);
-            }
+            loadStyles(htmlDocument, css);
         }
     }
 

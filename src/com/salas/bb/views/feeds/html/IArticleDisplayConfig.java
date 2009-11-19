@@ -93,6 +93,15 @@ public interface IArticleDisplayConfig
     Color getTitleBGColor(boolean aSelected);
 
     /**
+     * Returns the color of the text.
+     *
+     * @param aSelected <code>TRUE</code> if selected.
+     *
+     * @return color.
+     */
+    Color getTextColor(boolean aSelected);
+
+    /**
      * Returns the background color of the text area.
      *
      * @param aSelected <code>TRUE</code> if article view is selected.

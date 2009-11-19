@@ -74,6 +74,18 @@ class SampleArticleDisplayConfig implements IArticleDisplayConfig
     }
 
     /**
+     * Returns the color of the text.
+     *
+     * @param aSelected <code>TRUE</code> if selected.
+     *
+     * @return color.
+     */
+    public Color getTextColor(boolean aSelected)
+    {
+        return Color.BLACK;
+    }
+
+    /**
      * Returns the background color of the text area.
      *
      * @param aSelected <code>TRUE</code> if article view is selected.

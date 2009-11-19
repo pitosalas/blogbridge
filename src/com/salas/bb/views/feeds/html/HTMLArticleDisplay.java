@@ -765,6 +765,10 @@ public class HTMLArticleDisplay extends AbstractArticleDisplay implements IArtic
         Color titleColor = config.getTitleFGColor(selected);
         Color dateColor = config.getDateFGColor(selected);
 
+        HTMLDocument doc = (HTMLDocument)tpText.getDocument();
+        UifUtilities.setTextColor(doc, TEXT_STYLE_NAME, config.getTextColor(selected));
+        UifUtilities.installTextStyle(tpText, TEXT_STYLE_NAME);
+
         lbTitle.setForeground(titleColor);
         if (lbDate != null) lbDate.setForeground(dateColor);
         if (lbTime != null) lbTime.setForeground(dateColor);

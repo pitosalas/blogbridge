@@ -1157,7 +1157,7 @@ public class FeedsPanel extends CoolInternalFrame
                     ? RenderingManager.getFeedsListSelectedBackground()
                     : RenderingManager.getFeedsListBackground(index % 2 == 0);
 
-            Color foreground = FeedDisplayModeManager.getInstance().getColor(currentFeed);
+            Color foreground = FeedDisplayModeManager.getInstance().getColor(currentFeed, isSelected);
             if (foreground == null || isSelected)
             {
                 foreground = RenderingManager.getFeedsListForeground(isSelected);

@@ -153,7 +153,7 @@ public class GuideListCellRenderer extends JPanel
             ? RenderingManager.getFeedsListSelectedBackground()
             : RenderingManager.getFeedsListBackground(index % 2 == 0);
 
-        Color foreground = GuideDisplayModeManager.getInstance().getColor(cg);
+        Color foreground = GuideDisplayModeManager.getInstance().getColor(cg, isSelected);
         if (foreground == null || isSelected)
         {
             foreground = RenderingManager.getFeedsListForeground(isSelected);

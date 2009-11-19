@@ -27,6 +27,7 @@ package com.salas.bb.core;
 import static com.salas.bb.domain.GuideClass.READ;
 import com.salas.bb.domain.IGuide;
 import com.salas.bb.utils.i18n.Strings;
+import com.salas.bb.views.settings.FeedRenderingSettings;
 
 import java.awt.*;
 
@@ -46,16 +47,25 @@ public class GuideDisplayModeManager extends AbstractDisplayModeManager
     private static final int[] CLASSES_PRIO = new int[] { READ };
 
     /**
-     * Default color for missing mappings.
-     */
-    static final Color DEFAULT_COLOR = Color.BLACK;
-
-    /**
      * Creates manager.
      */
     GuideDisplayModeManager()
     {
-        super(DEFAULT_COLOR, CLASSES_PRIO, "gdmm.");
+        super(CLASSES_PRIO, "gdmm.");
+    }
+
+    @Override
+    protected Color getDefaultColor(boolean selected)
+    {
+        Color color = null;
+
+        GlobalModel gm = GlobalModel.SINGLETON;
+        if (gm != null) {
+            FeedRenderingSettings renderingSettings = gm.getGlobalRenderingSettings();
+            if (renderingSettings != null) color = renderingSettings.getFeedsListForeground(selected);
+        }
+
+        return color != null ? color : super.getDefaultColor(selected);
     }
 
     /**
@@ -80,23 +90,24 @@ public class GuideDisplayModeManager extends AbstractDisplayModeManager
      */
     public boolean isVisible(IGuide guide)
     {
-        return getColor(guide) != null;
+        return getColor(guide, false) != null;
     }
 
     /**
      * Returns foreground color to paint the guide cell with.
      *
      * @param guide guide to get color for.
+     * @param selected TRUE when selected.
      *
      * @return the color.
      *
      * @throws IllegalArgumentException if guide isn't specified.
      */
-    public Color getColor(IGuide guide)
+    public Color getColor(IGuide guide, boolean selected)
     {
         if (guide == null)
             throw new IllegalArgumentException(Strings.error("unspecified.guide"));
 
-        return getColor(guide.getClassesMask());
+        return getColor(guide.getClassesMask(), selected);
     }
 }

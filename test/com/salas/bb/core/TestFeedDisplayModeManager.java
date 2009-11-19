@@ -57,11 +57,8 @@ public class TestFeedDisplayModeManager extends TestCase
 
         assertNull("Wrong color.", manager.getColor(FeedClass.LOW_RATED));
 
-        assertEquals("Wrong color.", FeedDisplayModeManager.DEFAULT_COLOR,
-            manager.getColor(FeedClass.READ));
-
-        assertEquals("Wrong color.", FeedDisplayModeManager.DEFAULT_COLOR,
-            manager.getColor(FeedClass.UNDISCOVERED));
+        assertEquals("Wrong color.", Color.BLACK, manager.getColor(FeedClass.READ));
+        assertEquals("Wrong color.", Color.BLACK, manager.getColor(FeedClass.UNDISCOVERED));
 
         assertNull("Should be invisible.", manager.getColor(FeedClass.DISABLED));
     }
@@ -133,8 +130,7 @@ public class TestFeedDisplayModeManager extends TestCase
 
         // Undiscovered
 
-        assertEquals("Wrong color.", FeedDisplayModeManager.DEFAULT_COLOR,
-            manager.getColor(FeedClass.UNDISCOVERED));
+        assertEquals("Wrong color.", Color.BLACK, manager.getColor(FeedClass.UNDISCOVERED));
     }
 
     /**
@@ -175,8 +171,7 @@ public class TestFeedDisplayModeManager extends TestCase
 
         manager.clear();
 
-        assertEquals("Wrong color: should be default.",
-            FeedDisplayModeManager.DEFAULT_COLOR, manager.getColor(mappingClass));
+        assertEquals("Wrong color: should be default.", Color.BLACK, manager.getColor(mappingClass));
     }
 
     /**
@@ -289,7 +284,7 @@ public class TestFeedDisplayModeManager extends TestCase
     {
         try
         {
-            manager.getColor(null);
+            manager.getColor(null, false);
             fail("Channel should be specified. IAE expected.");
         } catch (IllegalArgumentException e)
         {

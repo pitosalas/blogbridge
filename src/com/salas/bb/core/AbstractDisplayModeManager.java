@@ -57,11 +57,6 @@ public abstract class AbstractDisplayModeManager
     protected final Map<Integer, Color> colors;
 
     /**
-     * Default color.
-     */
-    private final Color defaultColor;
-
-    /**
      * The list of class priorities.
      */
     private final int[] classPriorities;
@@ -74,15 +69,13 @@ public abstract class AbstractDisplayModeManager
     /**
      * Creates DMM.
      *
-     * @param defaultColor      default color to use.
      * @param classPriorities   list of classes in priority order.
      * @param propertyPrefix    prefix to use for user preferences access.
      */
-    protected AbstractDisplayModeManager(Color defaultColor, int[] classPriorities, String propertyPrefix)
+    protected AbstractDisplayModeManager(int[] classPriorities, String propertyPrefix)
     {
         colors = new HashMap<Integer, Color>();
         listeners = new CopyOnWriteArrayList<IDisplayModeManagerListener>();
-        this.defaultColor = defaultColor;
         this.classPriorities = classPriorities;
         this.propertyPrefix = propertyPrefix;
     }
@@ -127,7 +120,7 @@ public abstract class AbstractDisplayModeManager
      */
     public boolean isVisible(int cl)
     {
-        return getColor(cl) != null;
+        return getColor(cl, false) != null;
     }
 
     /**
@@ -141,7 +134,7 @@ public abstract class AbstractDisplayModeManager
         Color oldColor;
         synchronized (colors)
         {
-            oldColor = getColor(cl);
+            oldColor = getColor(cl, false);
             colors.put(cl, color);
         }
 
@@ -277,14 +270,27 @@ public abstract class AbstractDisplayModeManager
      */
     public Color getColor(int cl)
     {
-        Color color = defaultColor;
+        return getColor(cl, false);
+    }
+
+    /**
+     * Returns the color for a given class.
+     *
+     * @param cl class.
+     * @param selected TRUE when selected.
+     *
+     * @return color or <code>NULL</code> if should be invisible.
+     */
+    public Color getColor(int cl, boolean selected)
+    {
+        Color color = getDefaultColor(selected);
 
         int index = 0;
         synchronized (colors)
         {
             while (color != null && index < classPriorities.length)
             {
-                if ((cl & classPriorities[index]) != 0) color = getClassColor(classPriorities[index]);
+                if ((cl & classPriorities[index]) != 0) color = getClassColor(classPriorities[index], selected);
                 index++;
             }
         }
@@ -293,13 +299,26 @@ public abstract class AbstractDisplayModeManager
     }
 
     /**
+     * Returns the default color.
+     *
+     * @param selected TRUE when selected.
+     * 
+     * @return color.
+     */
+    protected Color getDefaultColor(boolean selected)
+    {
+        return Color.BLACK;
+    }
+
+    /**
      * Returns color for a single class.
      *
      * @param cl class.
+     * @param selected TRUE when selected.
      *
      * @return color.
      */
-    private Color getClassColor(int cl)
+    private Color getClassColor(int cl, boolean selected)
     {
         Color aColor;
         if (colors.containsKey(cl))
@@ -307,7 +326,7 @@ public abstract class AbstractDisplayModeManager
             aColor = colors.get(cl);
         } else
         {
-            aColor = defaultColor;
+            aColor = getDefaultColor(selected);
         }
 
         return aColor;

@@ -8,3 +8,14 @@ name=verdalex
 title=Verdalex
 
 font=Verdana-11
+
+article.selected.background=#FF0000
+article.unselected.background=#00FF00
+article.text.unselected.foreground=#FF0000
+article.text.selected.foreground=#00FF00
+
+feedslist.foreground=#FFFFFF
+feedslist.sel.foreground=#FF0000
+feedslist.alt.background=#00FF00
+feedslist.sel.background=#0000FF
+feedslist.background=#FF0000

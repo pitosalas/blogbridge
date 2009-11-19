@@ -508,6 +508,16 @@ abstract class AbstractFeedDisplayConfig implements IFeedDisplayConfig
         {
             return Color.YELLOW;
         }
+        /**
+         * Returns the color of the text.
+         *
+         * @param aSelected <code>TRUE</code> if selected.
+         *
+         * @return color.
+         */
+        public Color getTextColor(boolean aSelected) {
+            return RenderingManager.getArticleTextColor(aSelected);
+        }
 
         /**
          * Returns the background color of the text area.

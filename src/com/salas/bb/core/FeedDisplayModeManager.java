@@ -27,6 +27,7 @@ package com.salas.bb.core;
 import static com.salas.bb.domain.FeedClass.*;
 import com.salas.bb.domain.IFeed;
 import com.salas.bb.utils.i18n.Strings;
+import com.salas.bb.views.settings.FeedRenderingSettings;
 
 import java.awt.*;
 
@@ -65,22 +66,32 @@ public class FeedDisplayModeManager extends AbstractDisplayModeManager
         INVALID, DISABLED
     };
 
-    /**
-     * Default color for missing mappings.
-     */
-    static final Color DEFAULT_COLOR = Color.BLACK;
 
     /**
      * Creates manager.
      */
     FeedDisplayModeManager()
     {
-        super(DEFAULT_COLOR, CLASSES_PRIO, "cdmm.");
+        super(CLASSES_PRIO, "cdmm.");
 
         // Setting proper defaults
         setColor(INVALID, Color.decode("#9E9E9E"));
         setColor(LOW_RATED, null);
         setColor(DISABLED, null);
+    }
+
+    @Override
+    protected Color getDefaultColor(boolean selected)
+    {
+        Color color = null;
+
+        GlobalModel gm = GlobalModel.SINGLETON;
+        if (gm != null) {
+            FeedRenderingSettings renderingSettings = gm.getGlobalRenderingSettings();
+            if (renderingSettings != null) color = renderingSettings.getFeedsListForeground(selected);
+        }
+
+        return color != null ? color : super.getDefaultColor(selected);
     }
 
     /**
@@ -105,23 +116,24 @@ public class FeedDisplayModeManager extends AbstractDisplayModeManager
      */
     public boolean isVisible(IFeed feed)
     {
-        return getColor(feed) != null;
+        return getColor(feed, false) != null;
     }
 
     /**
      * Returns foreground color to paint the feed cell with.
      *
      * @param feed feed to get color for.
+     * @param selected <code>TRUE</code> when selected.
      *
      * @return the color.
      *
      * @throws IllegalArgumentException if feed isn't specified.
      */
-    public Color getColor(IFeed feed)
+    public Color getColor(IFeed feed, boolean selected)
     {
         if (feed == null)
             throw new IllegalArgumentException(Strings.error("unspecified.feed"));
 
-        return getColor(feed.getClassesMask());
+        return getColor(feed.getClassesMask(), selected);
     }
 }

@@ -589,6 +589,16 @@ abstract class AbstractFeedDisplayConfig implements IFeedDisplayConfig
         }
 
         /**
+         * Returns TRUE to automatically expand minified articles on selection.
+         *
+         * @return TRUE to expand.
+         */
+        public boolean isAutoExpandingMini()
+        {
+            return GlobalModel.SINGLETON.getUserPreferences().isAutoExpandMini();
+        }
+
+        /**
          * Returns the advisor object to use for keywords highlighting.
          *
          * @return advisor.

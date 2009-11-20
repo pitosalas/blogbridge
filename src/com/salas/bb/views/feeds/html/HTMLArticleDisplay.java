@@ -690,7 +690,7 @@ public class HTMLArticleDisplay extends AbstractArticleDisplay implements IArtic
     {
         if (selected != sel)
         {
-            handleAutoOpeningOnSelection(sel);
+            if (config.isAutoExpandingMini()) handleAutoOpeningOnSelection(sel);
 
             selected = sel;
             updateBackgrounds();

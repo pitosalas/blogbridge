@@ -118,6 +118,13 @@ public interface IArticleDisplayConfig
     boolean isSingleLineTitles();
 
     /**
+     * Returns TRUE to automatically expand minified articles on selection.
+     *
+     * @return TRUE to expand.
+     */
+    boolean isAutoExpandingMini();
+
+    /**
      * Returns maximum length of single-line title.
      *
      * @return maximum length of single-line title.

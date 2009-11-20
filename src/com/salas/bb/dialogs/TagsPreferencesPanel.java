@@ -184,7 +184,7 @@ public class TagsPreferencesPanel extends JPanel
         lbDeliciousPassword = builder.append(Strings.message("userprefs.tab.tags.delicious.password"), 1);
         builder.append(tfDeliciousPassword);
 
-        builder.appendSeparator(Strings.message("userprefs.tab.tags.options"));
+        builder.appendSeparator(Strings.message("userprefs.options"));
         builder.setLeadingColumnOffset(1);
         builder.append(chAutoFetch, 5);
         builder.append(chPinTagging, 2);

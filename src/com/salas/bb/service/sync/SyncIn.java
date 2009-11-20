@@ -43,6 +43,7 @@ import com.salas.bb.sentiments.SentimentsConfig;
 import com.salas.bb.service.ServerService;
 import com.salas.bb.service.ServerServiceException;
 import com.salas.bb.service.ServicePreferences;
+import com.salas.bb.twitter.TwitterPreferences;
 import com.salas.bb.utils.DateUtils;
 import com.salas.bb.utils.StringUtils;
 import com.salas.bb.utils.i18n.Strings;
@@ -52,7 +53,6 @@ import com.salas.bb.utils.uif.CheckBoxList;
 import com.salas.bb.utils.uif.ComponentsFactory;
 import com.salas.bb.views.settings.FeedRenderingSettings;
 import com.salas.bb.views.settings.RenderingSettingsNames;
-import com.salas.bb.twitter.TwitterPreferences;
 import com.salas.bbutilities.opml.Importer;
 import com.salas.bbutilities.opml.ImporterException;
 import com.salas.bbutilities.opml.objects.OPMLGuideSet;
@@ -1583,6 +1583,8 @@ public class SyncIn extends AbstractSynchronization
             UserPreferences.PROP_BROWSE_ON_DBL_CLICK, up.isBrowseOnDblClick()));
 
         up.getViewModePreferences().restore(prefs);
+
+        up.setAutoExpandMini(getBoolean(prefs, UserPreferences.PROP_AUTO_EXPAND_MINI, up.isAutoExpandMini()));
     }
 
     /**

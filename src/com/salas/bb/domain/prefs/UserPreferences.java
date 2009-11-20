@@ -196,8 +196,8 @@ public final class UserPreferences extends Model
     private static final boolean DEFAULT_BACKGROUNDDEBUGMODE        = false;
     private static final int DEFAULT_PURGE_INTERVAL_MINUTES         = 60;
     private static final String DEFAULT_INTERNET_BROWSER            = Constants.EMPTY_STRING;
-    public static final boolean DEFAULT_MARK_READ_AFTER_DELAY      = true;
-    public static final int DEFAULT_MARK_READ_AFTER_SECONDS        = 5;
+    public static final boolean DEFAULT_MARK_READ_AFTER_DELAY       = true;
+    public static final int DEFAULT_MARK_READ_AFTER_SECONDS         = 5;
     private static final boolean DEFAULT_USE_PERSISTENCE            = true;
     private static final boolean DEFAULT_COPY_LINKS_IN_HREF_FORMAT  = false;
     private static final boolean DEFAULT_AA_TEXT                    = false;
@@ -211,7 +211,7 @@ public final class UserPreferences extends Model
     public static final boolean DEFAULT_UPDATE_READING_LISTS        = true;
     public static final boolean DEFAULT_UPDATE_FEEDS                = true;
     private static final int DEFAULT_ON_READING_LIST_UPDATE_ACTIONS = RL_UPDATE_NONE;
-    public static final boolean DEFAULT_ALWAYS_USE_ENGLISH         = false;
+    public static final boolean DEFAULT_ALWAYS_USE_ENGLISH          = false;
 
     /** Default for shoing the unread button menu on click. */
     public static final boolean DEFAULT_SHOW_UNREAD_BUTTON_MENU = true;
@@ -511,6 +511,11 @@ public final class UserPreferences extends Model
     public static final String PROP_PAGE_SIZE = "pageSize";
     private static final int DEFAULT_PAGE_SIZE = DEFAULT_PURGE_COUNT;
     private int pageSize = DEFAULT_PAGE_SIZE;
+
+    /** Expand mini-mode articles automatically on selection. */
+    public static final String PROP_AUTO_EXPAND_MINI = "autoExpandMini";
+    private static final boolean DEFAULT_AUTO_EXPAND_MINI = false;
+    private boolean autoExpandMini = DEFAULT_AUTO_EXPAND_MINI;
 
     /** What's hot: ignore patterns. */
     public static final String PROP_WH_IGNORE = "whIgnore";
@@ -2193,6 +2198,28 @@ public final class UserPreferences extends Model
     }
 
     /**
+     * Returns TRUE if automatic expanding of mini-mode articles is enabled.
+     *
+     * @return TRUE if automatic expanding of mini-mode articles is enabled.
+     */
+    public boolean isAutoExpandMini()
+    {
+        return autoExpandMini;
+    }
+
+    /**
+     * Enables / disables the automatic expanding of mini-mode articles on selection.
+     *
+     * @param autoExpandMini TRUE to enable.
+     */
+    public void setAutoExpandMini(boolean autoExpandMini)
+    {
+        boolean old = this.autoExpandMini;
+        this.autoExpandMini = autoExpandMini;
+        firePropertyChange(PROP_AUTO_EXPAND_MINI, old, autoExpandMini);
+    }
+
+    /**
      * Read all the Preferences from persistent preferences into this object. On Windows, the
      * persistent store is the Registry.
      *
@@ -2328,6 +2355,8 @@ public final class UserPreferences extends Model
 
         setCwFrequncy(prefs.getLong(PROP_CW_FREQUENCY, DEFAULT_CW_FREQUENCY));
         setCwLastCleanup(prefs.getLong(PROP_CW_LAST_CLEANUP, DEFAULT_CW_LAST_CLEANUP));
+
+        setAutoExpandMini(prefs.getBoolean(PROP_AUTO_EXPAND_MINI, DEFAULT_AUTO_EXPAND_MINI));
     }
 
     /**
@@ -2432,6 +2461,8 @@ public final class UserPreferences extends Model
 
         prefs.putLong(PROP_CW_FREQUENCY, getCwFrequency());
         prefs.putLong(PROP_CW_LAST_CLEANUP, getCwLastCleanup());
+
+        prefs.putBoolean(PROP_AUTO_EXPAND_MINI, isAutoExpandMini());
     }
 
     /**

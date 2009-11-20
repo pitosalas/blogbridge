@@ -45,6 +45,7 @@ import com.salas.bb.domain.prefs.UserPreferences;
 import com.salas.bb.domain.prefs.ViewModePreferences;
 import com.salas.bb.remixfeeds.prefs.BloggingPreferencesPanel;
 import com.salas.bb.sentiments.SentimentsFeature;
+import com.salas.bb.twitter.TwitterPreferencesPanel;
 import com.salas.bb.utils.Constants;
 import com.salas.bb.utils.ResourceID;
 import com.salas.bb.utils.SpinnerModelAdapter;
@@ -56,7 +57,6 @@ import com.salas.bb.views.feeds.IFeedDisplayConstants;
 import com.salas.bb.views.mainframe.MainFrame;
 import com.salas.bb.views.settings.FeedRenderingSettings;
 import com.salas.bb.views.settings.RenderingSettingsNames;
-import com.salas.bb.twitter.TwitterPreferencesPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -260,7 +260,7 @@ public final class UserPreferencesDialog extends AbstractDialog
     protected void resizeHook(JComponent comp)
     {
         int width = SystemUtils.IS_OS_MAC ? 565 : (int)(460 * Constants.SIZE_FACTOR);
-        int height = SystemUtils.IS_OS_MAC ? 585 : (int)(500 * Constants.SIZE_FACTOR);
+        int height = SystemUtils.IS_OS_MAC ? 600 : (int)(515 * Constants.SIZE_FACTOR);
         comp.setPreferredSize(new Dimension(width, height));
     }
 
@@ -745,6 +745,10 @@ public final class UserPreferencesDialog extends AbstractDialog
         {
             super(aTrigger);
 
+            JCheckBox chAutoExpandMini = ComponentsFactory.createCheckBox(
+                Strings.message("userprefs.tab.articles.autoexpand"), aPrefs,
+                UserPreferences.PROP_AUTO_EXPAND_MINI, trigger);
+
             BBFormBuilder builder = new BBFormBuilder("7dlu, p, 4dlu, 15dlu, 17dlu, p:grow", this);
             builder.setDefaultDialogBorder();
 
@@ -761,6 +765,11 @@ public final class UserPreferencesDialog extends AbstractDialog
             builder.appendSeparator(Strings.message("userprefs.tab.articles.pagination"));
             builder.setLeadingColumnOffset(1);
             builder.append(buildPaginationPanel(aPrefs, aTrigger), 5);
+
+            builder.setLeadingColumnOffset(0);
+            builder.appendSeparator(Strings.message("userprefs.options"));
+            builder.setLeadingColumnOffset(1);
+            builder.append(chAutoExpandMini, 5);
 
             // This block must go after the initialization of the other controls because it depends
             // on the values being propagated upon triggering.

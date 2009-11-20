@@ -36,13 +36,13 @@ import com.salas.bb.sentiments.SentimentsConfig;
 import com.salas.bb.service.ServerService;
 import com.salas.bb.service.ServerServiceException;
 import com.salas.bb.service.ServicePreferences;
+import com.salas.bb.twitter.TwitterPreferences;
 import com.salas.bb.utils.StringUtils;
 import com.salas.bb.utils.i18n.Strings;
 import com.salas.bb.utils.opml.Converter;
 import com.salas.bb.utils.uif.UifUtilities;
 import com.salas.bb.views.settings.FeedRenderingSettings;
 import com.salas.bb.views.settings.RenderingSettingsNames;
-import com.salas.bb.twitter.TwitterPreferences;
 import com.salas.bbutilities.opml.export.Exporter;
 import com.salas.bbutilities.opml.objects.OPMLGuideSet;
 import com.salas.bbutilities.opml.utils.Transformation;
@@ -465,6 +465,8 @@ public class SyncOut extends AbstractSynchronization
         setBoolean(prefs, "showEmptyGroups", frs.isShowEmptyGroups());
         setBoolean(prefs, UserPreferences.PROP_BROWSE_ON_DBL_CLICK, up.isBrowseOnDblClick());
 
+        setBoolean(prefs, UserPreferences.PROP_AUTO_EXPAND_MINI, up.isAutoExpandMini());
+        
         up.getViewModePreferences().store(prefs);
     }
 

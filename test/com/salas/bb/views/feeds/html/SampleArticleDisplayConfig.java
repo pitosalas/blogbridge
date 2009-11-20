@@ -187,6 +187,16 @@ class SampleArticleDisplayConfig implements IArticleDisplayConfig
     }
 
     /**
+     * Returns TRUE to automatically expand minified articles on selection.
+     *
+     * @return TRUE to expand.
+     */
+    public boolean isAutoExpandingMini()
+    {
+        return false;
+    }
+
+    /**
      * Returns the background color of search-words.
      *
      * @return color.

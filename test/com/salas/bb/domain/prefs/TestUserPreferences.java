@@ -24,12 +24,13 @@
 
 package com.salas.bb.domain.prefs;
 
-import static com.salas.bb.domain.prefs.UserPreferences.*;
 import com.salas.bb.utils.StringUtils;
 import junit.framework.TestCase;
 
 import java.lang.reflect.Method;
 import java.util.prefs.Preferences;
+
+import static com.salas.bb.domain.prefs.UserPreferences.*;
 
 /**
  * @see UserPreferences
@@ -136,6 +137,7 @@ public class TestUserPreferences extends TestCase
         checkLongProperty(PROP_WH_SETTINGS_CHANGE_TIME);
 
         checkBooleanProperty(PROP_ALWAYS_USE_ENGLISH);
+        checkBooleanProperty(PROP_AUTO_EXPAND_MINI);
     }
 
     /**

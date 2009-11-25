@@ -247,10 +247,10 @@ public abstract class SmartFeedDialog extends AbstractDialog
         Arrays.sort(types, new QueryTypeNameComparator());
         for (QueryType type : types) cbService.addItem(type);
 
-        // Deduplication panel
+        // De-duplication panel
         String str = Strings.message("create.smartfeed.remove.duplicates");
         String[] chunks = StringUtils.split(str, "~");
-        lbTo = new JLabel(chunks[1]);
+        lbTo = new JLabel(chunks.length > 1 ? chunks[1] : "");
         spnDedupFrom = createSpinner();
         spnDedupTo = createSpinner();
         chDedupEnabled = new JCheckBox(chunks[0]);

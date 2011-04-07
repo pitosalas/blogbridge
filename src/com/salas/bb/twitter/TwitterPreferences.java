@@ -112,7 +112,7 @@ public class TwitterPreferences extends Model
      */
     public void setPasteLink(boolean pasteLink)
     {
-        boolean old = pasteLink;
+        boolean old = this.pasteLink;
         this.pasteLink = pasteLink;
         firePropertyChange(PROP_PASTE_LINK, old, pasteLink);
     }

@@ -24,20 +24,20 @@
 
 package com.salas.bb.domain.querytypes;
 
+import com.salas.bb.core.GlobalController;
 import com.salas.bb.domain.FeedType;
-import com.salas.bb.utils.ResourceID;
-import com.salas.bb.utils.StringUtils;
-import com.salas.bb.utils.uif.BBFormBuilder;
-import com.salas.bb.utils.i18n.Strings;
-import com.salas.bb.views.feeds.IFeedDisplayConstants;
 import com.salas.bb.twitter.TwitterFeature;
 import com.salas.bb.twitter.TwitterPreferences;
-import com.salas.bb.core.GlobalController;
+import com.salas.bb.utils.ResourceID;
+import com.salas.bb.utils.StringUtils;
+import com.salas.bb.utils.i18n.Strings;
+import com.salas.bb.utils.uif.BBFormBuilder;
+import com.salas.bb.views.feeds.IFeedDisplayConstants;
 
 import javax.swing.*;
-import java.text.MessageFormat;
-import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.text.MessageFormat;
 
 /**
  * Twitter query type.
@@ -82,7 +82,7 @@ class TwitterQueryType extends DefaultQueryType
 
             TwitterPreferences tp = GlobalController.SINGLETON.getModel().getUserPreferences().getTwitterPreferences();
             String username = tp.getScreenName();
-            String password = tp.getPassword();
+            String password = "todo"; //tp.getPassword();
 
             url = MessageFormat.format(PATTERN_FRIENDS, username, password);
         } else

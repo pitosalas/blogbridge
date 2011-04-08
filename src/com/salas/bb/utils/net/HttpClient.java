@@ -25,14 +25,22 @@
 package com.salas.bb.utils.net;
 
 import com.salas.bb.utils.StringUtils;
+import oauth.signpost.OAuthConsumer;
+import oauth.signpost.exception.OAuthCommunicationException;
+import oauth.signpost.exception.OAuthException;
+import oauth.signpost.exception.OAuthExpectationFailedException;
+import oauth.signpost.exception.OAuthMessageSignerException;
 
-import java.net.URL;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
-import java.net.URLEncoder;
+import java.net.URL;
 import java.net.URLConnection;
-import java.io.*;
-import java.util.Map;
+import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * HTTP utility class.
@@ -108,19 +116,41 @@ public abstract class HttpClient
     }
 
     /**
+     * Performs the GET HTTP request by signing it first with OAuth consumer.
+     *
+     * @param url       URL to access.
+     * @param consumer  consumer to use for signing.
+     *
+     * @return contents of the response body.
+     *
+     * @throws OAuthExpectationFailedException OAuth error.
+     * @throws OAuthMessageSignerException     OAuth error.
+     * @throws OAuthCommunicationException     OAuth error.
+     * @throws IOException in case of I/O error.
+     */
+    public static String get(URL url, OAuthConsumer consumer)
+        throws OAuthExpectationFailedException, OAuthMessageSignerException, OAuthCommunicationException, IOException
+    {
+        HttpURLConnection con = (HttpURLConnection)url.openConnection();
+        if (consumer != null) consumer.sign(con);
+
+        return readResponse(con);
+    }
+
+    /**
      * Sends the POST request and returns the response text.
      *
      * @param url       URL to send the request to.
      * @param data      data map.
-     * @param user      user name for the authentication.
-     * @param password  password.
+     * @param consumer  OAuth consumer to sign the request (optional).
      *
      * @return response text.
      *
      * @throws IOException in case when communication fails.
+     * @throws OAuthException OAuth exception.
      */
-    public static String post(URL url, Map<String, String> data, String user, String password)
-        throws IOException
+    public static String post(URL url, Map<String, String> data, OAuthConsumer consumer)
+        throws IOException, OAuthException
     {
         // Construct data
         ArrayList<String> content = null;
@@ -141,8 +171,8 @@ public abstract class HttpClient
         con.setDoOutput(true);
         con.setUseCaches(false);
         con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-        if (user != null && password != null) con.setRequestProperty("Authorization",
-            StringUtils.createBasicAuthToken(user, password));
+
+        if (consumer != null) consumer.sign(con);
 
 
         OutputStreamWriter wr = new OutputStreamWriter(con.getOutputStream());

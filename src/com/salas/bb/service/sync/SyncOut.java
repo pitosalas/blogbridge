@@ -553,7 +553,8 @@ public class SyncOut extends AbstractSynchronization
         TwitterPreferences tp = model.getUserPreferences().getTwitterPreferences();
         setBoolean(prefs, TwitterPreferences.PROP_TWITTER_ENABLED, tp.isEnabled());
         setString(prefs, TwitterPreferences.PROP_TWITTER_SCREEN_NAME, tp.getScreenName());
-        setString(prefs, TwitterPreferences.PROP_TWITTER_PASSWORD, tp.getPassword());
+        setString(prefs, TwitterPreferences.PROP_TWITTER_ACCESS_TOKEN, tp.getAccessToken());
+        setString(prefs, TwitterPreferences.PROP_TWITTER_TOKEN_SECRET, tp.getTokenSecret());
         setBoolean(prefs, TwitterPreferences.PROP_TWITTER_PROFILE_PICS, tp.isProfilePics());
         setBoolean(prefs, TwitterPreferences.PROP_TWITTER_PASTE_LINK, tp.isPasteLink());
     }

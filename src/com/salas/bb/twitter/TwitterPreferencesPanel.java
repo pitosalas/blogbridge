@@ -99,14 +99,13 @@ public class TwitterPreferencesPanel extends JPanel
         BBFormBuilder builder = new BBFormBuilder("p, 4dlu, 50dlu, 4dlu, p, p:grow");
         builder.setDefaultDialogBorder();
 
-        Component tfWording     = ComponentsFactory.createWrappedMultilineLabel("You need to authorize BlogBridge to use your account if you want to tweet and access your timeline.");
-        // TODO i18n Strings.message("userprefs.tab.twitter.unauthorized"));
+        Component tfWording     = ComponentsFactory.createWrappedMultilineLabel(Strings.message("userprefs.tab.twitter.unauthorized"));
 
-        JLabel lbStep1          = new JLabel("1. Visit:"); // TODO i18n
-        LinkLabel llLink        = new TwitterAuthLinkLabel("Twitter application authorization page");
+        JLabel lbStep1          = new JLabel(Strings.message("userprefs.tab.twitter.step1"));
+        LinkLabel llLink        = new TwitterAuthLinkLabel(Strings.message("userprefs.tab.twitter.authPage"));
         spinner                 = new ProgressSpinner();
 
-        JLabel lbStep2          = new JLabel("2. Enter PIN:"); // TODO i18n
+        JLabel lbStep2          = new JLabel(Strings.message("userprefs.tab.twitter.step2"));
         tfPIN                   = new JTextField();
         JButton btnAuthorize    = new JButton(new AuthorizeAction());
 
@@ -218,7 +217,7 @@ public class TwitterPreferencesPanel extends JPanel
     {
         public UnauthorizeAction()
         {
-            super("Change Account"); // TODO i18n
+            super(Strings.message("userprefs.tab.twitter.changeAccount"));
         }
 
         public void actionPerformed(ActionEvent actionEvent)
@@ -232,7 +231,7 @@ public class TwitterPreferencesPanel extends JPanel
     {
         public AuthorizeAction()
         {
-            super("Authorize"); // TODO i18n
+            super(Strings.message("userprefs.tab.twitter.authorize"));
             setDisableWhenWorking(true);
         }
 
@@ -252,7 +251,7 @@ public class TwitterPreferencesPanel extends JPanel
             {
                 if (e.getCause() instanceof OAuthExpectationFailedException)
                 {
-                    JOptionPane.showMessageDialog(TwitterPreferencesPanel.this, "Please visit");
+                    JOptionPane.showMessageDialog(TwitterPreferencesPanel.this, Strings.message("userprefs.tab.twitter.pleaseVisit"));
                 }
             } catch (InterruptedException ignore)
             {

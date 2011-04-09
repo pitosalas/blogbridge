@@ -137,6 +137,11 @@ public class TwitterArticleDisplay extends AbstractArticleDisplay implements IAr
             }
             link = "http://twitter.com/" + name;
 
+            // Remove tags
+            text = text.replaceAll("<.*?>", "");
+
+            text = text.replaceAll("&apos;", "'");
+
             if (TwitterFeature.areAdvancedFeaturesAvailable())
             {
                 text = "<a href='" + link + "' rel='twitter'>" + name + "</a>: " + text;

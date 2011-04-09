@@ -32,6 +32,7 @@ import oauth.signpost.OAuthConsumer;
 import oauth.signpost.OAuthProvider;
 import oauth.signpost.basic.DefaultOAuthConsumer;
 import oauth.signpost.basic.DefaultOAuthProvider;
+import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
 import oauth.signpost.exception.OAuthException;
 
 import java.util.prefs.Preferences;
@@ -262,7 +263,7 @@ public class TwitterPreferences extends Model
      */
     public OAuthConsumer getConsumer()
     {
-        OAuthConsumer c = getDefaultConsumer();
+        OAuthConsumer c = getHttpClientConsumer();
 
         // Init consumer with tokens if available
         if (getAccessToken() != null && getTokenSecret() != null) {
@@ -271,6 +272,15 @@ public class TwitterPreferences extends Model
 
         return c;
     }
+
+    public static OAuthConsumer getHttpClientConsumer()
+    {
+        String consumerKey = ResourceUtils.getString("twitter.consumer_key");
+        String consumerSecret = ResourceUtils.getString("twitter.consumer_secret");
+
+        return new CommonsHttpOAuthConsumer(consumerKey, consumerSecret);
+    }
+
 
     /**
      * Returns the default consumer, not initialized with user tokens.

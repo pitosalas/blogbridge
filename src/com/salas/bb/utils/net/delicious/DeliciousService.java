@@ -24,18 +24,18 @@
 
 package com.salas.bb.utils.net.delicious;
 
-import com.salas.bb.utils.parser.*;
-import com.salas.bb.utils.StringUtils;
 import com.salas.bb.utils.Assert;
-import com.salas.bb.utils.net.HttpClient;
+import com.salas.bb.utils.StringUtils;
+import com.salas.bb.utils.net.BBHttpClient;
+import com.salas.bb.utils.parser.*;
 
-import java.net.URL;
 import java.io.IOException;
+import java.net.URL;
 import java.text.MessageFormat;
-import java.util.List;
 import java.util.ArrayList;
-import java.util.regex.Pattern;
+import java.util.List;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * <p>Delicious service representative. This class represents a front-end to del.icio.us
@@ -221,7 +221,7 @@ public final class DeliciousService
     private static String sendApiRequest(String request, String user, String password)
         throws IOException
     {
-        return HttpClient.get(SERVICE_API_URL + request, user, password);
+        return BBHttpClient.get(SERVICE_API_URL + request, user, password);
     }
 
     /**

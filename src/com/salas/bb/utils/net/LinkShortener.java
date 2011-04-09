@@ -50,7 +50,7 @@ public class LinkShortener
 
         try
         {
-            String result = HttpClient.get("http://is.gd/api.php?longurl=" + StringUtils.escape(link));
+            String result = BBHttpClient.get("http://is.gd/api.php?longurl=" + StringUtils.escape(link));
             if (result.length() < link.length()) link = result;
         } catch (IOException e)
         {

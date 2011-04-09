@@ -26,7 +26,7 @@ package com.salas.bb.twitter;
 
 import com.salas.bb.core.GlobalController;
 import com.salas.bb.utils.StringUtils;
-import com.salas.bb.utils.net.HttpClient;
+import com.salas.bb.utils.net.BBHttpClient;
 import oauth.signpost.OAuthConsumer;
 import oauth.signpost.exception.OAuthException;
 import org.json.JSONArray;
@@ -84,11 +84,11 @@ public class TwitterGateway
     public static void reply(String status, String replyToId)
         throws IOException, OAuthException
     {
-        URL url = new URL("http://twitter.com/statuses/update.json");
+        URL url = new URL("http://api.twitter.com/1/statuses/update.json");
 
         Map<String, String> data = new HashMap<String, String>();
         data.put("status", status);
-        data.put("source", "blogbridge");
+        //data.put("source", "blogbridge");
         if (replyToId != null) data.put("in_reply_to_status_id", replyToId);
 
         post(url, data);
@@ -237,7 +237,7 @@ public class TwitterGateway
         throws IOException
     {
         URL url = new URL("http://search.twitter.com/search.json?q=" + encode(query) + "&rpp=5");
-        String response = HttpClient.get(url);
+        String response = BBHttpClient.get(url);
 
         String html;
 
@@ -301,7 +301,7 @@ public class TwitterGateway
     {
         TwitterPreferences prefs = getPreferences();
         OAuthConsumer consumer = prefs.getConsumer();
-        return HttpClient.get(url, consumer);
+        return BBHttpClient.get(url, consumer);
     }
 
     /**
@@ -317,7 +317,7 @@ public class TwitterGateway
         throws IOException, OAuthException
     {
         TwitterPreferences prefs = getPreferences();
-        HttpClient.post(url, data, prefs.getConsumer());
+        BBHttpClient.post(url, data, prefs.getConsumer());
     }
 
     /**

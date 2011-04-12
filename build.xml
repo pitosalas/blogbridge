@@ -16,7 +16,7 @@
     <property name="base.url" value="http://www.blogbridge.com"/>
     <property name="base.devel.url" value="http://localhost"/>
 
-    <property name="version" value="6.7.1"/>
+    <property name="version" value="6.8"/>
 
     <property name="main.class" value="com.salas.bb.core.ApplicationLauncher"/>
 

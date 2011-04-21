@@ -26,24 +26,38 @@ package com.salas.bb.domain.querytypes;
 
 import com.salas.bb.core.GlobalController;
 import com.salas.bb.domain.FeedType;
+import com.salas.bb.domain.QueryFeed;
 import com.salas.bb.twitter.TwitterFeature;
 import com.salas.bb.twitter.TwitterPreferences;
+import com.salas.bb.utils.Constants;
 import com.salas.bb.utils.ResourceID;
 import com.salas.bb.utils.StringUtils;
 import com.salas.bb.utils.i18n.Strings;
+import com.salas.bb.utils.net.BBHttpClient;
+import com.salas.bb.utils.parser.Channel;
+import com.salas.bb.utils.parser.Item;
 import com.salas.bb.utils.uif.BBFormBuilder;
 import com.salas.bb.views.feeds.IFeedDisplayConstants;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.net.URL;
 import java.text.MessageFormat;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Twitter query type.
  */
 class TwitterQueryType extends DefaultQueryType
 {
+    private static final Pattern PTN_LIST = Pattern.compile("^@([^\\s\\/]+)/([^\\s\\/]+)$");
     private static final String PATTERN_QUERY   = "http://search.twitter.com/search.atom?q={0}&rpp={1}";
     private static final String PATTERN_FRIENDS = "http://{0}:{1}@twitter.com/statuses/friends_timeline/{0}.rss";
 
@@ -69,6 +83,50 @@ class TwitterQueryType extends DefaultQueryType
             "",
             Strings.message("queryfeed.type.twitter.description"),
             IFeedDisplayConstants.MODE_FULL);
+    }
+
+    @Override
+    public Channel fetchFeed(QueryFeed queryFeed)
+        throws IOException
+    {
+        Channel res = null;
+
+        Matcher matcher = PTN_LIST.matcher(queryFeed.getParameter());
+        if (matcher.matches())
+        {
+            String json = BBHttpClient.get("http://api.twitter.com/1/" +
+                matcher.group(1) + "/lists/" +
+                matcher.group(2) + "/statuses.json");
+
+            try
+            {
+                res = new Channel();
+                res.setAuthor("Twitter");
+                res.setDescription("" + matcher.group(1) + "'s list: " + matcher.group(2));
+                res.setFormat("XML");
+                res.setLanguage("en_US");
+                res.setUpdatePeriod(Constants.MILLIS_IN_DAY);
+
+                JSONArray a = new JSONArray(json);
+                for (int i = 0; i < a.length(); i++)
+                {
+                    JSONObject o = a.getJSONObject(i);
+
+                    JSONObject u = o.getJSONObject("user");
+
+                    Item item = new Item(o.getString("text"));
+                    item.setTitle(o.getString("text"));
+                    item.setAuthor(u.getString("screen_name"));
+                    item.setLink(new URL("http://twitter.com/" + u.getString("screen_name") + "/status/" + o.getString("id")));
+                    res.addItem(item);
+                }
+            } catch (JSONException e)
+            {
+                throw new RuntimeException(e);
+            }
+        }
+
+        return res;
     }
 
     @Override
@@ -108,13 +166,21 @@ class TwitterQueryType extends DefaultQueryType
     {
         private static final int    FRIENDS         = 0;
         private static final int    QUERY           = 1;
+        private static final int    LIST            = 2;
 
         private static final String TYPE_FRIENDS    = "Friends Timeline";
         private static final String TYPE_QUERY      = "Query";
+        private static final String TYPE_LIST       = "List";
 
-        private final JLabel     lbQuery;
         private final JComboBox  cbType;
+        private final JPanel     pnlQuery;
         private final JTextField tfQuery;
+        private final JPanel     pnlList;
+        private final JTextField tfListUsername;
+        private final JTextField tfListName;
+        private final JPanel     pnlHolder;
+
+        private JPanel currentPanel;
 
         /**
          * Creates the editor.
@@ -123,18 +189,30 @@ class TwitterQueryType extends DefaultQueryType
          */
         private QueryEditor(int labelColWidth)
         {
-            lbQuery = new JLabel("Query:");
-            cbType = new JComboBox();
-            tfQuery = new JTextField();
+            cbType          = new JComboBox();
+            tfQuery         = new JTextField();
+            tfListUsername  = new JTextField();
+            tfListName      = new JTextField();
+
+            pnlHolder = new JPanel(new BorderLayout());
 
             // Initialize types
             cbType.addItem(TYPE_FRIENDS);
             cbType.addItem(TYPE_QUERY);
+            cbType.addItem(TYPE_LIST);
 
-            BBFormBuilder b = new BBFormBuilder(labelColWidth + "dlu, 4dlu, p, p:grow", this);
+            BBFormBuilder b = new BBFormBuilder(labelColWidth + "dlu, 4dlu, p:grow");
+            b.append("Query:", tfQuery);
+            pnlQuery = b.getPanel();
+
+            b = new BBFormBuilder(labelColWidth + "dlu, 4dlu, 50dlu, 4dlu, p, 4dlu, p:grow");
+            b.append("User:", tfListUsername);
+            b.append("List:", tfListName);
+            pnlList = b.getPanel();
+
+            b = new BBFormBuilder(labelColWidth + "dlu, 4dlu, p, p:grow", this);
             b.append("Type:", cbType);
-            b.append(lbQuery);
-            b.append(tfQuery, 2);
+            b.append(pnlHolder, 4);
 
             cbType.addActionListener(new ActionListener()
             {
@@ -152,9 +230,29 @@ class TwitterQueryType extends DefaultQueryType
          */
         private void updateFieldState()
         {
-            boolean en = cbType.getSelectedIndex() == QUERY;
-            lbQuery.setEnabled(en);
-            tfQuery.setEnabled(en);
+            JPanel newPanel;
+
+            switch (cbType.getSelectedIndex()) {
+                case QUERY:
+                    newPanel = pnlQuery;
+                    break;
+                case LIST:
+                    newPanel = pnlList;
+                    break;
+                default:
+                    newPanel = null;
+            }
+
+            if (currentPanel != null && currentPanel != newPanel) {
+                pnlHolder.remove(currentPanel);
+            }
+
+            if (newPanel != null && newPanel != currentPanel) {
+                pnlHolder.add(newPanel, BorderLayout.CENTER);
+            }
+
+            currentPanel = newPanel;
+            pnlHolder.revalidate();
         }
 
         /**
@@ -166,12 +264,19 @@ class TwitterQueryType extends DefaultQueryType
         public void setParameter(String text)
         {
             int type;
-            String query;
+            String query        = null;
+            String listUsername = null;
+            String listName     = null;
+
+            Matcher matcher = PTN_LIST.matcher(text);
 
             if ("~~".equals(text))
             {
                 type = FRIENDS;
-                query = null;
+            } else if (matcher.matches()) {
+                type = LIST;
+                listUsername = matcher.group(1);
+                listName = matcher.group(2);
             } else
             {
                 type = QUERY;
@@ -180,6 +285,8 @@ class TwitterQueryType extends DefaultQueryType
 
             cbType.setSelectedIndex(type);
             tfQuery.setText(query);
+            tfListUsername.setText(listUsername);
+            tfListName.setText(listName);
         }
 
         /**
@@ -189,7 +296,21 @@ class TwitterQueryType extends DefaultQueryType
          */
         public String getParameter()
         {
-            return cbType.getSelectedIndex() == FRIENDS ? "~~" : tfQuery.getText();
+            String res;
+
+            switch (cbType.getSelectedIndex()) {
+                case FRIENDS:
+                    res = "~~";
+                    break;
+                case LIST:
+                    res = "@" + tfListUsername.getText().replaceFirst("^@+", "") + "/" + tfListName.getText().replaceFirst("^/+", "");
+                    break;
+                default:
+                    res = tfQuery.getText();
+                    break;
+            }
+
+            return res;
         }
     }
 }

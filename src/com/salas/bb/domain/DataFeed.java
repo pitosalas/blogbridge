@@ -35,6 +35,7 @@ import com.salas.bb.utils.parser.Channel;
 import com.salas.bb.utils.parser.Item;
 import com.salas.bb.utils.swinghtml.TextProcessor;
 
+import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.*;
 import java.util.logging.Level;
@@ -981,7 +982,8 @@ public abstract class DataFeed extends AbstractFeed
      *
      * @return the feed or NULL if there was an error or no updates required.
      */
-    protected abstract Channel fetchFeed();
+    protected abstract Channel fetchFeed()
+        throws IOException;
 
     /**
      * Updates the feed properties from the channel object.

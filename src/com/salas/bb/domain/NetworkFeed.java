@@ -30,6 +30,7 @@ import com.salas.bb.utils.parser.FeedParserConfig;
 import com.salas.bb.utils.parser.FeedParserResult;
 import com.salas.bb.utils.parser.IFeedParser;
 
+import java.io.IOException;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.logging.Level;
@@ -56,6 +57,7 @@ public abstract class NetworkFeed extends DataFeed
      * @return the feed or NULL if there was an error or no updates required.
      */
     protected Channel fetchFeed()
+        throws IOException
     {
         IFeedParser parser = FeedParserConfig.create();
 

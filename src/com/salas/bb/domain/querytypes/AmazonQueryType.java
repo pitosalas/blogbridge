@@ -26,20 +26,32 @@ package com.salas.bb.domain.querytypes;
 
 import com.jgoodies.uif.util.ResourceUtils;
 import com.salas.bb.domain.FeedType;
+import com.salas.bb.domain.QueryFeed;
+import com.salas.bb.utils.Constants;
 import com.salas.bb.utils.ResourceID;
 import com.salas.bb.utils.StringUtils;
+import com.salas.bb.utils.amazon.AmazonException;
+import com.salas.bb.utils.amazon.AmazonGateway;
+import com.salas.bb.utils.amazon.AmazonItem;
+import com.salas.bb.utils.amazon.AmazonSearchIndex;
 import com.salas.bb.utils.i18n.Strings;
+import com.salas.bb.utils.parser.Channel;
+import com.salas.bb.utils.parser.Item;
 import com.salas.bb.utils.uif.BBFormBuilder;
 import com.salas.bb.views.feeds.IFeedDisplayConstants;
 
 import javax.swing.*;
 import java.text.MessageFormat;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Query type which is capable of building URL using URL template.
  */
 class AmazonQueryType extends AbstractMicrotagQueryType
 {
+    private static final Logger LOG = Logger.getLogger(QueryFeed.class.getName());
     private static final String PATTERN = "http://www.amazon.com/rss/tag/{0}/{1}?length={2}&tag={3}";
 
     /**
@@ -69,6 +81,77 @@ class AmazonQueryType extends AbstractMicrotagQueryType
         }
 
         return msg;
+    }
+
+    @Override
+    public Channel fetchFeed(QueryFeed queryFeed)
+    {
+        Channel channel = null;
+
+        String subscriptionId = ResourceUtils.getString("amazon.subscription");
+        String partnerId = ResourceUtils.getString("amazon.partner");
+
+        AmazonGateway gateway = new AmazonGateway(subscriptionId, partnerId);
+        try
+        {
+            String parameter = queryFeed.getParameter();
+            List<AmazonItem> items = gateway.itemsSearch(parameter, AmazonSearchIndex.Books, "daterank",
+                queryFeed.getPurgeLimitCombined());
+
+            channel = itemsToChannel(items.toArray(new AmazonItem[items.size()]), parameter);
+        } catch (AmazonException e)
+        {
+            LOG.log(Level.SEVERE, Strings.error("feed.failed.to.question.amazon.com"), e);
+        }
+
+        return channel;
+    }
+
+    /**
+     * Converts amazon items list into standard items for display and adds them to
+     * channel.
+     *
+     * @param aAmazonItems items.
+     * @param parameter parameter.
+     *
+     * @return channel.
+     */
+    private Channel itemsToChannel(AmazonItem[] aAmazonItems, String parameter)
+    {
+        Channel channel = new Channel();
+        channel.setAuthor("Amazon.com");
+        channel.setDescription(MessageFormat.format(Strings.message("feed.queryfeed.querying.for.0"), parameter));
+        channel.setFormat("XML");
+        channel.setLanguage("en_US");
+        channel.setUpdatePeriod(Constants.MILLIS_IN_DAY);
+
+        for (AmazonItem amazonItem : aAmazonItems)
+        {
+            Item item = amazonItemToChannelItem(amazonItem);
+            if (item != null) channel.addItem(item);
+        }
+
+        return channel;
+    }
+
+    /**
+     * Converts single amazon item into channel item.
+     *
+     * @param aAmazonItem amanzon item.
+     *
+     * @return channel item or <code>NULL</code> if should not be added.
+     */
+    private Item amazonItemToChannelItem(AmazonItem aAmazonItem)
+    {
+        String title = aAmazonItem.getAttributeValue("Title");
+
+        if (title == null) return null;
+
+        Item item = new Item(aAmazonItem.toHTML());
+        item.setLink(aAmazonItem.getURL());
+        item.setTitle(title);
+
+        return item;
     }
 
     /**

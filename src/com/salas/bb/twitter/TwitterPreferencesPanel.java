@@ -24,7 +24,6 @@
 
 package com.salas.bb.twitter;
 
-import com.jgoodies.binding.adapter.DocumentAdapter;
 import com.jgoodies.binding.adapter.ToggleButtonAdapter;
 import com.jgoodies.binding.beans.PropertyAdapter;
 import com.jgoodies.binding.value.BufferedValueModel;
@@ -53,6 +52,7 @@ public class TwitterPreferencesPanel extends JPanel
 
     private JPanel setupPanel;
     private JPanel authPanel;
+    private JTextField tfScreenName;
 
     /**
      * Creates the panel.
@@ -155,10 +155,9 @@ public class TwitterPreferencesPanel extends JPanel
         JLabel lbScreenName = new JLabel(Strings.message("userprefs.tab.twitter.screenname"));
         JLabel lbPassword   = new JLabel(Strings.message("userprefs.tab.twitter.password"));
 
-        JTextField tfScreenName = new JTextField();
+        tfScreenName = new JTextField();
         tfScreenName.setEditable(false);
-        tfScreenName.setDocument(new DocumentAdapter(new BufferedValueModel(
-            new PropertyAdapter(prefs, TwitterPreferences.PROP_SCREEN_NAME), trigger)));
+        tfScreenName.setText(prefs.getScreenName());
 
         JButton btnChange = new JButton(new UnauthorizeAction());
 
@@ -246,6 +245,7 @@ public class TwitterPreferencesPanel extends JPanel
             try
             {
                 get();
+                tfScreenName.setText(prefs.getScreenName());
                 setCorrectPanel();
             } catch (ExecutionException e)
             {

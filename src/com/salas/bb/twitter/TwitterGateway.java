@@ -396,4 +396,18 @@ public class TwitterGateway
     {
         return getPreferences().isProfilePics();
     }
+
+    /**
+     * Returns the contents of the friends timeline RSS feed.
+     *
+     * @return RSS feed.
+     *
+     * @throws IOException    in case of communication error.
+     * @throws OAuthException in case of authentication error.
+     */
+    public static String friendsTimeline()
+        throws IOException, OAuthException
+    {
+        return get(new URL("http://api.twitter.com/1/statuses/friends_timeline.rss"));
+    }
 }

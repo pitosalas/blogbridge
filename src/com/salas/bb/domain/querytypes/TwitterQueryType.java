@@ -28,16 +28,18 @@ import com.salas.bb.core.GlobalController;
 import com.salas.bb.domain.FeedType;
 import com.salas.bb.domain.QueryFeed;
 import com.salas.bb.twitter.TwitterFeature;
+import com.salas.bb.twitter.TwitterGateway;
 import com.salas.bb.twitter.TwitterPreferences;
 import com.salas.bb.utils.Constants;
 import com.salas.bb.utils.ResourceID;
 import com.salas.bb.utils.StringUtils;
 import com.salas.bb.utils.i18n.Strings;
 import com.salas.bb.utils.net.BBHttpClient;
-import com.salas.bb.utils.parser.Channel;
-import com.salas.bb.utils.parser.Item;
+import com.salas.bb.utils.parser.*;
 import com.salas.bb.utils.uif.BBFormBuilder;
+import com.salas.bb.utils.uif.UifUtilities;
 import com.salas.bb.views.feeds.IFeedDisplayConstants;
+import oauth.signpost.exception.OAuthException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -46,9 +48,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.text.MessageFormat;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -57,7 +62,9 @@ import java.util.regex.Pattern;
  */
 class TwitterQueryType extends DefaultQueryType
 {
-    private static final Pattern PTN_LIST = Pattern.compile("^@([^\\s\\/]+)/([^\\s\\/]+)$");
+    private static final Logger LOG = Logger.getLogger(TwitterQueryType.class.getName());
+
+    private static final Pattern PTN_LIST = Pattern.compile("^@([^\\s/]+)/([^\\s/]+)$");
     private static final String PATTERN_QUERY   = "http://search.twitter.com/search.atom?q={0}&rpp={1}";
     private static final String PATTERN_FRIENDS = "http://{0}:{1}@twitter.com/statuses/friends_timeline/{0}.rss";
 
@@ -89,9 +96,63 @@ class TwitterQueryType extends DefaultQueryType
     public Channel fetchFeed(QueryFeed queryFeed)
         throws IOException
     {
+        Channel res;
+
+
+        String parameter = queryFeed.getParameter();
+        if (parameter.equals("~~"))
+        {
+            res = fetchFriendsTimeline();
+        } else
+        {
+            res = fetchUserList(parameter);
+        }
+
+        return res;
+    }
+
+    private static Channel fetchFriendsTimeline()
+        throws IOException
+    {
         Channel res = null;
 
-        Matcher matcher = PTN_LIST.matcher(queryFeed.getParameter());
+        String feedXml = null;
+        try
+        {
+            feedXml = TwitterGateway.friendsTimeline();
+        } catch (OAuthException e)
+        {
+            LOG.warning(MessageFormat.format(Strings.error("feed.fetching.errored"), e.toString()));
+            LOG.log(Level.FINE, "Details:", e);
+        }
+
+        if (feedXml != null)
+        {
+            IFeedParser parser = FeedParserConfig.create();
+
+            FeedParserResult result = null;
+            try
+            {
+                result = parser.parse(new ByteArrayInputStream(feedXml.getBytes()), null);
+            } catch (FeedParserException e)
+            {
+                LOG.warning(MessageFormat.format(Strings.error("feed.fetching.errored"), e.toString()));
+                LOG.log(Level.FINE, "Details:", e);
+            }
+
+            // We either return the result or an empty channel not to let the app try the default parser
+            if (result != null) res = result.getChannel();
+        }
+
+        return res == null ? new Channel() : res;
+    }
+
+    private static Channel fetchUserList(String parameter)
+        throws IOException
+    {
+        Channel res = null;
+
+        Matcher matcher = PTN_LIST.matcher(parameter);
         if (matcher.matches())
         {
             String json = BBHttpClient.get("http://api.twitter.com/1/" +
@@ -125,7 +186,6 @@ class TwitterQueryType extends DefaultQueryType
                 throw new RuntimeException(e);
             }
         }
-
         return res;
     }
 
@@ -179,6 +239,7 @@ class TwitterQueryType extends DefaultQueryType
         private final JTextField tfListUsername;
         private final JTextField tfListName;
         private final JPanel     pnlHolder;
+        private final JPanel     pnlAuthWarning;
 
         private JPanel currentPanel;
 
@@ -193,6 +254,10 @@ class TwitterQueryType extends DefaultQueryType
             tfQuery         = new JTextField();
             tfListUsername  = new JTextField();
             tfListName      = new JTextField();
+
+            // TODO: i18n
+            JLabel lblAuthWarning = new JLabel("Enable Twitter support in Preferences to make this feed type work.");
+            UifUtilities.smallerFont(lblAuthWarning);
 
             pnlHolder = new JPanel(new BorderLayout());
 
@@ -209,6 +274,10 @@ class TwitterQueryType extends DefaultQueryType
             b.append("User:", tfListUsername);
             b.append("List:", tfListName);
             pnlList = b.getPanel();
+
+            b = new BBFormBuilder((labelColWidth + "dlu, 4dlu, p, p:grow"));
+            b.append("", lblAuthWarning);
+            pnlAuthWarning = b.getPanel();
 
             b = new BBFormBuilder(labelColWidth + "dlu, 4dlu, p, p:grow", this);
             b.append("Type:", cbType);
@@ -240,7 +309,7 @@ class TwitterQueryType extends DefaultQueryType
                     newPanel = pnlList;
                     break;
                 default:
-                    newPanel = null;
+                    newPanel = TwitterFeature.isConfigured() ? null : pnlAuthWarning;
             }
 
             if (currentPanel != null && currentPanel != newPanel) {

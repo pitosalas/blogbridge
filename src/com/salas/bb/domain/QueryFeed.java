@@ -332,6 +332,13 @@ public class QueryFeed extends NetworkFeed
         return result;
     }
 
+    @Override
+    public boolean insertArticle(int index, IArticle article)
+    {
+        if (queryType != null) article = queryType.beforeInsertArticle(index, article);
+
+        return super.insertArticle(index, article);
+    }
 
     /**
      * Returns simple match key, which can be used to detect similarity of feeds. For example, it's

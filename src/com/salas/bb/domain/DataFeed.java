@@ -282,8 +282,6 @@ public abstract class DataFeed extends AbstractFeed
     {
         if (article == null) throw new NullPointerException(Strings.error("unspecified.article"));
 
-        article.setCandidateFeed(this);
-
         // Register this feed as candidate to have proper key checks
         article.setCandidateFeed(this);
 

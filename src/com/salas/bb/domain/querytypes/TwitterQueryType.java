@@ -26,11 +26,14 @@ package com.salas.bb.domain.querytypes;
 
 import com.salas.bb.core.GlobalController;
 import com.salas.bb.domain.FeedType;
+import com.salas.bb.domain.IArticle;
 import com.salas.bb.domain.QueryFeed;
+import com.salas.bb.domain.StandardArticle;
 import com.salas.bb.twitter.TwitterFeature;
 import com.salas.bb.twitter.TwitterGateway;
 import com.salas.bb.twitter.TwitterPreferences;
 import com.salas.bb.utils.Constants;
+import com.salas.bb.utils.Instapaper;
 import com.salas.bb.utils.ResourceID;
 import com.salas.bb.utils.StringUtils;
 import com.salas.bb.utils.i18n.Strings;
@@ -93,11 +96,55 @@ class TwitterQueryType extends DefaultQueryType
     }
 
     @Override
+    public IArticle beforeInsertArticle(int index, IArticle article)
+    {
+        String html = article.getHtmlText();
+
+        // Remove tags
+        html = html.replaceAll("<.*?>", "");
+        html = html.replaceAll("&apos;", "'");
+
+        if (article.getPlainText().indexOf("http://") == -1)
+        {
+            return article;
+        } else
+        {
+            // Mobilize items
+            java.util.List<String> links = StringUtils.collectLinks(article.getPlainText());
+            for (String link : links)
+            {
+                try
+                {
+                    LOG.warning("Mobilizing: " + link);
+                    String story = Instapaper.mobilize(link);
+
+                    LOG.warning("---\n" + story + "\n---");
+
+                    html += story;
+                } catch (IOException e)
+                {
+                    LOG.warning("Failed to mobilze '" + link + "': " + e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        StandardArticle newArticle = new StandardArticle(html);
+        newArticle.setAuthor(article.getAuthor());
+        newArticle.setFeed(article.getFeed());
+        newArticle.setID(article.getID());
+        newArticle.setLink(article.getLink());
+        newArticle.setPublicationDate(article.getPublicationDate());
+        newArticle.setTitle(article.getTitle());
+
+        return newArticle;
+    }
+
+    @Override
     public Channel fetchFeed(QueryFeed queryFeed)
         throws IOException
     {
         Channel res;
-
 
         String parameter = queryFeed.getParameter();
         if (parameter.equals("~~"))

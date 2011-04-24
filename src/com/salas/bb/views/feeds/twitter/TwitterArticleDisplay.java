@@ -69,7 +69,7 @@ public class TwitterArticleDisplay extends AbstractArticleDisplay implements IAr
     private static final String TEXT_STYLE_NAME = "normal";
     private static final CellConstraints CELL_CONSTRAINTS = new CellConstraints();
     private static final Pattern PATTERN_USERNAME =
-        Pattern.compile("^\\s*(<b>)?\\s*([^\\s<:]+)\\s*(</b>)?\\s*:\\s*(.*)$", Pattern.CASE_INSENSITIVE);
+        Pattern.compile("^\\s*(<b>)?\\s*([^\\s<:]+)\\s*(</b>)?\\s*:\\s*(.*)$", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
 
     private final IArticleDisplayConfig config;
     private final IArticle              article;
@@ -136,11 +136,6 @@ public class TwitterArticleDisplay extends AbstractArticleDisplay implements IAr
                 name = article.getAuthor().split("\\s")[0];
             }
             link = "http://twitter.com/" + name;
-
-            // Remove tags
-            text = text.replaceAll("<.*?>", "");
-
-            text = text.replaceAll("&apos;", "'");
 
             if (TwitterFeature.areAdvancedFeaturesAvailable())
             {

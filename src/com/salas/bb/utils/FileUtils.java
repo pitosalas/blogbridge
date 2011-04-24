@@ -43,6 +43,24 @@ public final class FileUtils
     }
 
     /**
+     * Reads complete file into a string.
+     *
+     * @param path  file path.
+     *
+     * @return contents.
+     *
+     * @throws IOException in case of I/O error.
+     */
+    public static String readFileAsString(String path)
+        throws IOException
+    {
+        byte[] buffer = new byte[(int) new File(path).length()];
+        FileInputStream f = new FileInputStream(path);
+        f.read(buffer);
+        return new String(buffer);
+    }
+
+    /**
      * Copies file from it's location to destination dir.
      *
      * @param file      file to copy.

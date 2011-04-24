@@ -915,4 +915,31 @@ public final class StringUtils extends org.apache.commons.lang.StringUtils
     {
         return s == null ? null : s.intern();
     }
+
+
+    /**
+     * Finds all http://* links.
+     *
+     * @param text text.
+     *
+     * @return links list.
+     */
+    public static List<String> collectLinks(String text)
+    {
+        ArrayList<String> links = new ArrayList<String>();
+
+        Pattern pattern = Pattern.compile("(https?://[^\\s,]*)(\\s|,|$)", Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(text);
+        while (matcher.find())
+        {
+            String link = matcher.group(1);
+
+            // Remove trailing dots and commas
+            link = link.replaceAll("[,.]+$", "");
+
+            links.add(link);
+        }
+
+        return links;
+    }
 }

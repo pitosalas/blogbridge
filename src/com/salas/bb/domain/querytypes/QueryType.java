@@ -25,6 +25,7 @@
 package com.salas.bb.domain.querytypes;
 
 import com.salas.bb.domain.FeedType;
+import com.salas.bb.domain.IArticle;
 import com.salas.bb.domain.QueryFeed;
 import com.salas.bb.utils.ResourceID;
 import com.salas.bb.utils.StringUtils;
@@ -373,4 +374,15 @@ public abstract class QueryType
      * @return panel.
      */
     public abstract QueryEditorPanel getEditorPanel(int labelColWidth);
+
+    /**
+     * Invoked before the article is inserted into the stored feed.
+     *
+     * @param article article to be inserted.
+     */
+    public IArticle beforeInsertArticle(int index, IArticle article)
+    {
+        // Does nothing by default
+        return article;
+    }
 }

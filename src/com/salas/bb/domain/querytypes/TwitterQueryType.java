@@ -33,7 +33,7 @@ import com.salas.bb.twitter.TwitterFeature;
 import com.salas.bb.twitter.TwitterGateway;
 import com.salas.bb.twitter.TwitterPreferences;
 import com.salas.bb.utils.Constants;
-import com.salas.bb.utils.Instapaper;
+import com.salas.bb.utils.ReadItLater;
 import com.salas.bb.utils.ResourceID;
 import com.salas.bb.utils.StringUtils;
 import com.salas.bb.utils.i18n.Strings;
@@ -116,7 +116,7 @@ class TwitterQueryType extends DefaultQueryType
                 try
                 {
                     LOG.warning("Mobilizing: " + link);
-                    String story = Instapaper.mobilize(link);
+                    String story = ReadItLater.mobilize(link);
 
                     LOG.warning("---\n" + story + "\n---");
 

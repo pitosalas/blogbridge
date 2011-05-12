@@ -33,7 +33,6 @@ import com.salas.bb.twitter.TwitterFeature;
 import com.salas.bb.twitter.TwitterGateway;
 import com.salas.bb.twitter.TwitterPreferences;
 import com.salas.bb.utils.Constants;
-import com.salas.bb.utils.ReadItLater;
 import com.salas.bb.utils.ResourceID;
 import com.salas.bb.utils.StringUtils;
 import com.salas.bb.utils.i18n.Strings;
@@ -104,30 +103,30 @@ class TwitterQueryType extends DefaultQueryType
         html = html.replaceAll("<.*?>", "");
         html = html.replaceAll("&apos;", "'");
 
-        if (article.getPlainText().indexOf("http://") == -1)
-        {
-            return article;
-        } else
-        {
-            // Mobilize items
-            java.util.List<String> links = StringUtils.collectLinks(article.getPlainText());
-            for (String link : links)
-            {
-                try
-                {
-                    LOG.warning("Mobilizing: " + link);
-                    String story = ReadItLater.mobilize(link);
-
-                    LOG.warning("---\n" + story + "\n---");
-
-                    html += story;
-                } catch (IOException e)
-                {
-                    LOG.warning("Failed to mobilze '" + link + "': " + e.getMessage());
-                    e.printStackTrace();
-                }
-            }
-        }
+//        if (article.getPlainText().indexOf("http://") == -1)
+//        {
+//            return article;
+//        } else
+//        {
+//            // Mobilize items
+//            java.util.List<String> links = StringUtils.collectLinks(article.getPlainText());
+//            for (String link : links)
+//            {
+//                try
+//                {
+//                    LOG.warning("Mobilizing: " + link);
+//                    String story = ReadItLater.mobilize(link);
+//
+//                    LOG.warning("---\n" + story + "\n---");
+//
+//                    html += story;
+//                } catch (IOException e)
+//                {
+//                    LOG.warning("Failed to mobilze '" + link + "': " + e.getMessage());
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
 
         StandardArticle newArticle = new StandardArticle(html);
         newArticle.setAuthor(article.getAuthor());

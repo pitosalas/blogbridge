@@ -61,6 +61,14 @@ public class ReadItLater
      */
     public static String processMobilizedString(String html)
     {
-        return "<!-- mob-start -->\n" + html + "\n<!-- mob-end -->";
+        boolean finished = false;
+        int oldLength = html.length();
+        while (!finished)
+        {
+            html = html.replaceAll("<(b|i|p|span).*?>\\s*</\\1>", "");
+            finished = oldLength == html.length();
+            oldLength = html.length();
+        }
+        return "<!-- mob-start -->\n" + html.replaceAll("\n+", "\n") + "\n<!-- mob-end -->";
     }
 }

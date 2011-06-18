@@ -213,6 +213,14 @@ public class TwitterArticleDisplay extends AbstractArticleDisplay implements IAr
 
         tfText  = createTextArea();
         tfFullText = createTextArea();
+        tfFullText.setBorder(
+            BorderFactory.createCompoundBorder(
+                BorderFactory.createEmptyBorder(0, 30, 0, 0),
+                BorderFactory.createCompoundBorder(
+                    BorderFactory.createMatteBorder(0, 5, 0, 0, Color.lightGray),
+                    BorderFactory.createEmptyBorder(0, 10, 0, 0)
+                )));
+
         lbDate  = new JLabel(SimpleDateFormat.getDateInstance().format(date), SwingConstants.LEFT);
         lbPin   = new ArticlePinControl(model.getSelectedGuide(), model.getSelectedFeed(), article);
         lnFullText = new LinkButton("full.text.button")
@@ -240,7 +248,8 @@ public class TwitterArticleDisplay extends AbstractArticleDisplay implements IAr
 
                         try
                         {
-                            tfFullText.setText(super.get());
+                            String readable = super.get();
+                            tfFullText.setText(readable);
                             tfFullText.setVisible(true);
                             UifUtilities.installTextStyle(tfFullText, TEXT_STYLE_NAME);
                         } catch (InterruptedException e)

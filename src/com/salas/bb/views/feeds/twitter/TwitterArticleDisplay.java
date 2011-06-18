@@ -37,7 +37,6 @@ import com.salas.bb.twitter.ReplyAction;
 import com.salas.bb.twitter.TwitterFeature;
 import com.salas.bb.utils.ReadItLater;
 import com.salas.bb.utils.StringUtils;
-import com.salas.bb.utils.i18n.Strings;
 import com.salas.bb.utils.uif.*;
 import com.salas.bb.utils.uif.html.CustomHTMLEditorKit;
 import com.salas.bb.views.feeds.ArticlePinControl;
@@ -216,7 +215,7 @@ public class TwitterArticleDisplay extends AbstractArticleDisplay implements IAr
         tfFullText = createTextArea();
         lbDate  = new JLabel(SimpleDateFormat.getDateInstance().format(date), SwingConstants.LEFT);
         lbPin   = new ArticlePinControl(model.getSelectedGuide(), model.getSelectedFeed(), article);
-        lnFullText = new LinkLabel("Full Text")
+        lnFullText = new LinkButton("full.text.button")
         {
             protected void doAction()
             {
@@ -256,7 +255,7 @@ public class TwitterArticleDisplay extends AbstractArticleDisplay implements IAr
         };
         lnFullText.setForeground(LinkLabel.HIGHLIGHT_COLOR);
 
-        lnReply = new LinkLabel(Strings.message("twitter.article.reply"))
+        lnReply = new LinkButton("reply.button")
         {
             protected void doAction()
             {

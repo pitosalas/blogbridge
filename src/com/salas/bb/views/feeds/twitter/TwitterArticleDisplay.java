@@ -66,6 +66,7 @@ public class TwitterArticleDisplay extends AbstractArticleDisplay implements IAr
 {
     /** Name of the style we use to apply customized fonts. */
     private static final String TEXT_STYLE_NAME = "normal";
+
     private static final CellConstraints CELL_CONSTRAINTS = new CellConstraints();
     private static final Pattern PATTERN_USERNAME =
         Pattern.compile("^\\s*(<b>)?\\s*([^\\s<:]+)\\s*(</b>)?\\s*:\\s*(.*)$", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
@@ -115,7 +116,7 @@ public class TwitterArticleDisplay extends AbstractArticleDisplay implements IAr
         doc.setBase(article.getLink());
         Style def = doc.getStyle("default");
         doc.addStyle(TEXT_STYLE_NAME, def);
-        UifUtilities.setFontAttributes(doc, TEXT_STYLE_NAME, config.getTextFont());
+        UifUtilities.setFontAttributes(doc, TEXT_STYLE_NAME, config.getTitleFont(article.isRead()));
 
         doc = (HTMLDocument)tfFullText.getDocument();
         doc.setBase(article.getLink());
@@ -355,8 +356,11 @@ public class TwitterArticleDisplay extends AbstractArticleDisplay implements IAr
         lnFullText.setFont(config.getTextFont());
 
         HTMLDocument doc = (HTMLDocument)tfText.getDocument();
-        UifUtilities.setFontAttributes(doc, TEXT_STYLE_NAME, config.getTextFont());
+        UifUtilities.setFontAttributes(doc, TEXT_STYLE_NAME, config.getTitleFont(article.isRead()));
         UifUtilities.installTextStyle(tfText, TEXT_STYLE_NAME);
+
+        doc = (HTMLDocument)tfFullText.getDocument();
+        UifUtilities.setFontAttributes(doc, TEXT_STYLE_NAME, config.getTextFont());
         UifUtilities.installTextStyle(tfFullText, TEXT_STYLE_NAME);
 
         doLayout();

@@ -84,6 +84,7 @@ public class TwitterArticleDisplay extends AbstractArticleDisplay implements IAr
     private ArticlePinControl           lbPin;
     private LinkLabel                   lnReply;
     private LinkLabel                   lnFullText;
+    private LinkLabel                   lnHideText;
     private JPanel                      pnlControls;
 
     /**
@@ -181,7 +182,8 @@ public class TwitterArticleDisplay extends AbstractArticleDisplay implements IAr
             }
         }
 
-        if (article.getPlainText().indexOf("http://") == -1)
+        lnHideText.setVisible(true);
+        if (!article.getPlainText().contains("http://"))
         {
             lnFullText.setVisible(false);
         } else
@@ -204,6 +206,15 @@ public class TwitterArticleDisplay extends AbstractArticleDisplay implements IAr
         }
     }
 
+    private void setTextButton(boolean full)
+    {
+        Component btn   = full ? lnFullText : lnHideText;
+        Component other = full ? lnHideText : lnFullText;
+
+        pnlControls.remove(other);
+        pnlControls.add(btn, CELL_CONSTRAINTS.xy(7, 2));
+    }
+
     /**
      * Creates and initializes view components.
      */
@@ -224,11 +235,20 @@ public class TwitterArticleDisplay extends AbstractArticleDisplay implements IAr
 
         lbDate  = new JLabel(SimpleDateFormat.getDateInstance().format(date), SwingConstants.LEFT);
         lbPin   = new ArticlePinControl(model.getSelectedGuide(), model.getSelectedFeed(), article);
+        lnHideText = new LinkButton("hide.text.button")
+        {
+            protected void doAction()
+            {
+                setTextButton(true);
+                tfFullText.setVisible(false);
+            }
+        };
+
         lnFullText = new LinkButton("full.text.button")
         {
             protected void doAction()
             {
-                lnFullText.setVisible(false);
+                setTextButton(false);
                 spinner.start();
 
                 final String link = this.getLink().toString();
@@ -253,7 +273,7 @@ public class TwitterArticleDisplay extends AbstractArticleDisplay implements IAr
                             tfFullText.setText(readable);
                             tfFullText.setVisible(true);
                             UifUtilities.installTextStyle(tfFullText, TEXT_STYLE_NAME);
-                        } catch (InterruptedException e)
+                        } catch (InterruptedException ignored)
                         {
                         } catch (ExecutionException e)
                         {
@@ -264,6 +284,7 @@ public class TwitterArticleDisplay extends AbstractArticleDisplay implements IAr
             }
         };
         lnFullText.setForeground(LinkLabel.HIGHLIGHT_COLOR);
+        lnHideText.setForeground(LinkLabel.HIGHLIGHT_COLOR);
 
         lnReply = new LinkButton("reply.button")
         {
@@ -280,12 +301,12 @@ public class TwitterArticleDisplay extends AbstractArticleDisplay implements IAr
 
         setLayout(new FormLayout("5dlu, min:grow, 5dlu", "5dlu, pref, pref, pref, 5dlu"));
 
-        pnlControls = new JPanel(new FormLayout("pref, 5dlu, pref, 5dlu, pref, 5dlu, pref, pref, 0:grow", "3dlu, pref"));
+        pnlControls = new JPanel(new FormLayout("pref, 5dlu, pref, 5dlu, pref, 5dlu, pref, 5dlu, pref, 0:grow", "3dlu, pref"));
         pnlControls.add(lbPin, CELL_CONSTRAINTS.xy(1, 2));
         pnlControls.add(lbDate, CELL_CONSTRAINTS.xy(3, 2));
         pnlControls.add(lnReply, CELL_CONSTRAINTS.xy(5, 2));
-        pnlControls.add(lnFullText, CELL_CONSTRAINTS.xy(7, 2));
-        pnlControls.add(spinner, CELL_CONSTRAINTS.xy(8, 2));
+        setTextButton(true);
+        pnlControls.add(spinner, CELL_CONSTRAINTS.xy(9, 2));
 
         add(tfText, CELL_CONSTRAINTS.xy(2, 2));
         add(tfFullText, CELL_CONSTRAINTS.xy(2, 3));
@@ -353,7 +374,6 @@ public class TwitterArticleDisplay extends AbstractArticleDisplay implements IAr
         Font dateFont = config.getDateFont();
         lbDate.setFont(dateFont);
         lnReply.setFont(config.getTextFont());
-        lnFullText.setFont(config.getTextFont());
 
         HTMLDocument doc = (HTMLDocument)tfText.getDocument();
         UifUtilities.setFontAttributes(doc, TEXT_STYLE_NAME, config.getTitleFont(article.isRead()));

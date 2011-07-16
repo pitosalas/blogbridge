@@ -35,11 +35,9 @@ import com.salas.bb.domain.IArticleListener;
 import com.salas.bb.domain.NetworkFeed;
 import com.salas.bb.twitter.ReplyAction;
 import com.salas.bb.twitter.TwitterFeature;
-import com.salas.bb.utils.i18n.Strings;
-import com.salas.bb.utils.uif.DelegatingMouseListener;
-import com.salas.bb.utils.uif.LinkLabel;
-import com.salas.bb.utils.uif.UifUtilities;
-import com.salas.bb.utils.uif.UpDownBorder;
+import com.salas.bb.utils.ReadItLater;
+import com.salas.bb.utils.StringUtils;
+import com.salas.bb.utils.uif.*;
 import com.salas.bb.utils.uif.html.CustomHTMLEditorKit;
 import com.salas.bb.views.feeds.ArticlePinControl;
 import com.salas.bb.views.feeds.IFeedDisplayConstants;
@@ -57,6 +55,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -67,9 +66,10 @@ public class TwitterArticleDisplay extends AbstractArticleDisplay implements IAr
 {
     /** Name of the style we use to apply customized fonts. */
     private static final String TEXT_STYLE_NAME = "normal";
+
     private static final CellConstraints CELL_CONSTRAINTS = new CellConstraints();
     private static final Pattern PATTERN_USERNAME =
-        Pattern.compile("^\\s*(<b>)?\\s*([^\\s<:]+)\\s*(</b>)?\\s*:\\s*(.*)$", Pattern.CASE_INSENSITIVE);
+        Pattern.compile("^\\s*(<b>)?\\s*([^\\s<:]+)\\s*(</b>)?\\s*:\\s*(.*)$", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
 
     private final IArticleDisplayConfig config;
     private final IArticle              article;
@@ -78,9 +78,13 @@ public class TwitterArticleDisplay extends AbstractArticleDisplay implements IAr
     private boolean                     selected;
 
     private JEditorPane                 tfText;
+    private JEditorPane                 tfFullText;
+    private ProgressSpinner             spinner;
     private JLabel                      lbDate;
     private ArticlePinControl           lbPin;
     private LinkLabel                   lnReply;
+    private LinkLabel                   lnFullText;
+    private LinkLabel                   lnHideText;
     private JPanel                      pnlControls;
 
     /**
@@ -112,6 +116,12 @@ public class TwitterArticleDisplay extends AbstractArticleDisplay implements IAr
         HTMLDocument doc = (HTMLDocument)tfText.getDocument();
         doc.setBase(article.getLink());
         Style def = doc.getStyle("default");
+        doc.addStyle(TEXT_STYLE_NAME, def);
+        UifUtilities.setFontAttributes(doc, TEXT_STYLE_NAME, config.getTitleFont(article.isRead()));
+
+        doc = (HTMLDocument)tfFullText.getDocument();
+        doc.setBase(article.getLink());
+        def = doc.getStyle("default");
         doc.addStyle(TEXT_STYLE_NAME, def);
         UifUtilities.setFontAttributes(doc, TEXT_STYLE_NAME, config.getTextFont());
     }
@@ -156,7 +166,7 @@ public class TwitterArticleDisplay extends AbstractArticleDisplay implements IAr
         }
 
         HTMLDocument doc = (HTMLDocument)tfText.getDocument();
-        doc.putProperty(Document.StreamDescriptionProperty, ((NetworkFeed)article.getFeed()).getXmlURL());
+        doc.putProperty(Document.StreamDescriptionProperty, ((NetworkFeed) article.getFeed()).getXmlURL());
 
         tfText.setText(text);
         UifUtilities.installTextStyle(tfText, TEXT_STYLE_NAME);
@@ -171,6 +181,38 @@ public class TwitterArticleDisplay extends AbstractArticleDisplay implements IAr
                 lnReply.setVisible(false);
             }
         }
+
+        lnHideText.setVisible(true);
+        if (!article.getPlainText().contains("http://"))
+        {
+            lnFullText.setVisible(false);
+        } else
+        {
+            tfFullText.setVisible(false);
+
+            // Important as it won't render otherwise for some weird reason
+            tfFullText.setText("<p id='start'>&nbsp;</p>");
+            UifUtilities.installTextStyle(tfFullText, TEXT_STYLE_NAME);
+
+            java.util.List<String> links = StringUtils.collectLinks(article.getPlainText());
+            try
+            {
+                lnFullText.setLink(new URL(links.get(0)));
+                lnFullText.setVisible(true);
+            } catch (MalformedURLException e)
+            {
+                lnFullText.setVisible(false);
+            }
+        }
+    }
+
+    private void setTextButton(boolean full)
+    {
+        Component btn   = full ? lnFullText : lnHideText;
+        Component other = full ? lnHideText : lnFullText;
+
+        pnlControls.remove(other);
+        pnlControls.add(btn, CELL_CONSTRAINTS.xy(7, 2));
     }
 
     /**
@@ -182,9 +224,69 @@ public class TwitterArticleDisplay extends AbstractArticleDisplay implements IAr
         GlobalModel model = GlobalModel.SINGLETON;
 
         tfText  = createTextArea();
+        tfFullText = createTextArea();
+        tfFullText.setBorder(
+            BorderFactory.createCompoundBorder(
+                BorderFactory.createEmptyBorder(0, 30, 0, 0),
+                BorderFactory.createCompoundBorder(
+                    BorderFactory.createMatteBorder(0, 5, 0, 0, Color.lightGray),
+                    BorderFactory.createEmptyBorder(0, 10, 0, 0)
+                )));
+
         lbDate  = new JLabel(SimpleDateFormat.getDateInstance().format(date), SwingConstants.LEFT);
         lbPin   = new ArticlePinControl(model.getSelectedGuide(), model.getSelectedFeed(), article);
-        lnReply = new LinkLabel(Strings.message("twitter.article.reply"))
+        lnHideText = new LinkButton("hide.text.button")
+        {
+            protected void doAction()
+            {
+                setTextButton(true);
+                tfFullText.setVisible(false);
+            }
+        };
+
+        lnFullText = new LinkButton("full.text.button")
+        {
+            protected void doAction()
+            {
+                setTextButton(false);
+                spinner.start();
+
+                final String link = this.getLink().toString();
+
+                new SwingWorker<String, String>()
+                {
+                    @Override
+                    protected String doInBackground()
+                        throws Exception
+                    {
+                        return ReadItLater.mobilize(link);
+                    }
+
+                    @Override
+                    protected void done()
+                    {
+                        spinner.stop();
+
+                        try
+                        {
+                            String readable = super.get();
+                            tfFullText.setText(readable);
+                            tfFullText.setVisible(true);
+                            UifUtilities.installTextStyle(tfFullText, TEXT_STYLE_NAME);
+                        } catch (InterruptedException ignored)
+                        {
+                        } catch (ExecutionException e)
+                        {
+                            JOptionPane.showMessageDialog(TwitterArticleDisplay.this, "Failed to load full article text");
+                        }
+                    }
+                }.execute();
+            }
+        };
+        lnFullText.setForeground(LinkLabel.HIGHLIGHT_COLOR);
+        lnHideText.setForeground(LinkLabel.HIGHLIGHT_COLOR);
+
+        lnReply = new LinkButton("reply.button")
         {
             protected void doAction()
             {
@@ -195,21 +297,27 @@ public class TwitterArticleDisplay extends AbstractArticleDisplay implements IAr
         };
         lnReply.setForeground(LinkLabel.HIGHLIGHT_COLOR);
 
-        setLayout(new FormLayout("5dlu, min:grow, 5dlu", "5dlu, pref, pref, 5dlu"));
+        spinner = new ProgressSpinner();
 
-        pnlControls = new JPanel(new FormLayout("pref, 5dlu, pref, 5dlu, pref, 0:grow", "3dlu, pref"));
+        setLayout(new FormLayout("5dlu, min:grow, 5dlu", "5dlu, pref, pref, pref, 5dlu"));
+
+        pnlControls = new JPanel(new FormLayout("pref, 5dlu, pref, 5dlu, pref, 5dlu, pref, 5dlu, pref, 0:grow", "3dlu, pref"));
         pnlControls.add(lbPin, CELL_CONSTRAINTS.xy(1, 2));
         pnlControls.add(lbDate, CELL_CONSTRAINTS.xy(3, 2));
         pnlControls.add(lnReply, CELL_CONSTRAINTS.xy(5, 2));
+        setTextButton(true);
+        pnlControls.add(spinner, CELL_CONSTRAINTS.xy(9, 2));
 
         add(tfText, CELL_CONSTRAINTS.xy(2, 2));
-        add(pnlControls, CELL_CONSTRAINTS.xy(2, 3));
+        add(tfFullText, CELL_CONSTRAINTS.xy(2, 3));
+        add(pnlControls, CELL_CONSTRAINTS.xy(2, 4));
 
         // Register delegating mouse listener
         DelegatingMouseListener ml = new DelegatingMouseListener(this, true);
         this.addMouseListener(ml);
         lbDate.addMouseListener(ml);
         tfText.addMouseListener(ml);
+        tfFullText.addMouseListener(ml);
     }
 
     /**
@@ -255,6 +363,7 @@ public class TwitterArticleDisplay extends AbstractArticleDisplay implements IAr
         setBackground(color);
         pnlControls.setBackground(color);
         tfText.setBackground(color);
+        tfFullText.setBackground(color);
     }
 
     /**
@@ -267,8 +376,12 @@ public class TwitterArticleDisplay extends AbstractArticleDisplay implements IAr
         lnReply.setFont(config.getTextFont());
 
         HTMLDocument doc = (HTMLDocument)tfText.getDocument();
-        UifUtilities.setFontAttributes(doc, TEXT_STYLE_NAME, config.getTextFont());
+        UifUtilities.setFontAttributes(doc, TEXT_STYLE_NAME, config.getTitleFont(article.isRead()));
         UifUtilities.installTextStyle(tfText, TEXT_STYLE_NAME);
+
+        doc = (HTMLDocument)tfFullText.getDocument();
+        UifUtilities.setFontAttributes(doc, TEXT_STYLE_NAME, config.getTextFont());
+        UifUtilities.installTextStyle(tfFullText, TEXT_STYLE_NAME);
 
         doLayout();
     }
@@ -315,6 +428,7 @@ public class TwitterArticleDisplay extends AbstractArticleDisplay implements IAr
     public void addHyperlinkListener(HyperlinkListener aListener)
     {
         tfText.addHyperlinkListener(aListener);
+        tfFullText.addHyperlinkListener(aListener);
     }
 
     /**

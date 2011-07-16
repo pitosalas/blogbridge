@@ -25,10 +25,11 @@
 package com.salas.bb.twitter;
 
 import com.salas.bb.utils.i18n.Strings;
+import oauth.signpost.exception.OAuthException;
 
 import javax.swing.*;
-import java.net.URL;
 import java.io.IOException;
+import java.net.URL;
 
 /**
  * (Un)follow action.
@@ -97,6 +98,10 @@ public class FollowAction extends AbstractTwitterAction
             {
                 e1.printStackTrace();
                 // Ignore
+            } catch (OAuthException e)
+            {
+                e.printStackTrace();
+                // Ignore for now - TODO possibly show some warning box and direct to the setting pane
             }
         }
     }

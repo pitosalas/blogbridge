@@ -25,12 +25,16 @@
 package com.salas.bb.domain.querytypes;
 
 import com.salas.bb.domain.FeedType;
+import com.salas.bb.domain.IArticle;
+import com.salas.bb.domain.QueryFeed;
 import com.salas.bb.utils.ResourceID;
 import com.salas.bb.utils.StringUtils;
 import com.salas.bb.utils.i18n.Strings;
+import com.salas.bb.utils.parser.Channel;
 import com.salas.bb.views.feeds.IFeedDisplayConstants;
 
 import javax.swing.*;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
@@ -192,6 +196,19 @@ public abstract class QueryType
     public int getType()
     {
         return type;
+    }
+
+    /**
+     * Fetches the feed.
+     *
+     * @param queryFeed feed doing the fetch.
+     *
+     * @return channel.
+     */
+    public Channel fetchFeed(QueryFeed queryFeed)
+        throws IOException
+    {
+        return null;
     }
 
     /**
@@ -357,4 +374,15 @@ public abstract class QueryType
      * @return panel.
      */
     public abstract QueryEditorPanel getEditorPanel(int labelColWidth);
+
+    /**
+     * Invoked before the article is inserted into the stored feed.
+     *
+     * @param article article to be inserted.
+     */
+    public IArticle beforeInsertArticle(int index, IArticle article)
+    {
+        // Does nothing by default
+        return article;
+    }
 }

@@ -26,10 +26,11 @@ package com.salas.bb.domain;
 
 import junit.framework.TestCase;
 
-import java.net.URL;
+import java.io.IOException;
 import java.net.MalformedURLException;
-import java.util.logging.Logger;
+import java.net.URL;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This suite contains tests for <code>NetworkFeed</code> unit.
@@ -59,6 +60,7 @@ public class TestNetworkFeed extends TestCase
      * Tests how the invalidness reason is being updated on successful fetching.
      */
     public void testUpdateIROnSuccessfulFetching()
+        throws IOException
     {
         DummyNetworkFeed nf = new DummyNetworkFeed();
         nf.setInvalidnessReason("Some error.");
@@ -76,6 +78,7 @@ public class TestNetworkFeed extends TestCase
      * Tests how the invalidness reason is being updated on failed fetching.
      */
     public void testUpdateIROnFailedFetching()
+        throws IOException
     {
         DummyNetworkFeed nf = new DummyNetworkFeed();
         nf.setInvalidnessReason(null);

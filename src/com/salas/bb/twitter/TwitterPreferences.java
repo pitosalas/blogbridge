@@ -25,6 +25,15 @@
 package com.salas.bb.twitter;
 
 import com.jgoodies.binding.beans.Model;
+import com.jgoodies.uif.util.ResourceUtils;
+import com.salas.bb.utils.StringUtils;
+import oauth.signpost.OAuth;
+import oauth.signpost.OAuthConsumer;
+import oauth.signpost.OAuthProvider;
+import oauth.signpost.basic.DefaultOAuthConsumer;
+import oauth.signpost.basic.DefaultOAuthProvider;
+import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
+import oauth.signpost.exception.OAuthException;
 
 import java.util.prefs.Preferences;
 
@@ -35,7 +44,8 @@ public class TwitterPreferences extends Model
 {
     public static final String PROP_TWITTER_ENABLED         = "twitter.enabled";
     public static final String PROP_TWITTER_SCREEN_NAME     = "twitter.screenName";
-    public static final String PROP_TWITTER_PASSWORD        = "twitter.password";
+    public static final String PROP_TWITTER_ACCESS_TOKEN    = "twitter.access_token";
+    public static final String PROP_TWITTER_TOKEN_SECRET    = "twitter.token_secret";
     public static final String PROP_TWITTER_PROFILE_PICS    = "twitter.profile.pics";
     public static final String PROP_TWITTER_PASTE_LINK      = "twitter.paste.link";
 
@@ -48,6 +58,12 @@ public class TwitterPreferences extends Model
     private boolean enabled;
     private String  screenName;
     private String  password;
+    private String  accessToken;
+    private String  tokenSecret;
+
+    private String  pinToken;
+    private String  pinTokenSecret;
+
     private boolean profilePics;
     private boolean pasteLink;
 
@@ -112,7 +128,7 @@ public class TwitterPreferences extends Model
      */
     public void setPasteLink(boolean pasteLink)
     {
-        boolean old = pasteLink;
+        boolean old = this.pasteLink;
         this.pasteLink = pasteLink;
         firePropertyChange(PROP_PASTE_LINK, old, pasteLink);
     }
@@ -142,25 +158,49 @@ public class TwitterPreferences extends Model
     }
 
     /**
-     * Returns the password.
+     * Returns the access token.
      *
-     * @return password.
+     * @return access token.
      */
-    public String getPassword()
+    public String getAccessToken()
     {
-        return password;
+        return accessToken;
     }
 
     /**
-     * Sets the password.
+     * Sets the access token.
      *
-     * @param password password.
+     * @param accessToken access token.
      */
-    public void setPassword(String password)
+    public void setAccessToken(String accessToken)
     {
-        String old = this.password;
-        this.password = password;
-        firePropertyChange(PROP_PASSWORD, old, password);
+        String old = this.accessToken;
+        this.accessToken = accessToken;
+        firePropertyChange(PROP_TWITTER_ACCESS_TOKEN, old, accessToken);
+
+        resetURLDependentActions();
+    }
+
+    /**
+     * Returns the token secret.
+     *
+     * @return token secret.
+     */
+    public String getTokenSecret()
+    {
+        return tokenSecret;
+    }
+
+    /**
+     * Sets the token secret.
+     *
+     * @param tokenSecret token secret.
+     */
+    public void setTokenSecret(String tokenSecret)
+    {
+        String old = this.tokenSecret;
+        this.tokenSecret = tokenSecret;
+        firePropertyChange(PROP_TWITTER_TOKEN_SECRET, old, tokenSecret);
 
         resetURLDependentActions();
     }
@@ -174,7 +214,8 @@ public class TwitterPreferences extends Model
     {
         prefs.putBoolean(PROP_TWITTER_ENABLED, isEnabled());
         if (getScreenName() == null) prefs.remove(PROP_TWITTER_SCREEN_NAME); else prefs.put(PROP_TWITTER_SCREEN_NAME, getScreenName());
-        if (getPassword() == null) prefs.remove(PROP_TWITTER_PASSWORD); else prefs.put(PROP_TWITTER_PASSWORD, getPassword());
+        if (getAccessToken() == null) prefs.remove(PROP_TWITTER_ACCESS_TOKEN); else prefs.put(PROP_TWITTER_ACCESS_TOKEN, getAccessToken());
+        if (getTokenSecret() == null) prefs.remove(PROP_TWITTER_TOKEN_SECRET); else prefs.put(PROP_TWITTER_TOKEN_SECRET, getTokenSecret());
         prefs.putBoolean(PROP_PROFILE_PICS, isProfilePics());
         prefs.putBoolean(PROP_PASTE_LINK, isPasteLink());
     }
@@ -188,7 +229,8 @@ public class TwitterPreferences extends Model
     {
         setEnabled(prefs.getBoolean(PROP_TWITTER_ENABLED, false));
         setScreenName(prefs.get(PROP_TWITTER_SCREEN_NAME, null));
-        setPassword(prefs.get(PROP_TWITTER_PASSWORD, null));
+        setAccessToken(prefs.get(PROP_TWITTER_ACCESS_TOKEN, null));
+        setTokenSecret(prefs.get(PROP_TWITTER_TOKEN_SECRET, null));
         setProfilePics(prefs.getBoolean(PROP_PROFILE_PICS, true));
         setPasteLink(prefs.getBoolean(PROP_PASTE_LINK, true));
     }
@@ -201,5 +243,107 @@ public class TwitterPreferences extends Model
         FollowAction.getInstance().setUserURL(null);
         ReplyAction.getInstance().setUserURL(null);
         SubscribeAction.getInstance().setUserURL(null);
+    }
+
+    /**
+     * Returns TRUE if twitter is authorized.
+     *
+     * @return TRUE if authorized.
+     */
+    public boolean isAuthorized()
+    {
+        return StringUtils.isNotEmpty(getAccessToken()) &&
+            StringUtils.isNotEmpty(getTokenSecret());
+    }
+
+    /**
+     * Returns consumer object required to sign the requests.
+     *
+     * @return consumer.
+     */
+    public OAuthConsumer getConsumer()
+    {
+        OAuthConsumer c = getHttpClientConsumer();
+
+        // Init consumer with tokens if available
+        if (getAccessToken() != null && getTokenSecret() != null) {
+            c.setTokenWithSecret(getAccessToken(), getTokenSecret());
+        }
+
+        return c;
+    }
+
+    public static OAuthConsumer getHttpClientConsumer()
+    {
+        String consumerKey = ResourceUtils.getString("twitter.consumer_key");
+        String consumerSecret = ResourceUtils.getString("twitter.consumer_secret");
+
+        return new CommonsHttpOAuthConsumer(consumerKey, consumerSecret);
+    }
+
+
+    /**
+     * Returns the default consumer, not initialized with user tokens.
+     *
+     * @return consumer.
+     */
+    public static OAuthConsumer getDefaultConsumer()
+    {
+        String consumerKey = ResourceUtils.getString("twitter.consumer_key");
+        String consumerSecret = ResourceUtils.getString("twitter.consumer_secret");
+
+        return new DefaultOAuthConsumer(consumerKey, consumerSecret);
+    }
+
+    public static DefaultOAuthProvider getDefaultProvider()
+    {
+        return new DefaultOAuthProvider(
+            "http://twitter.com/oauth/request_token",
+            "http://twitter.com/oauth/access_token",
+            "http://twitter.com/oauth/authorize");
+    }
+
+    public String getAuthURL()
+    {
+        OAuthProvider provider = getDefaultProvider();
+        OAuthConsumer consumer = getDefaultConsumer();
+
+        String authURL = null;
+        try
+        {
+            authURL = provider.retrieveRequestToken(consumer, OAuth.OUT_OF_BAND);
+            pinToken = consumer.getToken();
+            pinTokenSecret = consumer.getTokenSecret();
+        } catch (OAuthException e)
+        {
+            // Auth exception
+        }
+
+        return authURL;
+    }
+
+    public void acquireAccessTokens(String pin)
+        throws OAuthException
+    {
+        OAuthProvider provider = getDefaultProvider();
+        OAuthConsumer consumer = getDefaultConsumer();
+
+        consumer.setTokenWithSecret(pinToken, pinTokenSecret);
+
+        pinToken = null;
+        pinTokenSecret = null;
+
+        provider.retrieveAccessToken(consumer, pin);
+
+        setAccessToken(consumer.getToken());
+        setTokenSecret(consumer.getTokenSecret());
+        setScreenName(provider.getResponseParameters().get("screen_name").first());
+    }
+
+    public void unauthorize()
+    {
+        setAccessToken(null);
+        setTokenSecret(null);
+        setScreenName(null);
     }
 }

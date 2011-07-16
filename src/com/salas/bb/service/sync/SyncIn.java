@@ -1366,8 +1366,6 @@ public class SyncIn extends AbstractSynchronization
         /**
          * Handles window events depending on the state of the <code>defaultCloseOperation</code>
          * property.
-         *
-         * @see #setDefaultCloseOperation
          */
         protected void processWindowEvent(WindowEvent e)
         {
@@ -1668,7 +1666,8 @@ public class SyncIn extends AbstractSynchronization
 
         tp.setEnabled(getBoolean(prefs, TwitterPreferences.PROP_TWITTER_ENABLED, tp.isEnabled()));
         tp.setScreenName(getString(prefs, TwitterPreferences.PROP_TWITTER_SCREEN_NAME, tp.getScreenName()));
-        tp.setPassword(getString(prefs, TwitterPreferences.PROP_TWITTER_PASSWORD, tp.getPassword()));
+        tp.setAccessToken(getString(prefs, TwitterPreferences.PROP_TWITTER_ACCESS_TOKEN, tp.getAccessToken()));
+        tp.setTokenSecret(getString(prefs, TwitterPreferences.PROP_TWITTER_TOKEN_SECRET, tp.getTokenSecret()));
         tp.setProfilePics(getBoolean(prefs, TwitterPreferences.PROP_TWITTER_PROFILE_PICS, tp.isProfilePics()));
         tp.setPasteLink(getBoolean(prefs, TwitterPreferences.PROP_TWITTER_PASTE_LINK, tp.isPasteLink()));
     }

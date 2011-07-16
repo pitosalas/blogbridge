@@ -41,3 +41,10 @@ p#start { margin-top: 0; }
 #bbenclosure {
   margin-top: 20pt;
 }
+
+#story {
+    background-color: #F0F0F0;
+    font-size: 75% !important;
+    padding: 10px;
+    margin: 10px 0;
+}

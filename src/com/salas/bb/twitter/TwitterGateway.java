@@ -24,26 +24,26 @@
 
 package com.salas.bb.twitter;
 
-import com.salas.bb.utils.net.HttpClient;
-import com.salas.bb.utils.StringUtils;
 import com.salas.bb.core.GlobalController;
+import com.salas.bb.utils.StringUtils;
+import com.salas.bb.utils.net.BBHttpClient;
+import oauth.signpost.OAuthConsumer;
+import oauth.signpost.exception.OAuthException;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
-import java.net.URLEncoder;
-import java.net.MalformedURLException;
 import java.net.URLDecoder;
-import java.util.Map;
+import java.net.URLEncoder;
 import java.util.HashMap;
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
-import java.util.logging.Logger;
+import java.util.Map;
 import java.util.logging.Level;
-
-import org.json.JSONObject;
-import org.json.JSONException;
-import org.json.JSONArray;
+import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Twitter gateway.
@@ -54,7 +54,7 @@ public class TwitterGateway
 
     // Screen name extraction pattern
     public static final Pattern PATTERN_SCREEN_NAME =
-        Pattern.compile("http://(www\\.)?twitter\\.com/([^/\\?\\#\\s]+)($|#|\\?)");
+        Pattern.compile("http://(www\\.)?twitter\\.com/([^/\\?#\\s]+)($|#|\\?)");
     private static final Pattern PATTERN_HASHTAG =
         Pattern.compile("^http://search\\.twitter\\.com/search(\\.(json|atom)?)?\\?q=(#|%23)([^&\\s\\+]+)($|&)");
 
@@ -63,10 +63,11 @@ public class TwitterGateway
      *
      * @param status status message.
      *
-     * @throws java.io.IOException if fails to communicate.
+     * @throws IOException if fails to communicate.
+     * @throws OAuthException OAuth error.
      */
     public static void update(String status)
-        throws IOException
+        throws IOException, OAuthException
     {
         reply(status, null);
     }
@@ -77,16 +78,17 @@ public class TwitterGateway
      * @param status    status message.
      * @param replyToId ID of the original message or NULL.
      *
-     * @throws java.io.IOException if fails to communicate.
+     * @throws IOException if fails to communicate.
+     * @throws OAuthException OAuth error.
      */
     public static void reply(String status, String replyToId)
-        throws IOException
+        throws IOException, OAuthException
     {
-        URL url = new URL("http://twitter.com/statuses/update.json");
+        URL url = new URL("http://api.twitter.com/1/statuses/update.json");
 
         Map<String, String> data = new HashMap<String, String>();
         data.put("status", status);
-        data.put("source", "blogbridge");
+        //data.put("source", "blogbridge");
         if (replyToId != null) data.put("in_reply_to_status_id", replyToId);
 
         post(url, data);
@@ -109,24 +111,33 @@ public class TwitterGateway
         String userA = encode(prefs.getScreenName());
         String userB = encode(screenname);
         URL url = new URL("http://twitter.com/friendships/exists.json?user_a=" + userA + "&user_b=" + userB);
-        String res = get(url);
+        String res;
 
-        return res.contains("true");
+        try
+        {
+            res = get(url);
+        } catch (OAuthException e)
+        {
+            throw new IOException(e.getMessage(), e.getCause());
+        }
+
+        return res != null && res.contains("true");
     }
 
     /**
      * Requests to follow the given user.
      *
-     * @param screenname user.
+     * @param screenName user.
      *
      * @throws IOException if fails to communicate.
+     * @throws OAuthException OAuth error.
      */
-    public static void follow(String screenname)
-        throws IOException
+    public static void follow(String screenName)
+        throws IOException, OAuthException
     {
-        screenname = encode(screenname);
+        screenName = encode(screenName);
 
-        URL url = new URL("http://twitter.com/friendships/create/" + screenname + ".json");
+        URL url = new URL("http://twitter.com/friendships/create/" + screenName + ".json");
 
         Map<String, String> data = new HashMap<String, String>();
         data.put("follow", "true");
@@ -137,33 +148,41 @@ public class TwitterGateway
     /**
      * Requests to unfollow the given user.
      *
-     * @param screenname user.
+     * @param screenName user.
      *
      * @throws IOException if fails to communicate.
+     * @throws OAuthException OAuth error.
      */
-    public static void unfollow(String screenname)
-        throws IOException
+    public static void unfollow(String screenName)
+        throws IOException, OAuthException
     {
-        screenname = encode(screenname);
+        screenName = encode(screenName);
 
-        URL url = new URL("http://twitter.com/friendships/destroy/" + screenname + ".json");
+        URL url = new URL("http://twitter.com/friendships/destroy/" + screenName + ".json");
         post(url, null);
     }
 
     /**
      * Returns HTML for the user info popup.
      *
-     * @param screenname screen name.
+     * @param screenName screen name.
      *
      * @return HTML.
      *
      * @throws IOException if fails to communicate.
      */
-    public static String userInfoHTML(String screenname)
+    public static String userInfoHTML(String screenName)
         throws IOException
     {
-        URL url = new URL("http://twitter.com/users/show/" + screenname + ".json");
-        String response = get(url);
+        URL url = new URL("http://twitter.com/users/show/" + screenName + ".json");
+        String response;
+        try
+        {
+            response = get(url);
+        } catch (OAuthException e)
+        {
+            throw new IOException(e.getMessage(), e.getCause());
+        }
 
         String html;
 
@@ -218,7 +237,7 @@ public class TwitterGateway
         throws IOException
     {
         URL url = new URL("http://search.twitter.com/search.json?q=" + encode(query) + "&rpp=5");
-        String response = HttpClient.get(url);
+        String response = BBHttpClient.get(url);
 
         String html;
 
@@ -275,12 +294,14 @@ public class TwitterGateway
      * @return response.
      *
      * @throws IOException if communication fails.
+     * @throws OAuthException OAuth exception.
      */
     private static String get(URL url)
-        throws IOException
+        throws IOException, OAuthException
     {
         TwitterPreferences prefs = getPreferences();
-        return HttpClient.get(url, prefs.getScreenName(), prefs.getPassword());
+        OAuthConsumer consumer = prefs.getConsumer();
+        return BBHttpClient.get(url, consumer);
     }
 
     /**
@@ -290,12 +311,13 @@ public class TwitterGateway
      * @param data data map.
      *
      * @throws IOException if communication fails.
+     * @throws OAuthException OAuth error.
      */
     private static void post(URL url, Map<String, String> data)
-        throws IOException
+        throws IOException, OAuthException
     {
         TwitterPreferences prefs = getPreferences();
-        HttpClient.post(url, data, prefs.getScreenName(), prefs.getPassword());
+        BBHttpClient.post(url, data, prefs.getConsumer());
     }
 
     /**
@@ -373,5 +395,19 @@ public class TwitterGateway
     private static boolean isShowingPics()
     {
         return getPreferences().isProfilePics();
+    }
+
+    /**
+     * Returns the contents of the friends timeline RSS feed.
+     *
+     * @return RSS feed.
+     *
+     * @throws IOException    in case of communication error.
+     * @throws OAuthException in case of authentication error.
+     */
+    public static String friendsTimeline()
+        throws IOException, OAuthException
+    {
+        return get(new URL("http://api.twitter.com/1/statuses/friends_timeline.rss"));
     }
 }

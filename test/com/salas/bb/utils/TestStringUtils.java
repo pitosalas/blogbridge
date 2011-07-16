@@ -27,6 +27,7 @@ package com.salas.bb.utils;
 import junit.framework.TestCase;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -466,5 +467,22 @@ public class TestStringUtils extends TestCase
         assertEquals("abc\u2026", StringUtils.unescape("abc&hellip;"));
         assertEquals("abc\u2026", StringUtils.unescape("abc&#x2026;"));
         assertEquals("abc\u2026", StringUtils.unescape("abc&#8230;"));
+    }
+
+    public void testCollectLinks()
+    {
+        assertLinks(new String[0], "");
+        assertLinks(new String[] { "http://a.bc/123" }, "http://a.bc/123");
+        assertLinks(new String[] { "http://a.bc/123", "http://bc.d/123a" }, "Check: http://a.bc/123, http://bc.d/123a.");
+    }
+
+    private void assertLinks(String[] links, String text)
+    {
+        List<String> res = StringUtils.collectLinks(text);
+        assertEquals(links.length, res.size());
+        for (int i = 0; i < links.length; i++)
+        {
+            assertEquals(links[i], res.get(i));
+        }
     }
 }

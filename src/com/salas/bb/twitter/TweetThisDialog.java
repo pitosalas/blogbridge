@@ -24,17 +24,20 @@
 
 package com.salas.bb.twitter;
 
-import com.jgoodies.forms.factories.ButtonBarFactory;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.uif.AbstractDialog;
 import com.jgoodies.uif.util.ResourceUtils;
+import com.salas.bb.core.GlobalController;
 import com.salas.bb.utils.ResourceID;
 import com.salas.bb.utils.StringUtils;
 import com.salas.bb.utils.i18n.Strings;
 import com.salas.bb.utils.net.LinkShortener;
 import com.salas.bb.utils.net.LinkShorteningException;
-import com.salas.bb.utils.uif.*;
-import com.salas.bb.core.GlobalController;
+import com.salas.bb.utils.uif.BBFormBuilder;
+import com.salas.bb.utils.uif.ComponentsFactory;
+import com.salas.bb.utils.uif.IconSource;
+import com.salas.bb.utils.uif.LinkLabel;
+import oauth.signpost.exception.OAuthException;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -250,6 +253,9 @@ public class TweetThisDialog extends AbstractDialog
                     TwitterGateway.update(taMessage.getText());
                     onSent();
                 } catch (IOException e)
+                {
+                    onFailedToSend(e.getMessage());
+                } catch (OAuthException e)
                 {
                     onFailedToSend(e.getMessage());
                 }

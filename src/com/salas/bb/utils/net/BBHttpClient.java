@@ -25,19 +25,34 @@
 package com.salas.bb.utils.net;
 
 import com.salas.bb.utils.StringUtils;
+import oauth.signpost.OAuthConsumer;
+import oauth.signpost.exception.OAuthCommunicationException;
+import oauth.signpost.exception.OAuthException;
+import oauth.signpost.exception.OAuthExpectationFailedException;
+import oauth.signpost.exception.OAuthMessageSignerException;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.BasicResponseHandler;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 
-import java.net.URL;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.URLEncoder;
+import java.net.URL;
 import java.net.URLConnection;
-import java.io.*;
-import java.util.Map;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * HTTP utility class.
  */
-public abstract class HttpClient
+public abstract class BBHttpClient
 {
     /**
      * Performs the GET HTTP request and returns the contents.
@@ -108,54 +123,66 @@ public abstract class HttpClient
     }
 
     /**
+     * Performs the GET HTTP request by signing it first with OAuth consumer.
+     *
+     * @param url       URL to access.
+     * @param consumer  consumer to use for signing.
+     *
+     * @return contents of the response body.
+     *
+     * @throws OAuthExpectationFailedException OAuth error.
+     * @throws OAuthMessageSignerException     OAuth error.
+     * @throws OAuthCommunicationException     OAuth error.
+     * @throws IOException in case of I/O error.
+     */
+    public static String get(URL url, OAuthConsumer consumer)
+        throws OAuthExpectationFailedException, OAuthMessageSignerException, OAuthCommunicationException, IOException
+    {
+        HttpClient client = new DefaultHttpClient();
+        HttpGet httpget = new HttpGet(url.toString());
+
+        if (consumer != null) consumer.sign(httpget);
+
+        return client.execute(httpget, new BasicResponseHandler());
+    }
+
+    /**
      * Sends the POST request and returns the response text.
      *
      * @param url       URL to send the request to.
      * @param data      data map.
-     * @param user      user name for the authentication.
-     * @param password  password.
+     * @param consumer  OAuth consumer to sign the request (optional).
      *
      * @return response text.
      *
      * @throws IOException in case when communication fails.
+     * @throws OAuthException OAuth exception.
      */
-    public static String post(URL url, Map<String, String> data, String user, String password)
-        throws IOException
+    public static String post(URL url, Map<String, String> data, OAuthConsumer consumer)
+        throws IOException, OAuthException
     {
-        // Construct data
-        ArrayList<String> content = null;
-
+        List<NameValuePair> form = null;
         if (data != null)
         {
-            content = new ArrayList<String>(data.size());
+            form = new ArrayList<NameValuePair>(data.size());
             for (Map.Entry<String, String> entry : data.entrySet())
             {
-                content.add(URLEncoder.encode(entry.getKey(), "UTF-8") + "=" +
-                    URLEncoder.encode(entry.getValue(), "UTF-8"));
+                form.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
             }
         }
 
         // Send data
-        URLConnection con = url.openConnection();
-        con.setDoInput(true);
-        con.setDoOutput(true);
-        con.setUseCaches(false);
-        con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-        if (user != null && password != null) con.setRequestProperty("Authorization",
-            StringUtils.createBasicAuthToken(user, password));
+        HttpPost httppost = new HttpPost(url.toString());
 
-
-        OutputStreamWriter wr = new OutputStreamWriter(con.getOutputStream());
-        try
-        {
-            if (content != null) wr.write(StringUtils.join(content.iterator(), "&"));
-            wr.flush();
-        } finally
-        {
-            wr.close();
+        if (form != null) {
+            UrlEncodedFormEntity entity = new UrlEncodedFormEntity(form, "UTF-8");
+            httppost.setEntity(entity);
         }
 
-        return readResponse(con);
+        if (consumer != null) consumer.sign(httppost);
+
+        HttpClient client = new DefaultHttpClient();
+        return client.execute(httppost, new BasicResponseHandler());
     }
 
     /**

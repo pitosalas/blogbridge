@@ -201,9 +201,8 @@ class TwitterQueryType extends DefaultQueryType
         Matcher matcher = PTN_LIST.matcher(parameter);
         if (matcher.matches())
         {
-            String json = BBHttpClient.get("http://api.twitter.com/1/" +
-                matcher.group(1) + "/lists/" +
-                matcher.group(2) + "/statuses.json");
+            String json = BBHttpClient.get("https://api.twitter.com/1/lists/statuses.json?slug=" +
+                matcher.group(2) + "&owner_screen_name=" + matcher.group(1));
 
             try
             {

@@ -1,0 +1,37 @@
+#!/usr/bin/ruby
+
+TYPES = %w{ weekly stable final }
+DEST_PATTERN = /^(\w+@)?\w+(\.\w+)+(:(\d+))?$/
+
+type, dest, path = ARGV[0], ARGV[1], ARGV[2]
+
+# Default for the team
+path ||= "/srv/www/blogbridge.com/public_html/install/#{type}"
+
+unless TYPES.include?(type) && dest =~ DEST_PATTERN
+  puts "Usage: deploy-jnlp <type> <dest> <path>"
+  puts
+  puts "       type - build type (#{TYPES.join(', ')})"
+  puts "       dest - destination to deploy release to (like user@yourserver.com[:31313])"
+  puts "       path - path on the server to the deployment folder (/srv/www/.../weekly)"
+  exit 1
+end
+
+dest =~ DEST_PATTERN
+port = $4
+dest = dest.gsub($3, '')
+
+puts "- Deleting local binaries"
+`rm -rf target`
+
+puts "- Building: #{type}"
+`ant deploy.#{type}`
+
+puts "- Recreating a #{path}.new directory remotely"
+`ssh #{dest} #{"-p #{port}" if port} -C 'rm -rf #{path}.new; mkdir -p #{path}.new'`
+
+puts "- Copying the sources to the server"
+`scp -r #{"-P #{port}" if port} target/deploy/* #{dest}:#{path}.new`
+
+puts "- Saving current deployment to #{path}.old and move a new one to the current"
+`ssh #{dest} #{"-p #{port}" if port} -C 'rm -rf #{path}.old && mv #{path}{,.old} && mv #{path}{.new,}'`

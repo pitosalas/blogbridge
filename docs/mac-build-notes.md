@@ -1,0 +1,57 @@
+Notes on how to build a DMG distribution
+========================================
+
+JAR bundler and Advanced Installer
+----------------------------------
+
+* JAR Bundler - Tool on Mac used to create the correctly structured directory for a .app bundle. With Advanced Installer (on PC) Jar Bundler is not needed.
+
+* Advanced Installer - Runs on PC to create a .zip version of the app bundle.
+
+Icons
+-----
+
+* Icon Composer - Mac OS X Application to make .icns files. Drag and drop .tif files for each size (or it will do its bes to scale.)
+
+* .icns files - Special magical icon files for Mac. Include different sizes etc. 
+
+App Bundles
+-----------
+
+* Info.plist - Preferences file that describes contents of an app bundle. 
+
+* Apple/Mac creator code for BlogBridge: BRID
+
+ 
+Distribution
+------------
+
+http://developer.apple.com/documentation/DeveloperTools/Conceptual/SoftwareDistribution/index.html "Introduction to software distribution"
+
+* Disk Image - DMG files, get mounted as storage devices on the file system
+
+* Internet-Enabled Disk Images - Upon downloading by Safari will automatically be processed, mounted, opened, and if it's a single file, placed on the desktop. If more than one file then the finder window is automatically opened.
+
+* hdiutil - Command line program to create .DMGs.
+
+
+Shell commands
+--------------
+
+* Create the dmg:
+
+        hdiutil create <dmg file> -imagekey zlib-level=9 -srcfolder <.app folder>
+
+* Internet enable it:
+
+        hdiutil internet-enable -yes <dmg file>
+
+
+Caveats
+-------
+
+* When using Advanced Installer to create bundles you get a particular version of the Java Application Stub. Need to verify that it's the latest one.
+
+* Also, the info.plist file is version needs to be verified.
+
+* I think the way to verify that is to use the tools on the latest Mac OS X to create a new .app file for some random test and see what file it used for App Stub.

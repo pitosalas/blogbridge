@@ -473,6 +473,7 @@
                 </fileset>
         </signjar>
 
+<!--
         <checksum property="temp">
             <fileset dir="${deploy.dir}" includes="**/*.jar">
                 <modified>
@@ -481,6 +482,7 @@
                 </modified>
             </fileset>
         </checksum>
+-->
     </target>
 
     <target name="documentation" depends="test, javadoc, style.all">
